@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Your Claim - Digital Recovery Agents</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A3D62;
+            --primary-light: #1E5F8C;
+            --accent: #D4AF37;
+            --accent-light: #E5C158;
+            --text-dark: #1A1A1A;
+            --text-medium: #4A4A4A;
+            --text-light: #7A7A7A;
+            --bg-cream: #FAF8F3;
+            --bg-white: #FFFFFF;
+            --border: #E0DDD5;
+            --success: #2D5F3F;
+        }
+
+```
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Work Sans', sans-serif;
+        color: var(--text-dark);
+        background: var(--bg-cream);
+        line-height: 1.6;
+    }
+
+    h1, h2, h3, h4 {
+        font-family: 'Crimson Pro', serif;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    /* Navigation (same as index) */
+    nav {
+        background: var(--bg-white);
+        border-bottom: 1px solid var(--border);
+        padding: 1.5rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    nav .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-family: 'Crimson Pro', serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+    }
+
+    nav ul {
+        list-style: none;
+        display: flex;
+        gap: 2.5rem;
+        align-items: center;
+    }
+
+    nav a {
+        text-decoration: none;
+        color: var(--text-dark);
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+        color: var(--primary);
+    }
+
+    .nav-cta {
+        background: var(--accent);
+        color: var(--text-dark) !important;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+
+    /* Contact Page Specific */
+    .contact-hero {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        color: white;
+        padding: 4rem 2rem;
+        text-align: center;
+    }
+
+    .contact-hero h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .contact-hero p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .contact-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 4rem;
+    }
+
+    .contact-info {
+        background: var(--bg-white);
+        padding: 3rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        height: fit-content;
+    }
+
+    .contact-info h2 {
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+    }
+
+    .info-item {
+        margin-bottom: 2rem;
+    }
+
+    .info-item h3 {
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    .info-item p {
+        color: var(--text-medium);
+        line-height: 1.8;
+    }
+
+    .benefits-list {
+        background: var(--bg-cream);
+        padding: 2rem;
+        border-radius: 8px;
+        margin-top: 2rem;
+    }
+
+    .benefits-list h3 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .benefits-list ul {
+        list-style: none;
+    }
+
+    .benefits-list li {
+        padding: 0.5rem 0;
+        color: var(--text-medium);
+        position: relative;
+        padding-left: 1.5rem;
+    }
+
+    .benefits-list li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: var(--success);
+        font-weight: bold;
+    }
+
+    .form-container {
+        background: var(--bg-white);
+        padding: 3rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .form-header {
+        margin-bottom: 2rem;
+    }
+
+    .form-header h2 {
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+        font-size: 2rem;
+    }
+
+    .form-header p {
+        color: var(--text-medium);
+    }
+
+    /* Google Forms Embed Styling */
+    .google-form-embed {
+        width: 100%;
+        min-height: 1200px;
+        border: none;
+        border-radius: 8px;
+    }
+
+    /* Alternative: Custom Form (if you want to style it yourself) */
+    .custom-form {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: grid;
+        gap: 0.5rem;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 1rem;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        font-family: 'Work Sans', sans-serif;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .submit-btn {
+        background: var(--accent);
+        color: var(--text-dark);
+        padding: 1.25rem 3rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        background: var(--accent-light);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .privacy-note {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: var(--bg-cream);
+        border-radius: 6px;
+        font-size: 0.9rem;
+        color: var(--text-medium);
+    }
+
+    .privacy-note a {
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    .privacy-note a:hover {
+        text-decoration: underline;
+    }
+
+    /* Footer */
+    footer {
+        background: var(--text-dark);
+        color: white;
+        padding: 4rem 2rem 2rem;
+        margin-top: 4rem;
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .footer-section h4 {
+        margin-bottom: 1.5rem;
+        color: var(--accent);
+    }
+
+    .footer-section ul {
+        list-style: none;
+    }
+
+    .footer-section li {
+        margin-bottom: 0.75rem;
+    }
+
+    .footer-section a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .footer-section a:hover {
+        color: var(--accent);
+    }
+
+    .footer-bottom {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    @media (max-width: 968px) {
+        .contact-content {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        nav ul {
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">DR</div>
+                Digital Recovery Agents
+            </a>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="states.html">States We Serve</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html" class="nav-cta">Check Your Claim</a></li>
+            </ul>
+        </div>
+    </nav>
+
+```
+<!-- Hero -->
+<section class="contact-hero">
+    <h1>Check If You Have Unclaimed Funds</h1>
+    <p>Fill out the form below and we'll search state databases for any funds in your name. This is completely free with no obligation.</p>
+</section>
+
+<!-- Contact Content -->
+<section class="contact-content">
+    <!-- Left: Info -->
+    <div class="contact-info">
+        <h2>What Happens Next?</h2>
+        
+        <div class="info-item">
+            <h3>1. We Search Databases</h3>
+            <p>Within 48 hours, we'll search unclaimed property databases in NY, WI, IN, and PA for any funds matching your information.</p>
+        </div>
+
+        <div class="info-item">
+            <h3>2. We Contact You</h3>
+            <p>If we find funds over $50,000, we'll reach out via email or phone with specific details about your claim.</p>
+        </div>
+
+        <div class="info-item">
+            <h3>3. You Decide</h3>
+            <p>Review our simple agreement. There's no obligation and no upfront costs. You only pay our 10-15% fee if you receive your funds.</p>
+        </div>
+
+        <div class="benefits-list">
+            <h3>Why Choose Us?</h3>
+            <ul>
+                <li>We handle all paperwork and filing</li>
+                <li>No upfront fees or costs</li>
+                <li>Fully licensed in all states we serve</li>
+                <li>Expert knowledge of state requirements</li>
+                <li>Fast, professional service</li>
+                <li>Transparent, competitive rates</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Right: Form -->
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Free Claim Check Form</h2>
+            <p>All fields are required. Your information is kept strictly confidential.</p>
+        </div>
+
+        <!-- OPTION 1: Embed Google Form (RECOMMENDED) -->
+        <!-- 
+        To use this: 
+        1. Create a Google Form at forms.google.com
+        2. Click "Send" → Click the "<>" embed icon
+        3. Copy the iframe src URL
+        4. Replace YOUR_GOOGLE_FORM_EMBED_URL below with your actual URL
+        -->
+        <iframe 
+            class="google-form-embed" 
+            src="YOUR_GOOGLE_FORM_EMBED_URL"
+            frameborder="0" 
+            marginheight="0" 
+            marginwidth="0">
+            Loading…
+        </iframe>
+
+        <!-- OPTION 2: Custom Form that sends to Google Sheets via Make.com/Zapier webhook -->
+        <!-- Uncomment this section if you want a custom-styled form -->
+        <!--
+        <form class="custom-form" id="leadForm" method="POST" action="YOUR_MAKE_COM_WEBHOOK_URL">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name *</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="city">City *</label>
+                    <input type="text" id="city" name="city" required>
+                </div>
+                <div class="form-group">
+                    <label for="state">State *</label>
+                    <select id="state" name="state" required>
+                        <option value="">Select State</option>
+                        <option value="NY">New York</option>
+                        <option value="WI">Wisconsin</option>
+                        <option value="IN">Indiana</option>
+                        <option value="PA">Pennsylvania</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="previousAddress">Previous Address (if you've moved in the last 10 years)</label>
+                <textarea id="previousAddress" name="previousAddress" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="estimatedAmount">Do you know approximately how much might be owed?</label>
+                <select id="estimatedAmount" name="estimatedAmount">
+                    <option value="">I'm not sure</option>
+                    <option value="50-100k">$50,000 - $100,000</option>
+                    <option value="100-250k">$100,000 - $250,000</option>
+                    <option value="250k+">$250,000+</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="source">How did you hear about these funds?</label>
+                <select id="source" name="source">
+                    <option value="">Select...</option>
+                    <option value="letter">Received a letter</option>
+                    <option value="search">Found through online search</option>
+                    <option value="referral">Friend/family referral</option>
+                    <option value="deceased">Deceased relative's estate</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="additionalInfo">Additional Information (optional)</label>
+                <textarea id="additionalInfo" name="additionalInfo" rows="4" placeholder="Tell us anything else that might help us locate your funds..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Free Claim Check</button>
+        </form>
+        -->
+
+        <div class="privacy-note">
+            🔒 <strong>Your Privacy is Protected:</strong> We never share your information with third parties. All data is encrypted and used solely to search for your unclaimed funds. By submitting, you agree to our <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>.
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>Digital Recovery Agents</h4>
+            <p>Professional unclaimed funds recovery services for New York, Wisconsin, Indiana, and Pennsylvania.</p>
+        </div>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="states.html">States We Serve</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Legal</h4>
+            <ul>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="disclosures.html">State Disclosures</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Contact</h4>
+            <ul>
+                <li>Email: info@digitalrecoveryagents.com</li>
+                <li>Phone: (555) 123-4567</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 Digital Recovery Agents. All rights reserved. Licensed recovery agents in NY, WI, IN, PA.</p>
+    </div>
+</footer>
+
+<script>
+    // If using custom form, add form submission handling
+    const form = document.getElementById('leadForm');
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            try {
+                // Send to Make.com webhook (replace with your actual webhook URL)
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    alert('Thank you! We\'ll search for your funds and contact you within 48 hours.');
+                    form.reset();
+                } else {
+                    throw new Error('Submission failed');
+                }
+            } catch (error) {
+                alert('There was an error submitting your form. Please try again or email us directly.');
+            }
+        });
+    }
+</script>
+```
+
+</body>
+</html>
