@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Digital Recovery Agents</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A3D62;
+            --primary-light: #1E5F8C;
+            --accent: #D4AF37;
+            --accent-light: #E5C158;
+            --text-dark: #1A1A1A;
+            --text-medium: #4A4A4A;
+            --text-light: #7A7A7A;
+            --bg-cream: #FAF8F3;
+            --bg-white: #FFFFFF;
+            --border: #E0DDD5;
+            --success: #2D5F3F;
+        }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Work Sans', sans-serif;
+        color: var(--text-dark);
+        background: var(--bg-cream);
+        line-height: 1.6;
+    }
+
+    h1, h2, h3, h4 {
+        font-family: 'Crimson Pro', serif;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    /* Navigation */
+    nav {
+        background: var(--bg-white);
+        border-bottom: 1px solid var(--border);
+        padding: 1.5rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    nav .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-family: 'Crimson Pro', serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+    }
+
+    nav ul {
+        list-style: none;
+        display: flex;
+        gap: 2.5rem;
+        align-items: center;
+    }
+
+    nav a {
+        text-decoration: none;
+        color: var(--text-dark);
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+        color: var(--primary);
+    }
+
+    .nav-cta {
+        background: var(--accent);
+        color: var(--text-dark) !important;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+
+    /* Page Hero */
+    .page-hero {
+        background: #0A3D62;
+        background: linear-gradient(135deg, #0A3D62 0%, #1E5F8C 100%);
+        color: #FFFFFF;
+        padding: 4rem 2rem;
+        text-align: center;
+    }
+
+    .page-hero h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #FFFFFF;
+    }
+
+    .page-hero p {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.95);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Section Header */
+    .section-header {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 4rem;
+    }
+
+    .section-header h2 {
+        font-size: 2.8rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .section-header p {
+        font-size: 1.2rem;
+        color: var(--text-medium);
+    }
+
+    /* FAQ Section */
+    .faq-section {
+        padding: 6rem 2rem;
+        background: var(--bg-cream);
+    }
+
+    .faq-list {
+        max-width: 850px;
+        margin: 0 auto;
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .faq-item {
+        background: var(--bg-white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .faq-item:hover {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+
+    .faq-question {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.75rem 2rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        text-align: left;
+        font-family: 'Crimson Pro', serif;
+        font-size: 1.35rem;
+        font-weight: 600;
+        color: var(--primary);
+        gap: 1rem;
+    }
+
+    .faq-question:hover {
+        color: var(--primary-light);
+    }
+
+    .faq-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        flex-shrink: 0;
+        transition: transform 0.3s ease;
+        font-family: 'Work Sans', sans-serif;
+    }
+
+    .faq-item.open .faq-icon {
+        transform: rotate(45deg);
+    }
+
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.4s ease;
+    }
+
+    .faq-item.open .faq-answer {
+        max-height: 500px;
+    }
+
+    .faq-answer-inner {
+        padding: 0 2rem 2rem;
+        font-size: 1.1rem;
+        color: var(--text-medium);
+        line-height: 1.8;
+    }
+
+    /* Category Labels */
+    .faq-category {
+        max-width: 850px;
+        margin: 0 auto 1.5rem;
+        padding-top: 2rem;
+    }
+
+    .faq-category:first-child {
+        padding-top: 0;
+    }
+
+    .faq-category h3 {
+        font-size: 1.6rem;
+        color: var(--primary);
+        padding-bottom: 0.75rem;
+        border-bottom: 3px solid var(--accent);
+        display: inline-block;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        color: white;
+        padding: 6rem 2rem;
+        text-align: center;
+    }
+
+    .cta-content {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .cta-section h2 {
+        font-size: 2.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .cta-section p {
+        font-size: 1.2rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.95;
+    }
+
+    .btn {
+        padding: 1rem 2.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+        border: 2px solid transparent;
+        cursor: pointer;
+        font-size: 1.1rem;
+    }
+
+    .btn-primary {
+        background: var(--accent);
+        color: var(--text-dark);
+    }
+
+    .btn-primary:hover {
+        background: var(--accent-light);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    /* Contact Banner */
+    .contact-banner {
+        background: var(--bg-white);
+        padding: 4rem 2rem;
+        text-align: center;
+    }
+
+    .contact-banner-inner {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .contact-banner h2 {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .contact-banner p {
+        font-size: 1.1rem;
+        color: var(--text-medium);
+        margin-bottom: 1.5rem;
+        line-height: 1.7;
+    }
+
+    .contact-methods {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+    }
+
+    .contact-method {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.1rem;
+        color: var(--text-dark);
+        font-weight: 500;
+    }
+
+    .contact-method-icon {
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    /* Footer */
+    footer {
+        background: var(--text-dark);
+        color: white;
+        padding: 4rem 2rem 2rem;
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .footer-section h4 {
+        margin-bottom: 1.5rem;
+        color: var(--accent);
+    }
+
+    .footer-section ul {
+        list-style: none;
+    }
+
+    .footer-section li {
+        margin-bottom: 0.75rem;
+    }
+
+    .footer-section a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .footer-section a:hover {
+        color: var(--accent);
+    }
+
+    .footer-bottom {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-hero h1 {
+            font-size: 2.2rem;
+        }
+
+        nav ul {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+        }
+
+        .faq-question {
+            font-size: 1.15rem;
+            padding: 1.5rem;
+        }
+
+        .faq-answer-inner {
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        .contact-methods {
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+    }
+</style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">DR</div>
+                Digital Recovery Agents
+            </a>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="states.html">States We Serve</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html" class="nav-cta">Check Your Claim</a></li>
+            </ul>
+        </div>
+    </nav>
+
+<!-- Hero -->
+<section class="page-hero">
+    <h1>Frequently Asked Questions</h1>
+    <p>Everything you need to know about our unclaimed funds recovery service. Click any question to see the answer.</p>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+    <div class="faq-category">
+        <h3>About Our Service</h3>
+    </div>
+    <div class="faq-list">
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                What exactly does Digital Recovery Agents do?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    We locate and recover unclaimed surplus funds on behalf of individuals. These are real funds held by state governments that belong to you or your family members. We handle the entire claims process, from research and paperwork to filing and follow-up, so you don't have to navigate the bureaucracy yourself. Our fee is only collected after you receive your money.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                Is this legitimate? How do I know it's not a scam?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    Absolutely legitimate. We are licensed and registered recovery agents in every state we operate in (New York, Wisconsin, Indiana, and Pennsylvania). The funds we recover are held by state government agencies, not by us. You can verify that unclaimed funds exist by checking your state's unclaimed property database yourself. We simply make the recovery process easier by handling all the paperwork, legal requirements, and communications with state offices on your behalf.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                Why can't I just claim the funds myself?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    You absolutely can, and we encourage anyone who wants to handle it themselves to do so. However, the claims process can be complicated, time-consuming, and confusing. Each state has different forms, documentation requirements, and procedures. Claims can require proof of identity, proof of entitlement, legal documents, notarization, and ongoing follow-up with state agencies. Many people find that the time and effort required aren't worth it, especially for complex or heir-related claims. That's where we come in.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                What states do you operate in?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    We currently operate in New York, Wisconsin, Indiana, and Pennsylvania. We are licensed and registered in each of these states. By focusing on four states, we maintain deep expertise in each state's specific regulations, filing requirements, and processes, which means better results and faster turnaround for your claim.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="faq-category">
+        <h3>Fees &amp; Costs</h3>
+    </div>
+    <div class="faq-list">
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                How much do you charge?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    Our fee ranges from 10-15% of the recovered funds, depending on the state and its regulations. For example, Wisconsin and Indiana cap recovery agent fees at 10%, while New York and Pennsylvania allow up to 15%. The exact percentage will be clearly stated in your agreement before you sign anything.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                Are there any upfront costs or hidden fees?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    No. There are zero upfront costs, no retainers, no processing fees, and no hidden charges of any kind. You only pay our agreed percentage after you receive your funds. If we don't recover your money, you owe us absolutely nothing. It's completely risk-free for you.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                When do I pay you?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    You pay us only after you've received your funds. The state sends the check directly to you. Once you have your money in hand, you then pay our agreed fee. We never ask for payment before you've been paid.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="faq-category">
+        <h3>The Claims Process</h3>
+    </div>
+    <div class="faq-list">
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                How long does the recovery process take?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    The timeline varies by state and the complexity of your claim. Simple, straightforward claims can be resolved in as little as 4-6 weeks. More complex claims, particularly those involving heir documentation or large sums, may take 8-14 weeks. We keep you informed at every step and follow up regularly with state agencies to keep things moving.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                What do I need to provide?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    Typically, you'll need to provide a valid photo ID and sign our recovery agreement. Depending on the claim, we may also need proof of address, Social Security verification, or other identification documents. For heir claims, additional documentation like death certificates, probate records, or proof of relationship may be required. We'll tell you exactly what's needed for your specific situation.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                What types of unclaimed funds do you recover?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    We recover surplus funds from a variety of sources including foreclosure and tax sale surplus, dormant bank accounts, uncashed checks, forgotten insurance proceeds, estate-related funds, retirement account balances, utility deposits, and court-held surplus. We focus exclusively on claims over $50,000 to ensure every case receives the dedicated attention it deserves.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                Can you help with heir or estate claims?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    Yes. Heir and estate claims are one of our specialties. If unclaimed funds belonged to a deceased family member, we help navigate the additional documentation requirements, including locating and filing probate records, death certificates, proof of relationship, and any other legal documents the state requires. These claims can be especially complex, which is why many families turn to us for help.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="faq-category">
+        <h3>Trust &amp; Security</h3>
+    </div>
+    <div class="faq-list">
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                How do you protect my personal information?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    We take your privacy and security seriously. Any personal information you provide is used solely for the purpose of recovering your unclaimed funds. We do not sell, share, or distribute your information to third parties. All documents are handled securely, and we comply with all applicable state and federal privacy regulations.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                What if you can't recover my funds?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    If for any reason we are unable to recover your funds, you owe us nothing. There is no financial risk to you whatsoever. We only get paid when you get paid. This structure ensures our interests are fully aligned with yours.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                Do I have to sign a contract?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    Yes, we require a signed agreement before we begin work on your claim. This agreement clearly outlines what we do, what our fee is, and what you can expect. It protects both you and us. The agreement is written in plain, easy-to-understand language with no hidden clauses or fine print. You're welcome to have an attorney review it before signing.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                How did you find out about my unclaimed funds?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    We use publicly available state unclaimed property databases to research and identify surplus funds. These databases are maintained by state governments and are accessible to the public. When we find funds connected to an individual, we reach out to let them know and offer our recovery services. You can verify the existence of your funds independently through your state's unclaimed property website.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Banner -->
+<section class="contact-banner">
+    <div class="contact-banner-inner">
+        <h2>Still Have Questions?</h2>
+        <p>We're happy to answer any questions you have about our service or the recovery process. Reach out anytime.</p>
+        <div class="contact-methods">
+            <div class="contact-method">
+                <div class="contact-method-icon">&#128231;</div>
+                Contact@DigitalRecoveryAgents.com
+            </div>
+            <div class="contact-method">
+                <div class="contact-method-icon">&#128222;</div>
+                980-446-8402
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2>Ready to Check for Unclaimed Funds?</h2>
+        <p>Fill out our quick form and we'll search state databases for any funds in your name. No obligation, completely free to check.</p>
+        <a href="contact.html" class="btn btn-primary">Check Now - It's Free</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>Digital Recovery Agents</h4>
+            <p>Professional unclaimed funds recovery services for New York, Wisconsin, Indiana, and Pennsylvania.</p>
+        </div>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="states.html">States We Serve</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Legal</h4>
+            <ul>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="disclosures.html">State Disclosures</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Contact</h4>
+            <ul>
+                <li>Email: Contact@DigitalRecoveryAgents.com</li>
+                <li>Phone: 980-446-8402</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 Digital Recovery Agents. All rights reserved. Licensed recovery agents in NY, WI, IN, PA.</p>
+    </div>
+</footer>
+
+</body>
+</html>
