@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>States We Serve - Digital Recovery Agents</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A3D62;
+            --primary-light: #1E5F8C;
+            --accent: #D4AF37;
+            --accent-light: #E5C158;
+            --text-dark: #1A1A1A;
+            --text-medium: #4A4A4A;
+            --text-light: #7A7A7A;
+            --bg-cream: #FAF8F3;
+            --bg-white: #FFFFFF;
+            --border: #E0DDD5;
+            --success: #2D5F3F;
+        }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Work Sans', sans-serif;
+        color: var(--text-dark);
+        background: var(--bg-cream);
+        line-height: 1.6;
+    }
+
+    h1, h2, h3, h4 {
+        font-family: 'Crimson Pro', serif;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    /* Navigation */
+    nav {
+        background: var(--bg-white);
+        border-bottom: 1px solid var(--border);
+        padding: 1.5rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    nav .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-family: 'Crimson Pro', serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+    }
+
+    nav ul {
+        list-style: none;
+        display: flex;
+        gap: 2.5rem;
+        align-items: center;
+    }
+
+    nav a {
+        text-decoration: none;
+        color: var(--text-dark);
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+        color: var(--primary);
+    }
+
+    .nav-cta {
+        background: var(--accent);
+        color: var(--text-dark) !important;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+
+    /* Page Hero */
+    .page-hero {
+        background: #0A3D62;
+        background: linear-gradient(135deg, #0A3D62 0%, #1E5F8C 100%);
+        color: #FFFFFF;
+        padding: 4rem 2rem;
+        text-align: center;
+    }
+
+    .page-hero h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #FFFFFF;
+    }
+
+    .page-hero p {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.95);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Section Header */
+    .section-header {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 4rem;
+    }
+
+    .section-header h2 {
+        font-size: 2.8rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .section-header p {
+        font-size: 1.2rem;
+        color: var(--text-medium);
+    }
+
+    /* States Grid */
+    .states-section {
+        padding: 6rem 2rem;
+        background: var(--bg-cream);
+    }
+
+    .states-grid {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+        gap: 3rem;
+    }
+
+    .state-card {
+        background: var(--bg-white);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .state-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    }
+
+    .state-header {
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        color: white;
+        padding: 2rem 2.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .state-abbr {
+        width: 70px;
+        height: 70px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Crimson Pro', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .state-header-text h3 {
+        font-size: 1.8rem;
+        margin-bottom: 0.3rem;
+        color: #FFFFFF;
+    }
+
+    .state-header-text p {
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    .state-body {
+        padding: 2.5rem;
+    }
+
+    .state-details {
+        display: grid;
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .state-detail {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .state-detail-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .state-detail-text h4 {
+        font-size: 1.05rem;
+        color: var(--primary);
+        margin-bottom: 0.2rem;
+        font-family: 'Work Sans', sans-serif;
+        font-weight: 600;
+    }
+
+    .state-detail-text p {
+        font-size: 0.95rem;
+        color: var(--text-medium);
+        line-height: 1.6;
+    }
+
+    .state-cta {
+        display: inline-block;
+        background: var(--accent);
+        color: var(--text-dark);
+        padding: 0.75rem 1.75rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+
+    .state-cta:hover {
+        background: var(--accent-light);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+
+    /* Why These States */
+    .why-section {
+        padding: 6rem 2rem;
+        background: var(--bg-white);
+    }
+
+    .why-grid {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2.5rem;
+    }
+
+    .why-card {
+        padding: 2.5rem;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--bg-cream);
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .why-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    .why-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        margin: 0 auto 1.5rem;
+    }
+
+    .why-card h3 {
+        font-size: 1.5rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .why-card p {
+        font-size: 1.05rem;
+        color: var(--text-medium);
+        line-height: 1.7;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        color: white;
+        padding: 6rem 2rem;
+        text-align: center;
+    }
+
+    .cta-content {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .cta-section h2 {
+        font-size: 2.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .cta-section p {
+        font-size: 1.2rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.95;
+    }
+
+    .btn {
+        padding: 1rem 2.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+        border: 2px solid transparent;
+        cursor: pointer;
+        font-size: 1.1rem;
+    }
+
+    .btn-primary {
+        background: var(--accent);
+        color: var(--text-dark);
+    }
+
+    .btn-primary:hover {
+        background: var(--accent-light);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    /* Footer */
+    footer {
+        background: var(--text-dark);
+        color: white;
+        padding: 4rem 2rem 2rem;
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .footer-section h4 {
+        margin-bottom: 1.5rem;
+        color: var(--accent);
+    }
+
+    .footer-section ul {
+        list-style: none;
+    }
+
+    .footer-section li {
+        margin-bottom: 0.75rem;
+    }
+
+    .footer-section a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .footer-section a:hover {
+        color: var(--accent);
+    }
+
+    .footer-bottom {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-hero h1 {
+            font-size: 2.2rem;
+        }
+
+        nav ul {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .states-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+        }
+
+        .state-header {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">DR</div>
+                Digital Recovery Agents
+            </a>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="states.html">States We Serve</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html" class="nav-cta">Check Your Claim</a></li>
+            </ul>
+        </div>
+    </nav>
+
+<!-- Hero -->
+<section class="page-hero">
+    <h1>States We Serve</h1>
+    <p>We specialize in recovering unclaimed surplus funds in four states. Each state has its own regulations, and we're licensed and experienced in all of them.</p>
+</section>
+
+<!-- State Cards -->
+<section class="states-section">
+    <div class="section-header">
+        <h2>Our Coverage Areas</h2>
+        <p>Licensed recovery agents with deep expertise in each state's unclaimed property process</p>
+    </div>
+    <div class="states-grid">
+
+        <!-- New York -->
+        <div class="state-card">
+            <div class="state-header">
+                <div class="state-abbr">NY</div>
+                <div class="state-header-text">
+                    <h3>New York</h3>
+                    <p>Office of the State Comptroller</p>
+                </div>
+            </div>
+            <div class="state-body">
+                <div class="state-details">
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#128176;</div>
+                        <div class="state-detail-text">
+                            <h4>Recovery Fee</h4>
+                            <p>Up to 15% of recovered funds, in compliance with New York state regulations.</p>
+                        </div>
+                    </div>
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#128203;</div>
+                        <div class="state-detail-text">
+                            <h4>Claim Process</h4>
+                            <p>Claims are filed through the NYS Comptroller's Office. We handle all required documentation including proof of identity and entitlement.</p>
+                        </div>
+                    </div>
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#9202;</div>
+                        <div class="state-detail-text">
+                            <h4>Typical Timeline</h4>
+                            <p>Most New York claims are processed within 6 to 12 weeks after submission.</p>
+                        </div>
+                    </div>
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#128200;</div>
+                        <div class="state-detail-text">
+                            <h4>Fund Types</h4>
+                            <p>Surplus funds from foreclosures, tax sales, estate settlements, and unclaimed financial assets.</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="contact.html" class="state-cta">Check New York Funds</a>
+            </div>
+        </div>
+
+        <!-- Wisconsin -->
+        <div class="state-card">
+            <div class="state-header">
+                <div class="state-abbr">WI</div>
+                <div class="state-header-text">
+                    <h3>Wisconsin</h3>
+                    <p>State Treasurer's Office</p>
+                </div>
+            </div>
+            <div class="state-body">
+                <div class="state-details">
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#128176;</div>
+                        <div class="state-detail-text">
+                            <h4>Recovery Fee</h4>
+                            <p>Up to 10% of recovered funds, per Wisconsin statute requirements.</p>
+                        </div>
+                    </div>
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#128203;</div>
+                        <div class="state-detail-text">
+                            <h4>Claim Process</h4>
+                            <p>Claims go through the Wisconsin State Treasurer. We prepare and file all necessary forms and supporting documents on your behalf.</p>
+                        </div>
+                    </div>
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#9202;</div>
+                        <div class="state-detail-text">
+                            <h4>Typical Timeline</h4>
+                            <p>Wisconsin claims generally take 4 to 10 weeks for approval and payment.</p>
+                        </div>
+                    </div>
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#128200;</div>
+                        <div class="state-detail-text">
+                            <h4>Fund Types</h4>
+                            <p>Unclaimed insurance proceeds, bank accounts, utility deposits, court-held surplus, and more.</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="contact.html" class="state-cta">Check Wisconsin Funds</a>
+            </div>
+        </div>
+
+        <!-- Indiana -->
+        <div class="state-card">
+            <div class="state-header">
+                <div class="state-abbr">IN</div>
+                <div class="state-header-text">
+                    <h3>Indiana</h3>
+                    <p>Attorney General's Office</p>
+                </div>
+            </div>
+            <div class="state-body">
+                <div class="state-details">
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#128176;</div>
+                        <div class="state-detail-text">
+                            <h4>Recovery Fee</h4>
+                            <p>Up to 10% of recovered funds, in accordance with Indiana state law.</p>
+                        </div>
+                    </div>
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#128203;</div>
+                        <div class="state-detail-text">
+                            <h4>Claim Process</h4>
+                            <p>Indiana claims are processed through the AG's Unclaimed Property Division. We manage all filings, correspondence, and follow-ups.</p>
+                        </div>
+                    </div>
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#9202;</div>
+                        <div class="state-detail-text">
+                            <h4>Typical Timeline</h4>
+                            <p>Indiana processes most claims within 8 to 14 weeks from the date of filing.</p>
+                        </div>
+                    </div>
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#128200;</div>
+                        <div class="state-detail-text">
+                            <h4>Fund Types</h4>
+                            <p>Tax sale surplus, dormant bank accounts, uncashed checks, insurance payouts, and estate-related funds.</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="contact.html" class="state-cta">Check Indiana Funds</a>
+            </div>
+        </div>
+
+        <!-- Pennsylvania -->
+        <div class="state-card">
+            <div class="state-header">
+                <div class="state-abbr">PA</div>
+                <div class="state-header-text">
+                    <h3>Pennsylvania</h3>
+                    <p>Treasury Department</p>
+                </div>
+            </div>
+            <div class="state-body">
+                <div class="state-details">
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#128176;</div>
+                        <div class="state-detail-text">
+                            <h4>Recovery Fee</h4>
+                            <p>Up to 15% of recovered funds, compliant with Pennsylvania Treasury regulations.</p>
+                        </div>
+                    </div>
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#128203;</div>
+                        <div class="state-detail-text">
+                            <h4>Claim Process</h4>
+                            <p>Claims are submitted to the PA Treasury's Bureau of Unclaimed Property. We handle all paperwork, notarization requirements, and agency communications.</p>
+                        </div>
+                    </div>
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#9202;</div>
+                        <div class="state-detail-text">
+                            <h4>Typical Timeline</h4>
+                            <p>Pennsylvania claims typically take 6 to 12 weeks, depending on documentation complexity.</p>
+                        </div>
+                    </div>
+                    <div class="state-detail">
+                        <div class="state-detail-icon">&#128200;</div>
+                        <div class="state-detail-text">
+                            <h4>Fund Types</h4>
+                            <p>Surplus from sheriff sales, unclaimed financial instruments, forgotten retirement accounts, and heir-entitled property.</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="contact.html" class="state-cta">Check Pennsylvania Funds</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Why These States -->
+<section class="why-section">
+    <div class="section-header">
+        <h2>Why We Focus on These States</h2>
+        <p>Strategic specialization means better results for you</p>
+    </div>
+    <div class="why-grid">
+        <div class="why-card">
+            <div class="why-icon">&#127919;</div>
+            <h3>Deep Expertise</h3>
+            <p>By focusing on four states, we know every detail of each state's filing requirements, timelines, and regulations. This means fewer delays and higher success rates for your claim.</p>
+        </div>
+        <div class="why-card">
+            <div class="why-icon">&#129309;</div>
+            <h3>Established Relationships</h3>
+            <p>We've built working relationships with the relevant state offices in each jurisdiction. When questions arise about your claim, we know exactly who to contact and how to resolve issues quickly.</p>
+        </div>
+        <div class="why-card">
+            <div class="why-icon">&#128176;</div>
+            <h3>High-Value Claims</h3>
+            <p>These four states collectively hold billions in unclaimed funds. We focus exclusively on claims over $50,000, dedicating the time and resources needed to recover significant amounts for our clients.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2>Have Unclaimed Funds Waiting?</h2>
+        <p>Whether you're in New York, Wisconsin, Indiana, or Pennsylvania, we can help. Fill out our quick form and we'll search state databases on your behalf.</p>
+        <a href="contact.html" class="btn btn-primary">Check Now - It's Free</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>Digital Recovery Agents</h4>
+            <p>Professional unclaimed funds recovery services for New York, Wisconsin, Indiana, and Pennsylvania.</p>
+        </div>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="states.html">States We Serve</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Legal</h4>
+            <ul>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="disclosures.html">State Disclosures</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Contact</h4>
+            <ul>
+                <li>Email: Contact@DigitalRecoveryAgents.com</li>
+                <li>Phone: 980-446-8402</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 Digital Recovery Agents. All rights reserved. Licensed recovery agents in NY, WI, IN, PA.</p>
+    </div>
+</footer>
+
+</body>
+</html>
