@@ -1,706 +1,355 @@
 <!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Recovery Agents - Unclaimed Funds Recovery</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #0A3D62;
-            --primary-light: #1E5F8C;
-            --accent: #D4AF37;
-            --accent-light: #E5C158;
-            --text-dark: #1A1A1A;
-            --text-medium: #4A4A4A;
-            --text-light: #7A7A7A;
-            --bg-cream: #FAF8F3;
-            --bg-white: #FFFFFF;
-            --border: #E0DDD5;
-            --success: #2D5F3F;
-        }
-
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: 'Work Sans', sans-serif;
-        color: var(--text-dark);
-        background: var(--bg-cream);
-        line-height: 1.6;
-        overflow-x: hidden;
-    }
-
-    h1, h2, h3, h4 {
-        font-family: 'Crimson Pro', serif;
-        font-weight: 700;
-        line-height: 1.2;
-    }
-
-    /* Navigation */
-    nav {
-        background: var(--bg-white);
-        border-bottom: 1px solid var(--border);
-        padding: 1.5rem 0;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-
-    nav .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .logo {
-        font-family: 'Crimson Pro', serif;
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--primary);
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .logo-icon {
-        width: 36px;
-        height: 36px;
-        background: linear-gradient(135deg, var(--primary), var(--primary-light));
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 600;
-    }
-
-    nav ul {
-        list-style: none;
-        display: flex;
-        gap: 2.5rem;
-        align-items: center;
-    }
-
-    nav a {
-        text-decoration: none;
-        color: var(--text-dark);
-        font-weight: 500;
-        transition: color 0.3s ease;
-    }
-
-    nav a:hover {
-        color: var(--primary);
-    }
-
-    .nav-cta {
-        background: var(--accent);
-        color: var(--text-dark) !important;
-        padding: 0.75rem 1.5rem;
-        border-radius: 6px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .nav-cta:hover {
-        background: var(--accent-light);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
-    }
-
-    /* Hero Section */
-    .hero {
-        background: #0A3D62;
-        background: linear-gradient(135deg, #0A3D62 0%, #1E5F8C 100%);
-        color: #FFFFFF;
-        padding: 6rem 2rem;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .hero::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
-        opacity: 0.3;
-    }
-
-    .hero-content {
-        max-width: 900px;
-        margin: 0 auto;
-        position: relative;
-        z-index: 1;
-    }
-
-    .hero h1 {
-        font-size: 3.5rem;
-        margin-bottom: 1.5rem;
-        color: #FFFFFF;
-        animation: fadeInUp 0.8s ease;
-    }
-
-    .hero p {
-        font-size: 1.3rem;
-        margin-bottom: 2.5rem;
-        color: rgba(255, 255, 255, 0.95);
-        animation: fadeInUp 0.8s ease 0.2s both;
-    }
-
-    .hero-buttons {
-        display: flex;
-        gap: 1.5rem;
-        justify-content: center;
-        flex-wrap: wrap;
-        animation: fadeInUp 0.8s ease 0.4s both;
-    }
-
-    .btn {
-        padding: 1rem 2.5rem;
-        border-radius: 8px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        display: inline-block;
-        border: 2px solid transparent;
-        cursor: pointer;
-        font-size: 1.1rem;
-    }
-
-    .btn-primary {
-        background: var(--accent);
-        color: var(--text-dark);
-    }
-
-    .btn-primary:hover {
-        background: var(--accent-light);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
-    }
-
-    .btn-secondary {
-        background: transparent;
-        color: white;
-        border-color: white;
-    }
-
-    .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
-
-    /* Trust Indicators */
-    .trust-bar {
-        background: var(--bg-white);
-        padding: 2rem;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .trust-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-        text-align: center;
-    }
-
-    .trust-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .trust-icon {
-        width: 50px;
-        height: 50px;
-        background: linear-gradient(135deg, var(--primary), var(--primary-light));
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.5rem;
-    }
-
-    .trust-item h3 {
-        font-size: 1.1rem;
-        color: var(--primary);
-    }
-
-    .trust-item p {
-        font-size: 0.95rem;
-        color: var(--text-medium);
-    }
-
-    /* How It Works Section */
-    .how-it-works {
-        padding: 6rem 2rem;
-        background: var(--bg-cream);
-    }
-
-    .section-header {
-        text-align: center;
-        max-width: 700px;
-        margin: 0 auto 4rem;
-    }
-
-    .section-header h2 {
-        font-size: 2.8rem;
-        color: var(--primary);
-        margin-bottom: 1rem;
-    }
-
-    .section-header p {
-        font-size: 1.2rem;
-        color: var(--text-medium);
-    }
-
-    .steps {
-        max-width: 1000px;
-        margin: 0 auto;
-        display: grid;
-        gap: 3rem;
-    }
-
-    .step {
-        display: grid;
-        grid-template-columns: 80px 1fr;
-        gap: 2rem;
-        align-items: start;
-    }
-
-    .step-number {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(135deg, var(--accent), var(--accent-light));
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--text-dark);
-        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-    }
-
-    .step-content h3 {
-        font-size: 1.8rem;
-        color: var(--primary);
-        margin-bottom: 1rem;
-    }
-
-    .step-content p {
-        font-size: 1.1rem;
-        color: var(--text-medium);
-        line-height: 1.7;
-    }
-
-    /* Stats Section */
-    .stats {
-        background: var(--primary);
-        color: white;
-        padding: 5rem 2rem;
-        text-align: center;
-    }
-
-    .stats-grid {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 3rem;
-    }
-
-    .stat-item {
-        padding: 2rem;
-    }
-
-    .stat-number {
-        font-size: 3.5rem;
-        font-weight: 700;
-        color: var(--accent);
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-label {
-        font-size: 1.2rem;
-        opacity: 0.9;
-    }
-
-    /* FAQ Section */
-    .faq {
-        padding: 6rem 2rem;
-        background: var(--bg-white);
-    }
-
-    .faq-container {
-        max-width: 900px;
-        margin: 0 auto;
-    }
-
-    .faq-item {
-        margin-bottom: 2rem;
-        border-bottom: 1px solid var(--border);
-        padding-bottom: 2rem;
-    }
-
-    .faq-item:last-child {
-        border-bottom: none;
-    }
-
-    .faq-question {
-        font-size: 1.4rem;
-        color: var(--primary);
-        margin-bottom: 1rem;
-        font-weight: 600;
-    }
-
-    .faq-answer {
-        font-size: 1.1rem;
-        color: var(--text-medium);
-        line-height: 1.8;
-    }
-
-    /* CTA Section */
-    .cta-section {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-        color: white;
-        padding: 6rem 2rem;
-        text-align: center;
-    }
-
-    .cta-content {
-        max-width: 700px;
-        margin: 0 auto;
-    }
-
-    .cta-section h2 {
-        font-size: 2.8rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .cta-section p {
-        font-size: 1.2rem;
-        margin-bottom: 2.5rem;
-        opacity: 0.95;
-    }
-
-    /* Footer */
-    footer {
-        background: var(--text-dark);
-        color: white;
-        padding: 4rem 2rem 2rem;
-    }
-
-    .footer-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 3rem;
-        margin-bottom: 3rem;
-    }
-
-    .footer-section h4 {
-        margin-bottom: 1.5rem;
-        color: var(--accent);
-    }
-
-    .footer-section ul {
-        list-style: none;
-    }
-
-    .footer-section li {
-        margin-bottom: 0.75rem;
-    }
-
-    .footer-section a {
-        color: rgba(255, 255, 255, 0.8);
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-    .footer-section a:hover {
-        color: var(--accent);
-    }
-
-    .footer-bottom {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding-top: 2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        text-align: center;
-        color: rgba(255, 255, 255, 0.6);
-    }
-
-    /* Animations */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .hero h1 {
-            font-size: 2.5rem;
-        }
-
-        .hero p {
-            font-size: 1.1rem;
-        }
-
-        nav ul {
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .step {
-            grid-template-columns: 1fr;
-            text-align: center;
-        }
-
-        .step-number {
-            margin: 0 auto;
-        }
-
-        .section-header h2 {
-            font-size: 2rem;
-        }
-    }
-
-    /* State Coverage Badge */
-    .states-covered {
-        display: inline-block;
-        background: rgba(255, 255, 255, 0.2);
-        padding: 0.5rem 1.5rem;
-        border-radius: 50px;
-        margin-bottom: 2rem;
-        font-size: 0.95rem;
-        font-weight: 600;
-    }
-</style>
-
-
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Digital Recovery Agents | Unclaimed Fund Recovery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-error-container": "#93000a",
+            "on-primary": "#ffffff",
+            "outline-variant": "#c2c7cf",
+            "surface-container-high": "#eae8e3",
+            "on-surface": "#1b1c19",
+            "primary-container": "#0a3d62",
+            "error": "#ba1a1a",
+            "secondary-fixed": "#ffe088",
+            "tertiary-fixed-dim": "#c8c6c5",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f3ee",
+            "primary-fixed": "#cfe5ff",
+            "inverse-primary": "#a2caf7",
+            "inverse-on-surface": "#f2f1ec",
+            "secondary-container": "#fed65b",
+            "background": "#fbf9f4",
+            "tertiary": "#252525",
+            "on-tertiary-fixed-variant": "#474746",
+            "on-tertiary-fixed": "#1c1b1b",
+            "surface-tint": "#386188",
+            "on-secondary-container": "#745c00",
+            "tertiary-fixed": "#e5e2e1",
+            "primary-fixed-dim": "#a2caf7",
+            "tertiary-container": "#3b3a3a",
+            "outline": "#72777f",
+            "on-secondary-fixed": "#241a00",
+            "surface": "#fbf9f4",
+            "on-secondary": "#ffffff",
+            "on-tertiary-container": "#a6a4a3",
+            "error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#1d496f",
+            "on-surface-variant": "#42474e",
+            "inverse-surface": "#30312e",
+            "on-tertiary": "#ffffff",
+            "surface-container-highest": "#e4e2dd",
+            "surface-dim": "#dbdad5",
+            "on-error": "#ffffff",
+            "on-secondary-fixed-variant": "#574500",
+            "primary": "#002743",
+            "on-primary-fixed": "#001d34",
+            "secondary-fixed-dim": "#e9c349",
+            "surface-variant": "#e4e2dd",
+            "secondary": "#735c00",
+            "on-background": "#1b1c19",
+            "surface-bright": "#fbf9f4",
+            "surface-container": "#f0eee9",
+            "on-primary-container": "#80a8d3"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "fontFamily": {
+            "headline": ["Newsreader"],
+            "body": ["Work Sans"],
+            "label": ["Work Sans"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .hero-gradient {
+      background: linear-gradient(135deg, #002743 0%, #1e5f8c 100%);
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .stamp-status {
+      font-family: 'Newsreader';
+      border: 2px solid;
+      transform: rotate(-5deg);
+      padding: 2px 8px;
+      display: inline-block;
+    }
+  </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav>
-        <div class="container">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">DR</div>
-                Digital Recovery Agents
-            </a>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="how-it-works.html">How It Works</a></li>
-                <li><a href="states.html">States We Serve</a></li>
-                <li><a href="faq.html">FAQ</a></li>
-                <li><a href="contact.html" class="nav-cta">Check Your Claim</a></li>
-            </ul>
-        </div>
-    </nav>
-
-
+<body class="bg-surface font-body text-on-surface selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-[#fbf9f4]/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm dark:shadow-none">
+<nav class="flex justify-between items-center max-w-7xl mx-auto px-8 h-20">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-white font-headline font-bold">DR</div>
+<span class="text-xl font-bold font-['Newsreader'] text-[#0a3d62] dark:text-blue-400 tracking-tight">Digital Recovery Agents</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#0a3d62] dark:text-blue-300 border-b-2 border-[#735c00] pb-1 hover:text-[#735c00] transition-colors duration-300" href="#">Home</a>
+<a class="text-[#1b1c19] dark:text-slate-300 font-['Work_Sans'] font-medium hover:text-[#735c00] transition-colors duration-300" href="#">How It Works</a>
+<a class="text-[#1b1c19] dark:text-slate-300 font-['Work_Sans'] font-medium hover:text-[#735c00] transition-colors duration-300" href="#">States We Serve</a>
+<a class="text-[#1b1c19] dark:text-slate-300 font-['Work_Sans'] font-medium hover:text-[#735c00] transition-colors duration-300" href="#">FAQ</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-secondary-container text-on-secondary-container px-6 py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all active:opacity-80">
+Check Your Claim
+</button>
+</div>
+</nav>
+</header>
+<main class="pt-20">
 <!-- Hero Section -->
-<section class="hero">
-    <div class="hero-content">
-        <div class="states-covered">
-            ✓ Serving NY, WI, IN, PA
-        </div>
-        <h1>You May Be Owed Unclaimed Funds</h1>
-        <p>We locate and recover surplus funds from government agencies at no upfront cost. Our expert team handles everything from research to filing.</p>
-        <div class="hero-buttons">
-            <a href="contact.html" class="btn btn-primary">Check If You Have Funds</a>
-            <a href="how-it-works.html" class="btn btn-secondary">Learn How It Works</a>
-        </div>
-    </div>
+<section class="hero-gradient min-h-[870px] flex items-center relative overflow-hidden px-8">
+<div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center w-full py-20">
+<div class="z-10">
+<span class="inline-flex items-center px-4 py-1.5 rounded-full bg-white/10 text-white font-medium text-sm tracking-wide border border-white/20 mb-8">
+Serving NY, WI, IN, PA
+</span>
+<h1 class="font-headline text-5xl md:text-7xl font-bold text-white leading-[1.1] mb-6 tracking-tight">
+You May Be Owed Unclaimed Funds
+</h1>
+<p class="text-on-primary-container text-xl md:text-2xl mb-10 max-w-xl leading-relaxed">
+Every year, billions go unclaimed. We specialize in identifying and recovering complex corporate and individual assets on a contingency basis. No recovery, no fee.
+</p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="bg-secondary-container text-on-secondary-container px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 group">
+Check If You Have Funds
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<button class="border-2 border-white/30 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition-all flex items-center justify-center">
+Learn How It Works
+</button>
+</div>
+</div>
+<div class="relative hidden md:block">
+<div class="absolute -top-20 -right-20 w-96 h-96 bg-secondary/20 rounded-full blur-[120px]"></div>
+<div class="relative bg-white/5 backdrop-blur-sm p-8 rounded-3xl border border-white/10 shadow-2xl">
+<img alt="Luxury financial documents" class="rounded-2xl w-full h-[400px] object-cover mix-blend-overlay opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJbvSmU6Jle9bQIISXlsBBTlrh1C4oNUx58k5aBBvQN2ssuYf388BGkhFZ1w4_8MB8M6go-8uwGVXtMgwxUYRt_X8xvhVQl_Io5yinNs83PlZXYvuaXRz9lAbUwK0Cu6nOf3AysV3ymvctDUSWnWLtjOACs_bWYrqg0vzOAFeI7jCevjrW63REp5KylcUSRBK_D52WsGq6b9xoLoxBXE-x-qnCUqt9u6dmkiKOyjEG-zzecnb75DxQ0tcmPMr3Rp6oN1wj_2R7AVLC"/>
+<div class="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl max-w-[240px]">
+<p class="text-primary font-headline text-2xl font-bold mb-1">$412,000.00</p>
+<p class="text-on-surface-variant text-sm font-medium mb-3">Recently Recovered</p>
+<div class="stamp-status text-secondary border-secondary text-[10px] font-bold tracking-widest uppercase">Settled</div>
+</div>
+</div>
+</div>
+</div>
 </section>
-
 <!-- Trust Bar -->
-<section class="trust-bar">
-    <div class="trust-content">
-        <div class="trust-item">
-            <div class="trust-icon">🔒</div>
-            <h3>100% Secure</h3>
-            <p>Your information is protected and confidential</p>
-        </div>
-        <div class="trust-item">
-            <div class="trust-icon">💰</div>
-            <h3>No Upfront Fees</h3>
-            <p>Only pay when you receive your funds</p>
-        </div>
-        <div class="trust-item">
-            <div class="trust-icon">✓</div>
-            <h3>Fully Licensed</h3>
-            <p>Registered in all states we operate</p>
-        </div>
-        <div class="trust-item">
-            <div class="trust-icon">⚡</div>
-            <h3>Fast Processing</h3>
-            <p>We handle all paperwork and filings</p>
-        </div>
-    </div>
+<section class="bg-white py-12 px-8 border-b border-surface-container">
+<div class="max-w-7xl mx-auto flex flex-wrap justify-between gap-8 md:gap-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-container/5 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined">verified_user</span>
+</div>
+<span class="font-semibold text-on-surface">100% Secure</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-container/5 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<span class="font-semibold text-on-surface">No Upfront Fees</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-container/5 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined">gavel</span>
+</div>
+<span class="font-semibold text-on-surface">Fully Licensed</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary-container/5 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<span class="font-semibold text-on-surface">Fast Processing</span>
+</div>
+</div>
 </section>
-
 <!-- How It Works -->
-<section class="how-it-works">
-    <div class="section-header">
-        <h2>How We Recover Your Funds</h2>
-        <p>Our streamlined process makes claiming your money simple and stress-free</p>
-    </div>
-    <div class="steps">
-        <div class="step">
-            <div class="step-number">1</div>
-            <div class="step-content">
-                <h3>We Find Your Funds</h3>
-                <p>Our advanced research system scans state databases to identify unclaimed funds in your name. If we find funds over $50,000, we'll reach out to you directly with details.</p>
-            </div>
-        </div>
-        <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-content">
-                <h3>You Sign Our Agreement</h3>
-                <p>We'll send you a simple, transparent agreement. Our fee is only 10-15% (depending on your state), and you only pay when you receive your funds. No upfront costs ever.</p>
-            </div>
-        </div>
-        <div class="step">
-            <div class="step-number">3</div>
-            <div class="step-content">
-                <h3>We Handle Everything</h3>
-                <p>We file all claims, gather required documentation, communicate with state agencies, and navigate the entire recovery process on your behalf.</p>
-            </div>
-        </div>
-        <div class="step">
-            <div class="step-number">4</div>
-            <div class="step-content">
-                <h3>You Get Paid</h3>
-                <p>Once the state approves your claim, they'll send you a check directly. After you receive your funds, you pay our agreed percentage. It's that simple.</p>
-            </div>
-        </div>
-    </div>
+<section class="bg-surface-container-low py-24 px-8 overflow-hidden">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-20 max-w-3xl mx-auto">
+<h2 class="font-headline text-4xl md:text-5xl font-bold text-primary-container mb-6">A Legacy of Resolution</h2>
+<p class="text-on-surface-variant text-lg leading-relaxed">Our refined recovery process handles the legal and bureaucratic complexities, allowing you to reclaim what is rightfully yours with absolute ease.</p>
+</div>
+<div class="grid md:grid-cols-4 gap-4">
+<div class="bg-surface-container-lowest p-10 rounded-2xl transition-all hover:-translate-y-2 group">
+<div class="w-14 h-14 rounded-full bg-secondary-container flex items-center justify-center font-headline text-2xl font-bold text-on-secondary-container mb-8 group-hover:scale-110 transition-transform">1</div>
+<h3 class="text-xl font-bold text-primary-container mb-4">Find Your Funds</h3>
+<p class="text-on-surface-variant leading-relaxed">We audit national and state databases to identify unclaimed assets linked to your name or business.</p>
+</div>
+<div class="bg-surface-container-lowest p-10 rounded-2xl transition-all hover:-translate-y-2 group">
+<div class="w-14 h-14 rounded-full bg-secondary-container flex items-center justify-center font-headline text-2xl font-bold text-on-secondary-container mb-8 group-hover:scale-110 transition-transform">2</div>
+<h3 class="text-xl font-bold text-primary-container mb-4">Sign Agreement</h3>
+<p class="text-on-surface-variant leading-relaxed">Execute a simple contingency agreement granting us the authority to act on your behalf.</p>
+</div>
+<div class="bg-surface-container-lowest p-10 rounded-2xl transition-all hover:-translate-y-2 group">
+<div class="w-14 h-14 rounded-full bg-secondary-container flex items-center justify-center font-headline text-2xl font-bold text-on-secondary-container mb-8 group-hover:scale-110 transition-transform">3</div>
+<h3 class="text-xl font-bold text-primary-container mb-4">We Handle Everything</h3>
+<p class="text-on-surface-variant leading-relaxed">Our legal team manages all filings, documentation, and communication with government agencies.</p>
+</div>
+<div class="bg-surface-container-lowest p-10 rounded-2xl transition-all hover:-translate-y-2 group">
+<div class="w-14 h-14 rounded-full bg-secondary-container flex items-center justify-center font-headline text-2xl font-bold text-on-secondary-container mb-8 group-hover:scale-110 transition-transform">4</div>
+<h3 class="text-xl font-bold text-primary-container mb-4">You Get Paid</h3>
+<p class="text-on-surface-variant leading-relaxed">Once the claim is approved, the funds are disbursed directly to you, minus our agreed-upon fee.</p>
+</div>
+</div>
+</div>
 </section>
-
-<!-- Stats -->
-<section class="stats">
-    <div class="stats-grid">
-        <div class="stat-item">
-            <div class="stat-number">$9B+</div>
-            <div class="stat-label">In Unclaimed Funds Available</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">1 in 7</div>
-            <div class="stat-label">Americans Have Unclaimed Funds</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">$50K+</div>
-            <div class="stat-label">Minimum Claim We Pursue</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">4 States</div>
-            <div class="stat-label">Currently Serving</div>
-        </div>
-    </div>
+<!-- Stats Section -->
+<section class="bg-primary-container py-24 px-8 relative overflow-hidden">
+<div class="max-w-7xl mx-auto relative z-10 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+<div>
+<p class="font-headline text-4xl md:text-6xl font-bold text-secondary-container mb-2">$9B+</p>
+<p class="text-on-primary-container uppercase tracking-widest text-sm font-semibold">In Unclaimed Funds</p>
+</div>
+<div>
+<p class="font-headline text-4xl md:text-6xl font-bold text-secondary-container mb-2">1 in 7</p>
+<p class="text-on-primary-container uppercase tracking-widest text-sm font-semibold">Americans Affected</p>
+</div>
+<div>
+<p class="font-headline text-4xl md:text-6xl font-bold text-secondary-container mb-2">$50K+</p>
+<p class="text-on-primary-container uppercase tracking-widest text-sm font-semibold">Average Corporate Claim</p>
+</div>
+<div>
+<p class="font-headline text-4xl md:text-6xl font-bold text-secondary-container mb-2">4 States</p>
+<p class="text-on-primary-container uppercase tracking-widest text-sm font-semibold">Primary Serving</p>
+</div>
+</div>
+<div class="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
 </section>
-
 <!-- FAQ Preview -->
-<section class="faq">
-    <div class="section-header">
-        <h2>Common Questions</h2>
-        <p>Everything you need to know about unclaimed funds recovery</p>
-    </div>
-    <div class="faq-container">
-        <div class="faq-item">
-            <div class="faq-question">What are unclaimed funds?</div>
-            <div class="faq-answer">Unclaimed funds are money or assets held by state governments when businesses or financial institutions cannot locate the rightful owner. This includes dormant bank accounts, insurance payouts, stock dividends, tax refunds, and more.</div>
-        </div>
-        <div class="faq-item">
-            <div class="faq-question">How much do you charge?</div>
-            <div class="faq-answer">Our fee is 10-15% of the recovered amount (depending on your state), and you only pay after you receive your funds. There are absolutely no upfront costs or hidden fees.</div>
-        </div>
-        <div class="faq-item">
-            <div class="faq-question">Can I claim the funds myself?</div>
-            <div class="faq-answer">Yes, you can always claim funds directly from the state at no cost. However, the process can be complex and time-consuming, especially for large claims or deceased relatives' estates. We handle all the paperwork, legal requirements, and follow-up to maximize your chances of success.</div>
-        </div>
-        <div class="faq-item">
-            <div class="faq-question">Which states do you serve?</div>
-            <div class="faq-answer">We currently serve New York, Wisconsin, Indiana, and Pennsylvania. We're expanding to additional states soon.</div>
-        </div>
-    </div>
-    <div style="text-align: center; margin-top: 3rem;">
-        <a href="faq.html" class="btn btn-primary">View All FAQs</a>
-    </div>
+<section class="py-24 px-8 bg-white">
+<div class="max-w-4xl mx-auto">
+<div class="flex items-end justify-between mb-16 gap-8">
+<div>
+<h2 class="font-headline text-4xl md:text-5xl font-bold text-primary-container mb-4">Common Inquiries</h2>
+<p class="text-on-surface-variant text-lg">Understand the mechanics of asset recovery.</p>
+</div>
+<button class="hidden md:flex bg-surface-container text-primary font-bold px-6 py-3 rounded-xl hover:bg-surface-container-high transition-colors">
+View All FAQs
+</button>
+</div>
+<div class="space-y-4">
+<details class="group bg-surface-container-low rounded-2xl" open="">
+<summary class="list-none p-6 md:p-8 cursor-pointer flex items-center justify-between font-bold text-xl text-primary-container">
+What are unclaimed funds?
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="px-6 md:px-8 pb-8 text-on-surface-variant leading-relaxed">
+Unclaimed funds are financial assets that have been turned over to the state because the owner cannot be located. This includes dormant bank accounts, uncashed checks, insurance payouts, and stocks.
+</div>
+</details>
+<details class="group bg-surface-container-low rounded-2xl">
+<summary class="list-none p-6 md:p-8 cursor-pointer flex items-center justify-between font-bold text-xl text-primary-container">
+How much do your services cost?
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="px-6 md:px-8 pb-8 text-on-surface-variant leading-relaxed">
+We operate on a strict contingency basis. We only receive a percentage of the funds we successfully recover for you. If there is no recovery, you owe us nothing.
+</div>
+</details>
+<details class="group bg-surface-container-low rounded-2xl">
+<summary class="list-none p-6 md:p-8 cursor-pointer flex items-center justify-between font-bold text-xl text-primary-container">
+Is this a government agency?
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="px-6 md:px-8 pb-8 text-on-surface-variant leading-relaxed">
+No, we are a private, licensed investigative and recovery firm. While states provide search tools, we specialize in high-value, complex recoveries that often require deep forensic research and legal expertise.
+</div>
+</details>
+<details class="group bg-surface-container-low rounded-2xl">
+<summary class="list-none p-6 md:p-8 cursor-pointer flex items-center justify-between font-bold text-xl text-primary-container">
+How long does the process take?
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="px-6 md:px-8 pb-8 text-on-surface-variant leading-relaxed">
+Recovery times vary by state and complexity, typically ranging from 90 to 180 days. We provide regular status updates throughout the process.
+</div>
+</details>
+</div>
+<button class="w-full mt-8 md:hidden bg-surface-container text-primary font-bold px-6 py-4 rounded-xl">
+View All FAQs
+</button>
+</div>
 </section>
-
-<!-- CTA -->
-<section class="cta-section">
-    <div class="cta-content">
-        <h2>Ready to See If You Have Unclaimed Funds?</h2>
-        <p>Fill out our quick form and we'll search state databases for any funds in your name. No obligation, completely free to check.</p>
-        <a href="contact.html" class="btn btn-primary">Check Now - It's Free</a>
-    </div>
+<!-- CTA Section -->
+<section class="py-24 px-8">
+<div class="max-w-7xl mx-auto hero-gradient rounded-[2rem] p-12 md:p-24 text-center relative overflow-hidden">
+<div class="relative z-10 max-w-3xl mx-auto">
+<h2 class="font-headline text-4xl md:text-6xl font-bold text-white mb-8">Ready to See If You Have Unclaimed Funds?</h2>
+<p class="text-on-primary-container text-xl mb-12">It only takes 60 seconds to initiate a preliminary search. Let our agents do the heavy lifting for you.</p>
+<button class="bg-secondary-container text-on-secondary-container px-10 py-5 rounded-2xl font-bold text-xl hover:shadow-2xl transition-all active:scale-[0.98]">
+Check Your Claim Now
+</button>
+</div>
+<div class="absolute top-0 right-0 w-full h-full opacity-5 pointer-events-none">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,100 L100,0 L100,100 Z" fill="white"></path>
+</svg>
+</div>
+</div>
 </section>
-
+</main>
 <!-- Footer -->
-<footer>
-    <div class="footer-content">
-        <div class="footer-section">
-            <h4>Digital Recovery Agents</h4>
-            <p>Professional unclaimed funds recovery services for New York, Wisconsin, Indiana, and Pennsylvania.</p>
-        </div>
-        <div class="footer-section">
-            <h4>Quick Links</h4>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="how-it-works.html">How It Works</a></li>
-                <li><a href="states.html">States We Serve</a></li>
-                <li><a href="faq.html">FAQ</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h4>Legal</h4>
-            <ul>
-                <li><a href="privacy.html">Privacy Policy</a></li>
-                <li><a href="terms.html">Terms of Service</a></li>
-                <li><a href="disclosures.html">State Disclosures</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h4>Contact</h4>
-            <ul>
-                <li>Email: Contact@DigitalRecoveryAgents.com</li>
-                <li>Phone: 980-446-8402</li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>&copy; 2026 Digital Recovery Agents. All rights reserved. Licensed recovery agents in NY, WI, IN, PA.</p>
-    </div>
+<footer class="bg-[#0a3d62] text-white border-t border-[#c2c7cf]/20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto px-8 py-16">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-2 mb-6">
+<div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white font-headline font-bold">DR</div>
+<span class="font-['Newsreader'] text-lg text-white font-bold">Digital Recovery Agents</span>
+</div>
+<p class="text-slate-300 font-['Work_Sans'] text-sm leading-relaxed">
+A premier recovery firm dedicated to restoring lost financial assets to their rightful owners through forensic accounting and legal advocacy.
+</p>
+</div>
+<div class="space-y-4">
+<h4 class="font-bold text-secondary-container uppercase tracking-widest text-xs">Resources</h4>
+<nav class="flex flex-col gap-3">
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">Sitemap</a>
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">Contact Us</a>
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">State Licensing</a>
+</nav>
+</div>
+<div class="space-y-4">
+<h4 class="font-bold text-secondary-container uppercase tracking-widest text-xs">Legal</h4>
+<nav class="flex flex-col gap-3">
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">Privacy Policy</a>
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors underline text-white" href="#">Terms of Service</a>
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">Disclaimer</a>
+</nav>
+</div>
+<div class="space-y-4">
+<h4 class="font-bold text-secondary-container uppercase tracking-widest text-xs">Contact</h4>
+<p class="text-slate-300 font-['Work_Sans'] text-sm leading-relaxed">
+Contact@DigitalRecoveryAgents.com<br/>
+980-446-8402
+</p>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-8 py-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+<p class="text-slate-400 font-['Work_Sans'] text-sm tracking-wide">
+© 2026 Digital Recovery Agents. All rights reserved. Licensed in all participating states.
+</p>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-slate-400 hover:text-white cursor-pointer transition-colors">public</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-white cursor-pointer transition-colors">mail</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-white cursor-pointer transition-colors">call</span>
+</div>
+</div>
 </footer>
-
-
-</body>
-</html>
+</body></html>

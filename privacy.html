@@ -1,498 +1,271 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy | Digital Recovery Agents</title>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #0A3D62;
-            --primary-light: #1E5F8C;
-            --accent: #D4AF37;
-            --accent-light: #E5C158;
-            --text-dark: #1A1A1A;
-            --text-medium: #4A4A4A;
-            --text-light: #7A7A7A;
-            --bg-cream: #FAF8F3;
-            --bg-white: #FFFFFF;
-            --border: #E0DDD5;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Work Sans', sans-serif;
-            color: var(--text-dark);
-            background-color: var(--bg-cream);
-            line-height: 1.6;
-        }
-
-        /* Navigation */
-        nav {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background-color: var(--bg-white);
-            border-bottom: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(10, 61, 98, 0.08);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 70px;
-        }
-
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .nav-logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-family: 'Crimson Pro', serif;
-            font-size: 22px;
-            font-weight: 700;
-        }
-
-        .nav-logo-text {
-            font-family: 'Crimson Pro', serif;
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-medium);
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
-        .nav-cta {
-            background: linear-gradient(135deg, var(--accent), var(--accent-light));
-            color: var(--primary);
-            padding: 10px 24px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .nav-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: var(--bg-white);
-            padding: 80px 20px;
-            text-align: center;
-        }
-
-        .hero-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-family: 'Crimson Pro', serif;
-            font-size: 52px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            line-height: 1.2;
-        }
-
-        .hero p {
-            font-size: 16px;
-            opacity: 0.95;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Main Content */
-        .content-wrapper {
-            max-width: 900px;
-            margin: 60px auto;
-            padding: 0 20px;
-        }
-
-        .policy-section {
-            background-color: var(--bg-white);
-            border-radius: 12px;
-            padding: 40px;
-            margin-bottom: 30px;
-            border: 1px solid var(--border);
-        }
-
-        .policy-section h2 {
-            font-family: 'Crimson Pro', serif;
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 3px solid var(--accent);
-            display: inline-block;
-        }
-
-        .policy-section h3 {
-            font-family: 'Crimson Pro', serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--primary-light);
-            margin-top: 28px;
-            margin-bottom: 12px;
-        }
-
-        .policy-section p {
-            color: var(--text-medium);
-            margin-bottom: 16px;
-            font-size: 15px;
-            line-height: 1.7;
-        }
-
-        .policy-section ul {
-            list-style: none;
-            margin-bottom: 16px;
-            padding-left: 0;
-        }
-
-        .policy-section li {
-            color: var(--text-medium);
-            margin-bottom: 12px;
-            padding-left: 28px;
-            position: relative;
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        .policy-section li:before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-            font-weight: bold;
-            font-size: 20px;
-        }
-
-        .effective-date {
-            background-color: rgba(212, 175, 55, 0.05);
-            border-left: 4px solid var(--accent);
-            padding: 16px 20px;
-            border-radius: 4px;
-            margin-bottom: 30px;
-            font-weight: 500;
-            color: var(--text-medium);
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--primary);
-            color: var(--bg-white);
-            padding: 60px 20px 30px;
-            margin-top: 80px;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-column h3 {
-            font-family: 'Crimson Pro', serif;
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: var(--accent);
-        }
-
-        .footer-column p {
-            font-size: 14px;
-            line-height: 1.7;
-            color: rgba(255, 255, 255, 0.85);
-            margin-bottom: 12px;
-        }
-
-        .footer-column a {
-            display: inline-block;
-            color: var(--accent-light);
-            text-decoration: none;
-            font-size: 14px;
-            margin-bottom: 10px;
-            transition: color 0.3s ease;
-        }
-
-        .footer-column a:hover {
-            color: var(--accent);
-        }
-
-        .footer-divider {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 30px;
-            margin-top: 30px;
-            text-align: center;
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links {
-                gap: 20px;
-            }
-
-            .hero h1 {
-                font-size: 36px;
-            }
-
-            .policy-section {
-                padding: 30px 20px;
-            }
-
-            .policy-section h2 {
-                font-size: 26px;
-            }
-
-            .footer-container {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-        }
-    </style>
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Privacy Policy | Digital Recovery Agents</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-error-container": "#93000a",
+            "on-primary": "#ffffff",
+            "outline-variant": "#c2c7cf",
+            "surface-container-high": "#eae8e3",
+            "on-surface": "#1b1c19",
+            "primary-container": "#0a3d62",
+            "error": "#ba1a1a",
+            "secondary-fixed": "#ffe088",
+            "tertiary-fixed-dim": "#c8c6c5",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f3ee",
+            "primary-fixed": "#cfe5ff",
+            "inverse-primary": "#a2caf7",
+            "inverse-on-surface": "#f2f1ec",
+            "secondary-container": "#fed65b",
+            "background": "#fbf9f4",
+            "tertiary": "#252525",
+            "on-tertiary-fixed-variant": "#474746",
+            "on-tertiary-fixed": "#1c1b1b",
+            "surface-tint": "#386188",
+            "on-secondary-container": "#745c00",
+            "tertiary-fixed": "#e5e2e1",
+            "primary-fixed-dim": "#a2caf7",
+            "tertiary-container": "#3b3a3a",
+            "outline": "#72777f",
+            "on-secondary-fixed": "#241a00",
+            "surface": "#fbf9f4",
+            "on-secondary": "#ffffff",
+            "on-tertiary-container": "#a6a4a3",
+            "error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#1d496f",
+            "on-surface-variant": "#42474e",
+            "inverse-surface": "#30312e",
+            "on-tertiary": "#ffffff",
+            "surface-container-highest": "#e4e2dd",
+            "surface-dim": "#dbdad5",
+            "on-error": "#ffffff",
+            "on-secondary-fixed-variant": "#574500",
+            "primary": "#002743",
+            "on-primary-fixed": "#001d34",
+            "secondary-fixed-dim": "#e9c349",
+            "surface-variant": "#e4e2dd",
+            "secondary": "#735c00",
+            "on-background": "#1b1c19",
+            "surface-bright": "#fbf9f4",
+            "surface-container": "#f0eee9",
+            "on-primary-container": "#80a8d3"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "fontFamily": {
+            "headline": ["Newsreader"],
+            "body": ["Work Sans"],
+            "label": ["Work Sans"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .hero-gradient {
+      background: linear-gradient(135deg, #002743 0%, #1e5f8c 100%);
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">
-                <div class="nav-logo-icon">DR</div>
-                <div class="nav-logo-text">Digital Recovery Agents</div>
-            </a>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="how-it-works.html">How It Works</a>
-                <a href="states.html">States We Serve</a>
-                <a href="faq.html">FAQ</a>
-                <a href="contact.html" class="nav-cta">Check Your Claim</a>
-            </div>
-        </div>
-    </nav>
+<body class="bg-surface font-body text-on-surface selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-[#fbf9f4]/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm dark:shadow-none">
+<nav class="flex justify-between items-center max-w-7xl mx-auto px-8 h-20">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-white font-headline font-bold">DR</div>
+<span class="text-xl font-bold font-['Newsreader'] text-[#0a3d62] dark:text-blue-400 tracking-tight">Digital Recovery Agents</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#0a3d62] dark:text-blue-300 border-b-2 border-[#735c00] pb-1 hover:text-[#735c00] transition-colors duration-300" href="index.html">Home</a>
+<a class="text-[#1b1c19] dark:text-slate-300 font-['Work_Sans'] font-medium hover:text-[#735c00] transition-colors duration-300" href="#">How It Works</a>
+<a class="text-[#1b1c19] dark:text-slate-300 font-['Work_Sans'] font-medium hover:text-[#735c00] transition-colors duration-300" href="#">States We Serve</a>
+<a class="text-[#1b1c19] dark:text-slate-300 font-['Work_Sans'] font-medium hover:text-[#735c00] transition-colors duration-300" href="#">FAQ</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-secondary-container text-on-secondary-container px-6 py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all active:opacity-80">
+Check Your Claim
+</button>
+</div>
+</nav>
+</header>
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="hero-gradient min-h-64 flex items-center relative overflow-hidden px-8">
+<div class="max-w-7xl mx-auto w-full py-16 text-center">
+<h1 class="font-headline text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-4 tracking-tight">
+Privacy Policy
+</h1>
+<p class="text-on-primary-container text-lg md:text-xl">
+Last updated: April 2026
+</p>
+</div>
+</section>
+<!-- Content Section -->
+<section class="py-24 px-8 bg-surface">
+<div class="max-w-2xl mx-auto">
+<div class="bg-surface-container-lowest rounded-2xl p-12 shadow-sm">
+<!-- Information We Collect -->
+<div class="mb-12">
+<h2 class="font-headline text-3xl font-bold text-primary-container mb-6">Information We Collect</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+We collect personal information you voluntarily provide when using our services, including:
+</p>
+<ul class="text-on-surface-variant leading-relaxed space-y-2 ml-6">
+<li>Full name, email address, and phone number from our claim check form</li>
+<li>Physical address and identification information necessary to process your claim</li>
+<li>Browsing data through cookies and analytics services</li>
+</ul>
+</div>
 
-    <!-- Hero Section -->
-    <div class="hero">
-        <div class="hero-container">
-            <h1>Privacy Policy</h1>
-            <p>Your privacy is important to us. Learn how we protect and handle your personal information.</p>
-        </div>
-    </div>
+<!-- How We Use Your Information -->
+<div class="mb-12">
+<h2 class="font-headline text-3xl font-bold text-primary-container mb-6">How We Use Your Information</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+We use your information exclusively to:
+</p>
+<ul class="text-on-surface-variant leading-relaxed space-y-2 ml-6">
+<li>Search national and state databases for unclaimed funds linked to your name or business</li>
+<li>Contact you regarding potential claims and recovery updates</li>
+<li>Process your claim and manage our legal obligations</li>
+<li>Improve our services based on usage patterns</li>
+</ul>
+</div>
 
-    <!-- Main Content -->
-    <div class="content-wrapper">
-        <div class="effective-date">
-            <strong>Effective Date:</strong> March 2026
-        </div>
+<!-- Information Sharing -->
+<div class="mb-12">
+<h2 class="font-headline text-3xl font-bold text-primary-container mb-6">Information Sharing</h2>
+<p class="text-on-surface-variant leading-relaxed">
+Digital Recovery Agents does NOT sell, rent, or share your personal information with third parties for marketing purposes. We only share your information with state government agencies as necessary to process and file your unclaimed fund claims. Your privacy and security are our top priority.
+</p>
+</div>
 
-        <!-- Introduction -->
-        <div class="policy-section">
-            <h2>Our Commitment to Your Privacy</h2>
-            <p>Digital Recovery Agents ("we," "us," or "our") is committed to protecting your privacy and ensuring you have a positive experience on our website and when using our services. This Privacy Policy explains how we collect, use, disclose, and otherwise handle your personal information in connection with our recovery agent services.</p>
-            <p>By accessing our website or using our services, you acknowledge that you have read and understood this Privacy Policy. If you do not agree with our practices, please do not use our services.</p>
-        </div>
+<!-- Data Security -->
+<div class="mb-12">
+<h2 class="font-headline text-3xl font-bold text-primary-container mb-6">Data Security</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+We implement industry-standard security measures to protect your personal information:
+</p>
+<ul class="text-on-surface-variant leading-relaxed space-y-2 ml-6">
+<li>Encryption of data in transit and at rest</li>
+<li>Secure storage on protected servers</li>
+<li>Limited access to personal information restricted to authorized personnel only</li>
+<li>Regular security assessments and updates</li>
+</ul>
+</div>
 
-        <!-- Information We Collect -->
-        <div class="policy-section">
-            <h2>Information We Collect</h2>
-            <p>We collect personal information necessary to verify your eligibility and process your recovery claim. The types of information we collect include:</p>
+<!-- Google Forms -->
+<div class="mb-12">
+<h2 class="font-headline text-3xl font-bold text-primary-container mb-6">Google Forms</h2>
+<p class="text-on-surface-variant leading-relaxed">
+Any personal information collected through Google Forms is subject to both our privacy policy and Google's privacy policy. We recommend reviewing Google's privacy practices to understand how they process your data.
+</p>
+</div>
 
-            <h3>Personal Identification Information</h3>
-            <ul>
-                <li>Full legal name</li>
-                <li>Date of birth</li>
-                <li>Social Security Number (for verification purposes only)</li>
-                <li>Driver's license or government-issued identification number</li>
-            </ul>
+<!-- Your Rights -->
+<div class="mb-12">
+<h2 class="font-headline text-3xl font-bold text-primary-container mb-6">Your Rights</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+You have the right to:
+</p>
+<ul class="text-on-surface-variant leading-relaxed space-y-2 ml-6">
+<li>Access the personal information we hold about you</li>
+<li>Request corrections or updates to your information</li>
+<li>Request deletion of your data (subject to legal and contractual obligations)</li>
+</ul>
+<p class="text-on-surface-variant leading-relaxed mt-4">
+To exercise these rights, contact us at Contact@DigitalRecoveryAgents.com.
+</p>
+</div>
 
-            <h3>Contact Information</h3>
-            <ul>
-                <li>Mailing address</li>
-                <li>Email address</li>
-                <li>Phone number</li>
-            </ul>
+<!-- Cookies -->
+<div class="mb-12">
+<h2 class="font-headline text-3xl font-bold text-primary-container mb-6">Cookies</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+Our website uses basic analytics cookies to help us understand how visitors use our site. These cookies are non-tracking and do not identify you personally. You can disable cookies in your browser settings if you prefer, though this may affect your experience on our site.
+</p>
+</div>
 
-            <h3>Claim Information</h3>
-            <ul>
-                <li>Documentation related to your claim</li>
-                <li>Supporting identity verification documents</li>
-                <li>Correspondence regarding your claim status</li>
-            </ul>
-        </div>
-
-        <!-- How We Use Your Information -->
-        <div class="policy-section">
-            <h2>How We Use Your Information</h2>
-            <p>We use your personal information exclusively for legitimate recovery agent services. Specifically, we use your information to:</p>
-            <ul>
-                <li>Verify your identity and eligibility for recovery claims</li>
-                <li>Process and manage your claim recovery application</li>
-                <li>Communicate with you regarding your claim status and any required next steps</li>
-                <li>Comply with state regulatory requirements and claims verification procedures</li>
-                <li>Maintain accurate records of claims processing activities</li>
-                <li>Provide customer support and respond to your inquiries</li>
-            </ul>
-            <p>We will never use your information for marketing purposes, selling products or services unrelated to recovery claims, or any purpose other than what is stated in this policy.</p>
-        </div>
-
-        <!-- Information Sharing -->
-        <div class="policy-section">
-            <h2>How We Share Your Information</h2>
-            <p>We only share your personal information when absolutely necessary and in compliance with applicable laws. Your information may be shared with:</p>
-            <ul>
-                <li><strong>State Regulatory Agencies:</strong> We are required to share claim information with state agencies in New York, Wisconsin, Indiana, and Pennsylvania to process your recovery claim.</li>
-                <li><strong>Verification Services:</strong> Third-party verification services may access limited information solely to confirm your identity and eligibility.</li>
-                <li><strong>Legal Requirements:</strong> We may disclose information when required by law, court order, or government regulation.</li>
-            </ul>
-            <p>We do not sell, rent, or trade your personal information to third parties for any purpose. We do not share your information with any unaffiliated marketing partners or commercial entities.</p>
-        </div>
-
-        <!-- Data Security -->
-        <div class="policy-section">
-            <h2>Data Security Measures</h2>
-            <p>We implement comprehensive security measures to protect your personal information from unauthorized access, alteration, disclosure, or destruction. Our security practices include:</p>
-            <ul>
-                <li>SSL encryption for all data transmitted through our website</li>
-                <li>Secure, password-protected databases for storing personal information</li>
-                <li>Limited access to personal information restricted to authorized personnel only</li>
-                <li>Regular security audits and vulnerability assessments</li>
-                <li>Compliance with industry-standard data protection practices</li>
-                <li>Secure disposal procedures for documents and records</li>
-            </ul>
-            <p>While we strive to protect your information using reasonable security measures, no method of transmission over the internet is 100% secure. We cannot guarantee absolute security of your personal information.</p>
-        </div>
-
-        <!-- Your Privacy Rights -->
-        <div class="policy-section">
-            <h2>Your Privacy Rights</h2>
-            <p>Depending on your state of residence, you may have the following rights regarding your personal information:</p>
-
-            <h3>Right to Access</h3>
-            <p>You have the right to request access to the personal information we have collected about you and to receive a copy of that information.</p>
-
-            <h3>Right to Correction</h3>
-            <p>You have the right to request correction of inaccurate, incomplete, or outdated personal information in our records.</p>
-
-            <h3>Right to Deletion</h3>
-            <p>You may request deletion of your personal information, subject to legal and regulatory retention requirements. Some information may need to be retained to comply with state laws regarding recovery claims.</p>
-
-            <h3>Right to Opt-Out</h3>
-            <p>You have the right to opt out of certain uses of your information. However, opting out may prevent us from processing your recovery claim.</p>
-
-            <p>To exercise any of these rights, please contact us using the information provided in the "Contact Us" section below.</p>
-        </div>
-
-        <!-- Data Retention -->
-        <div class="policy-section">
-            <h2>Data Retention</h2>
-            <p>We retain your personal information for as long as necessary to:</p>
-            <ul>
-                <li>Process and complete your recovery claim</li>
-                <li>Comply with state regulatory requirements and retention laws</li>
-                <li>Resolve any disputes or claims related to our services</li>
-                <li>Protect the legal interests of Digital Recovery Agents and our clients</li>
-            </ul>
-            <p>Once your claim is resolved and applicable retention periods have elapsed, we will securely delete or anonymize your personal information. Certain information may be retained longer if required by law.</p>
-        </div>
-
-        <!-- Contact Us -->
-        <div class="policy-section">
-            <h2>Contact Us for Privacy Questions</h2>
-            <p>If you have questions about this Privacy Policy, concerns about how we handle your information, or wish to exercise your privacy rights, please contact us:</p>
-            <p><strong>Email:</strong> <a href="mailto:Contact@DigitalRecoveryAgents.com" style="color: var(--primary); text-decoration: none;">Contact@DigitalRecoveryAgents.com</a></p>
-            <p><strong>Phone:</strong> 980-446-8402</p>
-            <p>We will respond to privacy inquiries within 30 business days of receipt.</p>
-        </div>
-
-        <!-- Policy Updates -->
-        <div class="policy-section">
-            <h2>Policy Updates</h2>
-            <p>Digital Recovery Agents may update this Privacy Policy from time to time to reflect changes in our practices, technology, legal requirements, or other factors. We will notify you of any material changes by posting the updated policy on our website and updating the "Effective Date" at the top of this document. Your continued use of our services after any changes constitutes your acceptance of the updated Privacy Policy.</p>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-column">
-                <h3>About Digital Recovery Agents</h3>
-                <p>We help individuals recover unclaimed funds in New York, Wisconsin, Indiana, and Pennsylvania. Our licensed recovery agents guide you through the entire process.</p>
-            </div>
-            <div class="footer-column">
-                <h3>Quick Links</h3>
-                <a href="index.html">Home</a>
-                <a href="how-it-works.html">How It Works</a>
-                <a href="states.html">States We Serve</a>
-                <a href="faq.html">FAQ</a>
-                <a href="contact.html">Check Your Claim</a>
-            </div>
-            <div class="footer-column">
-                <h3>Legal</h3>
-                <a href="privacy.html">Privacy Policy</a>
-                <a href="terms.html">Terms of Service</a>
-            </div>
-            <div class="footer-column">
-                <h3>Contact</h3>
-                <p><strong>Email:</strong></p>
-                <p><a href="mailto:Contact@DigitalRecoveryAgents.com">Contact@DigitalRecoveryAgents.com</a></p>
-                <p><strong>Phone:</strong></p>
-                <p><a href="tel:9804468402">980-446-8402</a></p>
-            </div>
-        </div>
-        <div class="footer-divider">
-            <p>&copy; 2026 Digital Recovery Agents. All rights reserved. Licensed recovery agents in NY, WI, IN, PA.</p>
-        </div>
-    </footer>
-</body>
-</html>
+<!-- Contact Us -->
+<div class="mb-0">
+<h2 class="font-headline text-3xl font-bold text-primary-container mb-6">Privacy Questions?</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+If you have any questions about our privacy practices or wish to exercise your data rights, please contact us:
+</p>
+<div class="bg-surface-container-low rounded-xl p-6 space-y-2">
+<p class="text-on-surface-variant font-medium">
+Email: <a href="mailto:Contact@DigitalRecoveryAgents.com" class="text-primary-container hover:underline">Contact@DigitalRecoveryAgents.com</a>
+</p>
+<p class="text-on-surface-variant font-medium">
+Phone: <a href="tel:9804468402" class="text-primary-container hover:underline">980-446-8402</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#0a3d62] text-white border-t border-[#c2c7cf]/20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto px-8 py-16">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-2 mb-6">
+<div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white font-headline font-bold">DR</div>
+<span class="font-['Newsreader'] text-lg text-white font-bold">Digital Recovery Agents</span>
+</div>
+<p class="text-slate-300 font-['Work_Sans'] text-sm leading-relaxed">
+A premier recovery firm dedicated to restoring lost financial assets to their rightful owners through forensic accounting and legal advocacy.
+</p>
+</div>
+<div class="space-y-4">
+<h4 class="font-bold text-secondary-container uppercase tracking-widest text-xs">Resources</h4>
+<nav class="flex flex-col gap-3">
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">Sitemap</a>
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">Contact Us</a>
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">State Licensing</a>
+</nav>
+</div>
+<div class="space-y-4">
+<h4 class="font-bold text-secondary-container uppercase tracking-widest text-xs">Legal</h4>
+<nav class="flex flex-col gap-3">
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors underline text-white" href="privacy.html">Privacy Policy</a>
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">Terms of Service</a>
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">Disclaimer</a>
+</nav>
+</div>
+<div class="space-y-4">
+<h4 class="font-bold text-secondary-container uppercase tracking-widest text-xs">Contact</h4>
+<p class="text-slate-300 font-['Work_Sans'] text-sm leading-relaxed">
+Contact@DigitalRecoveryAgents.com<br/>
+980-446-8402
+</p>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-8 py-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+<p class="text-slate-400 font-['Work_Sans'] text-sm tracking-wide">
+© 2026 Digital Recovery Agents. All rights reserved. Licensed in all participating states.
+</p>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-slate-400 hover:text-white cursor-pointer transition-colors">public</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-white cursor-pointer transition-colors">mail</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-white cursor-pointer transition-colors">call</span>
+</div>
+</div>
+</footer>
+</body></html>

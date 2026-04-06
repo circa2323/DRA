@@ -1,500 +1,276 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service - Digital Recovery Agents</title>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #0A3D62;
-            --primary-light: #1E5F8C;
-            --accent: #D4AF37;
-            --accent-light: #E5C158;
-            --text-dark: #1A1A1A;
-            --text-medium: #4A4A4A;
-            --text-light: #7A7A7A;
-            --bg-cream: #FAF8F3;
-            --bg-white: #FFFFFF;
-            --border: #E0DDD5;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            height: 100%;
-        }
-
-        body {
-            font-family: 'Work Sans', sans-serif;
-            color: var(--text-dark);
-            background-color: var(--bg-cream);
-            line-height: 1.6;
-        }
-
-        /* Navigation */
-        nav {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background-color: var(--bg-white);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        nav .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-        }
-
-        .nav-icon {
-            width: 40px;
-            height: 40px;
-            background-color: var(--primary);
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            font-family: 'Crimson Pro', serif;
-            font-weight: 700;
-            font-size: 1.25rem;
-        }
-
-        .nav-text {
-            font-family: 'Crimson Pro', serif;
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: var(--primary);
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        nav a {
-            color: var(--text-medium);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.3s ease;
-        }
-
-        nav a:hover {
-            color: var(--primary);
-        }
-
-        .nav-cta {
-            background-color: var(--accent);
-            color: var(--primary) !important;
-            padding: 0.6rem 1.2rem;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
-
-        .nav-cta:hover {
-            background-color: var(--accent-light);
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: var(--bg-white);
-            padding: 4rem 2rem;
-            text-align: center;
-        }
-
-        .hero .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-family: 'Crimson Pro', serif;
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.1rem;
-            opacity: 0.95;
-        }
-
-        /* Main Content */
-        main {
-            max-width: 900px;
-            margin: 3rem auto;
-            padding: 0 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .section {
-            background-color: var(--bg-white);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border);
-        }
-
-        .section h2 {
-            font-family: 'Crimson Pro', serif;
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 1.25rem;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 0.75rem;
-        }
-
-        .section h3 {
-            font-family: 'Crimson Pro', serif;
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .section h3:first-child {
-            margin-top: 0;
-        }
-
-        .section p {
-            color: var(--text-medium);
-            margin-bottom: 1rem;
-            line-height: 1.7;
-        }
-
-        .section ul, .section ol {
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--text-medium);
-        }
-
-        .section li {
-            margin-bottom: 0.5rem;
-            line-height: 1.7;
-        }
-
-        .effective-date {
-            background-color: #f0f8ff;
-            border-left: 4px solid var(--accent);
-            padding: 1rem;
-            border-radius: 6px;
-            margin-bottom: 2rem;
-            font-weight: 500;
-            color: var(--text-medium);
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--primary);
-            color: var(--bg-white);
-            padding: 3rem 2rem 2rem;
-            margin-top: 4rem;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-column h3 {
-            font-family: 'Crimson Pro', serif;
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--accent);
-        }
-
-        .footer-column p, .footer-column a {
-            font-size: 0.95rem;
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .footer-column a {
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-column a:hover {
-            color: var(--accent);
-        }
-
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column li {
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding-top: 2rem;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            nav .container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            nav ul {
-                flex-wrap: wrap;
-                gap: 1rem;
-                justify-content: center;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .section {
-                padding: 1.5rem;
-            }
-
-            .section h2 {
-                font-size: 1.5rem;
-            }
-
-            main {
-                margin: 2rem auto;
-            }
-        }
-    </style>
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Terms of Service | Digital Recovery Agents</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-error-container": "#93000a",
+            "on-primary": "#ffffff",
+            "outline-variant": "#c2c7cf",
+            "surface-container-high": "#eae8e3",
+            "on-surface": "#1b1c19",
+            "primary-container": "#0a3d62",
+            "error": "#ba1a1a",
+            "secondary-fixed": "#ffe088",
+            "tertiary-fixed-dim": "#c8c6c5",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f3ee",
+            "primary-fixed": "#cfe5ff",
+            "inverse-primary": "#a2caf7",
+            "inverse-on-surface": "#f2f1ec",
+            "secondary-container": "#fed65b",
+            "background": "#fbf9f4",
+            "tertiary": "#252525",
+            "on-tertiary-fixed-variant": "#474746",
+            "on-tertiary-fixed": "#1c1b1b",
+            "surface-tint": "#386188",
+            "on-secondary-container": "#745c00",
+            "tertiary-fixed": "#e5e2e1",
+            "primary-fixed-dim": "#a2caf7",
+            "tertiary-container": "#3b3a3a",
+            "outline": "#72777f",
+            "on-secondary-fixed": "#241a00",
+            "surface": "#fbf9f4",
+            "on-secondary": "#ffffff",
+            "on-tertiary-container": "#a6a4a3",
+            "error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#1d496f",
+            "on-surface-variant": "#42474e",
+            "inverse-surface": "#30312e",
+            "on-tertiary": "#ffffff",
+            "surface-container-highest": "#e4e2dd",
+            "surface-dim": "#dbdad5",
+            "on-error": "#ffffff",
+            "on-secondary-fixed-variant": "#574500",
+            "primary": "#002743",
+            "on-primary-fixed": "#001d34",
+            "secondary-fixed-dim": "#e9c349",
+            "surface-variant": "#e4e2dd",
+            "secondary": "#735c00",
+            "on-background": "#1b1c19",
+            "surface-bright": "#fbf9f4",
+            "surface-container": "#f0eee9",
+            "on-primary-container": "#80a8d3"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "fontFamily": {
+            "headline": ["Newsreader"],
+            "body": ["Work Sans"],
+            "label": ["Work Sans"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .hero-gradient {
+      background: linear-gradient(135deg, #002743 0%, #1e5f8c 100%);
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav>
-        <div class="container">
-            <a href="index.html" class="nav-brand">
-                <div class="nav-icon">DR</div>
-                <div class="nav-text">Digital Recovery Agents</div>
-            </a>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="how-it-works.html">How It Works</a></li>
-                <li><a href="states.html">States We Serve</a></li>
-                <li><a href="faq.html">FAQ</a></li>
-                <li><a href="contact.html" class="nav-cta">Check Your Claim</a></li>
-            </ul>
-        </div>
-    </nav>
+<body class="bg-surface font-body text-on-surface selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-[#fbf9f4]/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm dark:shadow-none">
+<nav class="flex justify-between items-center max-w-7xl mx-auto px-8 h-20">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-white font-headline font-bold">DR</div>
+<span class="text-xl font-bold font-['Newsreader'] text-[#0a3d62] dark:text-blue-400 tracking-tight">Digital Recovery Agents</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#0a3d62] dark:text-blue-300 border-b-2 border-[#735c00] pb-1 hover:text-[#735c00] transition-colors duration-300" href="#">Home</a>
+<a class="text-[#1b1c19] dark:text-slate-300 font-['Work_Sans'] font-medium hover:text-[#735c00] transition-colors duration-300" href="#">How It Works</a>
+<a class="text-[#1b1c19] dark:text-slate-300 font-['Work_Sans'] font-medium hover:text-[#735c00] transition-colors duration-300" href="#">States We Serve</a>
+<a class="text-[#1b1c19] dark:text-slate-300 font-['Work_Sans'] font-medium hover:text-[#735c00] transition-colors duration-300" href="#">FAQ</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-secondary-container text-on-secondary-container px-6 py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all active:opacity-80">
+Check Your Claim
+</button>
+</div>
+</nav>
+</header>
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="hero-gradient min-h-[300px] flex items-center relative overflow-hidden px-8 py-16">
+<div class="max-w-7xl mx-auto w-full">
+<div class="text-center">
+<h1 class="font-headline text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-4 tracking-tight">
+Terms of Service
+</h1>
+<p class="text-on-primary-container text-lg md:text-xl">
+Last updated: April 2026
+</p>
+</div>
+</div>
+</section>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h1>Terms of Service</h1>
-            <p>Please read these terms carefully before using our services</p>
-        </div>
-    </section>
+<!-- Terms Content -->
+<section class="py-24 px-8 bg-surface">
+<div class="max-w-4xl mx-auto">
+<div class="bg-white rounded-2xl shadow-sm p-10 md:p-16">
 
-    <!-- Main Content -->
-    <main>
-        <div class="effective-date">
-            <strong>Effective Date:</strong> March 2026
-        </div>
+<!-- Overview of Services -->
+<div class="mb-12">
+<h2 class="font-headline text-2xl md:text-3xl font-bold text-primary-container mb-6">Overview of Services</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+Digital Recovery Agents specializes in locating and recovering unclaimed government surplus funds on behalf of clients. Our team conducts comprehensive research across national and state databases to identify assets that may belong to you or your business. We handle all aspects of the recovery process, from initial identification through final disbursement.
+</p>
+</div>
 
-        <!-- Agreement to Terms -->
-        <div class="section">
-            <h2>Agreement to Terms</h2>
-            <p>By accessing and using the Digital Recovery Agents website and services, you agree to be bound by these Terms of Service. If you do not agree to abide by the above, please do not use this service.</p>
-            <p>Digital Recovery Agents ("we," "us," "our," or "Company") provides unclaimed funds recovery services to eligible clients. These terms constitute a legal agreement between you ("Client") and Digital Recovery Agents.</p>
-        </div>
+<!-- Fee Structure -->
+<div class="mb-12">
+<h2 class="font-headline text-2xl md:text-3xl font-bold text-primary-container mb-6">Fee Structure</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+We operate exclusively on a contingency fee basis. Our fees are based on a percentage of the total funds successfully recovered, typically ranging from 10% to 15% depending on your state of residence and the complexity of the claim. These fees are only charged upon successful recovery and receipt of funds. The exact percentage will be specified in your contingency agreement before any work begins.
+</p>
+</div>
 
-        <!-- Services Description -->
-        <div class="section">
-            <h2>Description of Services</h2>
-            <p>Digital Recovery Agents specializes in recovering unclaimed funds on behalf of our clients. Our services are available in the following states:</p>
-            <ul>
-                <li>New York (NY)</li>
-                <li>Wisconsin (WI)</li>
-                <li>Indiana (IN)</li>
-                <li>Pennsylvania (PA)</li>
-            </ul>
-            <p>We conduct comprehensive searches through state unclaimed funds databases and utilize our expertise in recovery procedures to locate and recover eligible funds for our clients. Our recovery process includes locating claims, preparing and submitting documentation, and managing communications with state authorities on your behalf.</p>
-            <p>Services are provided on a contingency basis only. We do not charge upfront fees or retainers. You only pay if and when we successfully recover your unclaimed funds.</p>
-        </div>
+<!-- No Upfront Costs -->
+<div class="mb-12">
+<h2 class="font-headline text-2xl md:text-3xl font-bold text-primary-container mb-6">No Upfront Costs</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+You will never be required to pay any fees, costs, or expenses upfront or during the recovery process. All costs associated with research, filing, and communication with state agencies are absorbed by Digital Recovery Agents. You only pay when we successfully recover your funds, and then only the agreed-upon contingency fee is deducted from your recovery.
+</p>
+</div>
 
-        <!-- Fee Structure -->
-        <div class="section">
-            <h2>Fee Structure</h2>
-            <p>Our fee structure is as follows:</p>
-            <ul>
-                <li><strong>Contingency Fee:</strong> 10-15% of recovered funds</li>
-                <li><strong>Upfront Cost:</strong> No upfront fees, retainers, or out-of-pocket costs</li>
-                <li><strong>Payment Terms:</strong> Fees are due only after funds are successfully recovered and remitted to you</li>
-                <li><strong>Fee Transparency:</strong> You will be informed of the exact fee percentage applicable to your case before we begin the recovery process</li>
-            </ul>
-            <p>No refunds are issued for recovery attempts that do not result in recovered funds. Our fee covers all services performed, including research, documentation preparation, submission, and follow-up with state authorities.</p>
-        </div>
+<!-- Client Responsibilities -->
+<div class="mb-12">
+<h2 class="font-headline text-2xl md:text-3xl font-bold text-primary-container mb-6">Client Responsibilities</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+To ensure the best possible outcome, clients agree to:</p>
+<ul class="text-on-surface-variant leading-relaxed space-y-2 ml-6">
+<li class="list-disc">Provide accurate and complete personal or business information</li>
+<li class="list-disc">Cooperate fully with our requests for documentation and verification</li>
+<li class="list-disc">Sign all necessary agreements and power of attorney documents</li>
+<li class="list-disc">Maintain communication with Digital Recovery Agents throughout the process</li>
+<li class="list-disc">Report any changes to contact information promptly</li>
+</ul>
+</div>
 
-        <!-- Client Obligations -->
-        <div class="section">
-            <h2>Client Obligations</h2>
-            <p>As a client of Digital Recovery Agents, you agree to:</p>
-            <ul>
-                <li><strong>Provide Accurate Information:</strong> Supply truthful, accurate, and complete information regarding your identity, contact details, and any funds in question</li>
-                <li><strong>Valid Identification:</strong> Provide valid government-issued identification or other documentation as reasonably requested to verify your identity and claim eligibility</li>
-                <li><strong>Sign Recovery Agreement:</strong> Execute our Standard Recovery Agreement before we initiate the recovery process on your behalf</li>
-                <li><strong>Maintain Contact:</strong> Maintain current contact information and respond promptly to communications from our office regarding your claim</li>
-                <li><strong>Truthful Representation:</strong> Confirm that you have a legitimate claim to the unclaimed funds and do not knowingly make false claims</li>
-            </ul>
-            <p>Failure to provide accurate information or required documentation may result in termination of services without obligation to refund any recovery fees earned.</p>
-        </div>
+<!-- Our Responsibilities -->
+<div class="mb-12">
+<h2 class="font-headline text-2xl md:text-3xl font-bold text-primary-container mb-6">Our Responsibilities</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+Digital Recovery Agents commits to:</p>
+<ul class="text-on-surface-variant leading-relaxed space-y-2 ml-6">
+<li class="list-disc">Conduct thorough research across applicable state and national databases</li>
+<li class="list-disc">File all necessary claims on your behalf with appropriate state agencies</li>
+<li class="list-disc">Maintain professional communication with government agencies throughout the recovery process</li>
+<li class="list-disc">Provide regular status updates on the progress of your claim</li>
+<li class="list-disc">Handle all documentation and correspondence related to your recovery</li>
+</ul>
+</div>
 
-        <!-- No Guarantee of Recovery -->
-        <div class="section">
-            <h2>No Guarantee of Recovery</h2>
-            <p>While Digital Recovery Agents works diligently to locate and recover unclaimed funds, we cannot and do not guarantee that your claim will be successful or that any funds will be recovered. All recovery efforts are conducted on a best-effort basis.</p>
-            <p>Recovery success depends on various factors, including:</p>
-            <ul>
-                <li>Availability and accuracy of records maintained by state authorities</li>
-                <li>Legitimacy of your claim as determined by state unclaimed funds administrators</li>
-                <li>Sufficiency of documentation provided</li>
-                <li>Timeliness of claim submissions</li>
-                <li>State regulations and unclaimed funds statutes</li>
-            </ul>
-            <p>Engaging our services does not guarantee recovery of any funds. By signing our Recovery Agreement, you acknowledge this fact and agree to proceed with our services on a contingency basis with no guarantee of results.</p>
-        </div>
+<!-- State-Specific Terms -->
+<div class="mb-12">
+<h2 class="font-headline text-2xl md:text-3xl font-bold text-primary-container mb-6">State-Specific Terms</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+Our service scope, fee structures, and claim processes vary by state. We currently serve New York, Wisconsin, Indiana, and Pennsylvania. Each state has unique regulations regarding unclaimed funds recovery and our involvement. For detailed information about how our services and fees differ by state, please refer to our State Disclosures page or contact us directly.
+</p>
+</div>
 
-        <!-- Limitation of Liability -->
-        <div class="section">
-            <h2>Limitation of Liability</h2>
-            <p>To the maximum extent permitted by law, Digital Recovery Agents shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from or related to your use of our services, including but not limited to loss of profits, loss of data, or business interruption, even if we have been advised of the possibility of such damages.</p>
-            <p>Our total liability to you for any claims arising from or related to these terms or our services shall not exceed the amount of fees actually paid to Digital Recovery Agents in connection with your claim.</p>
-            <p>Some jurisdictions do not allow the exclusion or limitation of liability for incidental or consequential damages, so the above limitations may not apply to you.</p>
-        </div>
+<!-- Limitation of Liability -->
+<div class="mb-12">
+<h2 class="font-headline text-2xl md:text-3xl font-bold text-primary-container mb-6">Limitation of Liability</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+While Digital Recovery Agents will conduct thorough research and file professional claims on your behalf, we cannot guarantee that any claim will be approved or that funds will be successfully recovered. The final decision on all claims rests entirely with the relevant state agency or government authority. Digital Recovery Agents is not liable for any claim denial, delay, or rejection by governmental entities. If a claim is denied, no fees will be charged.
+</p>
+</div>
 
-        <!-- Termination -->
-        <div class="section">
-            <h2>Termination</h2>
-            <p>Either party may terminate the client relationship and discontinue recovery services at any time by providing written notice to the other party.</p>
-            <h3>Termination by Client</h3>
-            <p>You may terminate our services at any time without penalty. If no recovery has occurred prior to termination, no fees are due. If a recovery has been initiated but not yet completed, you remain obligated to pay the agreed-upon contingency fee if recovery is ultimately successful.</p>
-            <h3>Termination by Digital Recovery Agents</h3>
-            <p>We reserve the right to terminate services if:</p>
-            <ul>
-                <li>You provide false or misleading information</li>
-                <li>You fail to comply with the terms of our Recovery Agreement</li>
-                <li>We determine that your claim is ineligible for recovery under applicable state law</li>
-                <li>You engage another recovery agent or attempt recovery independently without disclosure</li>
-            </ul>
-            <p>In the event we terminate services, no fees will be charged unless recovery has already been completed prior to termination.</p>
-        </div>
+<!-- Termination -->
+<div class="mb-12">
+<h2 class="font-headline text-2xl md:text-3xl font-bold text-primary-container mb-6">Termination</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+Either party may terminate the contingency agreement at any time with written notice. If funds are recovered after termination due to work previously completed by Digital Recovery Agents, the agreed-upon contingency fee may still apply to that recovery. Termination does not relieve the client of their obligation to pay fees on claims that were successfully pursued through our efforts prior to termination.
+</p>
+</div>
 
-        <!-- Governing Law -->
-        <div class="section">
-            <h2>Governing Law and Jurisdiction</h2>
-            <p>These Terms of Service shall be governed by and construed in accordance with the laws of the State of North Carolina, without regard to its conflict of laws principles.</p>
-            <p>You agree to submit to the exclusive jurisdiction of the courts located in Mecklenburg County, North Carolina for any legal proceedings arising from or related to these terms or our services.</p>
-        </div>
+<!-- Governing Law -->
+<div class="mb-12">
+<h2 class="font-headline text-2xl md:text-3xl font-bold text-primary-container mb-6">Governing Law</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+These terms and any contingency agreement with Digital Recovery Agents shall be governed by and construed in accordance with the laws of the state in which you reside, without regard to its conflict of law provisions. Any disputes arising from these terms will be resolved in the appropriate courts of that state.
+</p>
+</div>
 
-        <!-- Changes to Terms -->
-        <div class="section">
-            <h2>Changes to Terms</h2>
-            <p>Digital Recovery Agents reserves the right to modify these Terms of Service at any time. Changes will be effective immediately upon posting to our website. Your continued use of our services following the posting of revised terms means you accept and agree to the changes.</p>
-            <p>We will notify you of any material changes to these terms via email or through other appropriate notification methods. It is your responsibility to review these terms periodically for updates.</p>
-        </div>
+<!-- Contact -->
+<div class="pt-8 border-t border-surface-container">
+<h2 class="font-headline text-2xl md:text-3xl font-bold text-primary-container mb-6">Questions?</h2>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+If you have any questions about these Terms of Service or our policies, please contact us at:</p>
+<div class="text-on-surface-variant leading-relaxed space-y-2">
+<p><strong>Email:</strong> Contact@DigitalRecoveryAgents.com</p>
+<p><strong>Phone:</strong> 980-446-8402</p>
+</div>
+</div>
 
-        <!-- Contact Information -->
-        <div class="section">
-            <h2>Contact Information</h2>
-            <p>If you have any questions about these Terms of Service or our services, please contact us:</p>
-            <ul>
-                <li><strong>Email:</strong> Contact@DigitalRecoveryAgents.com</li>
-                <li><strong>Phone:</strong> 980-446-8402</li>
-            </ul>
-            <p>We are committed to addressing your questions and concerns promptly and professionally.</p>
-        </div>
+</div>
+</div>
+</section>
+</main>
 
-        <!-- Additional Terms -->
-        <div class="section">
-            <h2>Miscellaneous</h2>
-            <h3>Entire Agreement</h3>
-            <p>These Terms of Service, together with our Privacy Policy and Recovery Agreement, constitute the entire agreement between you and Digital Recovery Agents regarding the services provided and supersede all prior or contemporaneous agreements, understandings, and negotiations.</p>
-            <h3>Severability</h3>
-            <p>If any provision of these Terms of Service is found to be invalid or unenforceable by a court of competent jurisdiction, the remaining provisions shall remain in full force and effect.</p>
-            <h3>Waiver</h3>
-            <p>The failure of Digital Recovery Agents to enforce any right or provision of these terms does not constitute a waiver of such right or provision.</p>
-            <h3>Compliance with Laws</h3>
-            <p>Digital Recovery Agents is composed of licensed recovery agents operating in accordance with all applicable state laws and regulations governing unclaimed funds recovery in New York, Wisconsin, Indiana, and Pennsylvania.</p>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <!-- Company Description -->
-            <div class="footer-column">
-                <h3>Digital Recovery Agents</h3>
-                <p>We specialize in recovering unclaimed funds for eligible clients across multiple states. Our mission is to help you reclaim what is rightfully yours with integrity and expertise.</p>
-            </div>
-
-            <!-- Quick Links -->
-            <div class="footer-column">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="how-it-works.html">How It Works</a></li>
-                    <li><a href="states.html">States We Serve</a></li>
-                    <li><a href="faq.html">FAQ</a></li>
-                </ul>
-            </div>
-
-            <!-- Legal Links -->
-            <div class="footer-column">
-                <h3>Legal</h3>
-                <ul>
-                    <li><a href="terms.html">Terms of Service</a></li>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                </ul>
-            </div>
-
-            <!-- Contact Info -->
-            <div class="footer-column">
-                <h3>Contact</h3>
-                <p><strong>Email:</strong></p>
-                <p><a href="mailto:Contact@DigitalRecoveryAgents.com">Contact@DigitalRecoveryAgents.com</a></p>
-                <p><strong>Phone:</strong></p>
-                <p><a href="tel:980-446-8402">980-446-8402</a></p>
-            </div>
-        </div>
-
-        <!-- Copyright -->
-        <div class="footer-bottom">
-            <p>&copy; 2026 Digital Recovery Agents. All rights reserved. Licensed recovery agents in NY, WI, IN, PA.</p>
-        </div>
-    </footer>
-</body>
-</html>
+<!-- Footer -->
+<footer class="bg-[#0a3d62] text-white border-t border-[#c2c7cf]/20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto px-8 py-16">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-2 mb-6">
+<div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white font-headline font-bold">DR</div>
+<span class="font-['Newsreader'] text-lg text-white font-bold">Digital Recovery Agents</span>
+</div>
+<p class="text-slate-300 font-['Work_Sans'] text-sm leading-relaxed">
+A premier recovery firm dedicated to restoring lost financial assets to their rightful owners through forensic accounting and legal advocacy.
+</p>
+</div>
+<div class="space-y-4">
+<h4 class="font-bold text-secondary-container uppercase tracking-widest text-xs">Resources</h4>
+<nav class="flex flex-col gap-3">
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">Sitemap</a>
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">Contact Us</a>
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">State Licensing</a>
+</nav>
+</div>
+<div class="space-y-4">
+<h4 class="font-bold text-secondary-container uppercase tracking-widest text-xs">Legal</h4>
+<nav class="flex flex-col gap-3">
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">Privacy Policy</a>
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors underline text-white" href="#">Terms of Service</a>
+<a class="text-slate-300 font-['Work_Sans'] text-sm hover:text-[#fed65b] transition-colors" href="#">Disclaimer</a>
+</nav>
+</div>
+<div class="space-y-4">
+<h4 class="font-bold text-secondary-container uppercase tracking-widest text-xs">Contact</h4>
+<p class="text-slate-300 font-['Work_Sans'] text-sm leading-relaxed">
+Contact@DigitalRecoveryAgents.com<br/>
+980-446-8402
+</p>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-8 py-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+<p class="text-slate-400 font-['Work_Sans'] text-sm tracking-wide">
+© 2026 Digital Recovery Agents. All rights reserved. Licensed in all participating states.
+</p>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-slate-400 hover:text-white cursor-pointer transition-colors">public</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-white cursor-pointer transition-colors">mail</span>
+<span class="material-symbols-outlined text-slate-400 hover:text-white cursor-pointer transition-colors">call</span>
+</div>
+</div>
+</footer>
+</body></html>
