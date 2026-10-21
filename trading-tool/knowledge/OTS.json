@@ -1,0 +1,4764 @@
+{
+ "book": {
+  "id": "OTS",
+  "title": "101 Option Trading Secrets",
+  "author": "Kenneth R. Trester",
+  "year": 2004
+ },
+ "principles": [
+  {
+   "id": "OTS-001-a",
+   "secret": 1,
+   "chapter": "The Secret Advantages of Option Trading",
+   "section": "Preparing to Play",
+   "page": 4,
+   "category": "risk_management",
+   "applies_to": [
+    "long_call",
+    "long_put",
+    "stock"
+   ],
+   "principle": "Options give stock-like leverage with limited risk, so a speculative allocation can be held via options while risking only a small fraction (about 10%) of the portfolio.",
+   "quote": "you could receive the same kind of leverage by buying options and utilizing option strategies yet only risking 10% of your portfolio",
+   "rule": {
+    "type": "guideline",
+    "metric": "capital_pct",
+    "operator": "<=",
+    "value": 10,
+    "action": "warn",
+    "notes": "Illustrative: using options instead of high-flying stocks lets you get leverage while risking ~10% of the portfolio; book frames it as an example, not a hard cap (hard caps appear in Secrets 25 and 94)."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-001-b",
+   "secret": 1,
+   "chapter": "The Secret Advantages of Option Trading",
+   "section": "Preparing to Play",
+   "page": 5,
+   "category": "psychology",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Options must be used with prudence; overdosing (overleveraging) is dangerous.",
+   "quote": "like all miracle drugs, options must be used with prudence and proper care",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Qualitative caution against over-allocation."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-002",
+   "secret": 2,
+   "chapter": "Education, Education, Education",
+   "section": "Preparing to Play",
+   "page": 7,
+   "category": "preparation",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Get proper option education from active-trader authorities who avoid hype before trading.",
+   "quote": "To be a successful option trader, you must get the proper education.",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Educational prerequisite; not machine-checkable."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-003-a",
+   "secret": 3,
+   "chapter": "Play It on Paper",
+   "section": "Preparing to Play",
+   "page": 9,
+   "category": "preparation",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Paper trade first, especially before high-risk strategies such as naked writing.",
+   "quote": "Playing it on paper becomes more important when you are considering high risk trades, such as naked writing.",
+   "rule": {
+    "type": "procedure",
+    "metric": "strategy_experience",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Before first real naked-writing trade, recommend a paper-trading period. Book also warns not to paper trade too long; real learning requires real money. No duration given."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-003-b",
+   "secret": 3,
+   "chapter": "Play It on Paper",
+   "section": "Preparing to Play",
+   "page": 10,
+   "category": "psychology",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Do not paper trade too long; real learning only occurs with real money at stake.",
+   "quote": "don’t paper trade for too long, for real learning only occurs when real money is on the line",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "No duration specified."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-004-a",
+   "secret": 4,
+   "chapter": "Stick a Toe in the Water",
+   "section": "Preparing to Play",
+   "page": 13,
+   "category": "preparation",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Beginners should start by buying a small number of options and avoid spreads and option writing.",
+   "quote": "buying options is the best way to start trading options. Avoid entering spreads or option writing.",
+   "rule": {
+    "type": "prefer",
+    "metric": "trader_experience_level",
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "For novice users, warn on spreads and writing; recommend small long-option positions first."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-004-b",
+   "secret": 4,
+   "chapter": "Stick a Toe in the Water",
+   "section": "Preparing to Play",
+   "page": 14,
+   "category": "risk_management",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Start with very small positions and never plunge in, no matter how good the situation looks.",
+   "quote": "no matter how good the situation may look, avoid plunging into the water!",
+   "rule": {
+    "type": "avoid",
+    "metric": "position_size",
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Small initial positions; no numeric limit here."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-005",
+   "secret": 5,
+   "chapter": "Do Your Homework",
+   "section": "Preparing to Play",
+   "page": 16,
+   "category": "preparation",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Do option analysis before entering any strategy and monitor positions properly afterward.",
+   "quote": "doing option analysis before entering an option strategy and then properly monitoring that position",
+   "rule": {
+    "type": "procedure",
+    "metric": "pre_trade_analysis_done",
+    "operator": "==",
+    "value": true,
+    "action": "block",
+    "notes": "Require analysis (fair value, probability, delta) before order entry; require ongoing monitoring."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-006-a",
+   "secret": 6,
+   "chapter": "Those Who Use Crystal Balls Eat Chipped Glass",
+   "section": "The Prediction Game",
+   "page": 20,
+   "category": "prediction",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Assume markets are random rather than trying to predict short-term moves.",
+   "quote": "the best way to approach the markets is to assume that they are random",
+   "rule": {
+    "type": "guideline",
+    "metric": "directional_bias",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Default modeling assumption: random (no drift) market."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-006-b",
+   "secret": 6,
+   "chapter": "Those Who Use Crystal Balls Eat Chipped Glass",
+   "section": "The Prediction Game",
+   "page": 21,
+   "category": "prediction",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Choose strategies that can profit without being right about direction (high-probability writing or buying where one winner pays for many losers).",
+   "quote": "you don’t have to be right about the market 50% of the time",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Strategy design principle."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-006-c",
+   "secret": 6,
+   "chapter": "Those Who Use Crystal Balls Eat Chipped Glass",
+   "section": "The Prediction Game",
+   "page": 21,
+   "category": "prediction",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Trester's newsletter used a random approach, always recommending equal numbers of puts and calls (three of each per issue).",
+   "quote": "We always recommended three puts and three calls for purchase in each issue.",
+   "rule": {
+    "type": "guideline",
+    "metric": "put_call_balance",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Balanced put/call selection under randomness assumption (later biased toward puts, Secret 34)."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-007-a",
+   "secret": 7,
+   "chapter": "Beware of Lady Luck",
+   "section": "The Prediction Game",
+   "page": 23,
+   "category": "prediction",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "An option buyer's probability of winning on any single play is always below 50% in a random market, and much lower for out-of-the-money options.",
+   "quote": "Your probability of winning when you buy options will always be less than 50% in a random market.",
+   "rule": {
+    "type": "threshold",
+    "metric": "prob_profit_long_option",
+    "operator": "<",
+    "value": 0.5,
+    "action": "warn",
+    "notes": "Sanity check: computed probability of profit for a held-to-expiration long option should be <50%; if model shows higher, flag. OTM options lower still."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-007-b",
+   "secret": 7,
+   "chapter": "Beware of Lady Luck",
+   "section": "The Prediction Game",
+   "page": 24,
+   "category": "psychology",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Expect losing streaks even when doing everything right; stick to the game plan rather than changing methodology.",
+   "quote": "even if you are doing everything right when you trade options, you could incur a long losing streak",
+   "rule": {
+    "type": "guideline",
+    "metric": "consecutive_losses",
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "On losing streaks, discourage abandoning the system. If losses are intolerable, shift to higher-probability strategies."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-008-a",
+   "secret": 8,
+   "chapter": "Regression Back to the Mean",
+   "section": "The Prediction Game",
+   "page": 28,
+   "category": "volatility",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Regression to the mean: cheap/undervalued options tend to become fairly valued or expensive; overvalued options tend to cheapen; quiet markets tend to become volatile.",
+   "quote": "Options that are cheap and undervalued are likely to become properly valued or expensive, and overvalued options tend to get less expensive.",
+   "rule": {
+    "type": "guideline",
+    "metric": "iv_vs_history",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Supports buying when IV is low vs its history and writing when IV is high vs its history."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-008-b",
+   "secret": 8,
+   "chapter": "Regression Back to the Mean",
+   "section": "The Prediction Game",
+   "page": 28,
+   "category": "psychology",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "After a hot streak, expect regression; be cautious.",
+   "quote": "If you are on a hot streak, look out!",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Behavioral caution."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-009",
+   "secret": 9,
+   "chapter": "Beware of Gurus",
+   "section": "The Prediction Game",
+   "page": 32,
+   "category": "psychology",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "No guru or system works all the time; use experts' wisdom but make your own decisions.",
+   "quote": "Use the wisdom of the experts, but make your own decisions",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Qualitative."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-010",
+   "secret": 10,
+   "chapter": "Secret Prediction Methods",
+   "section": "The Prediction Game",
+   "page": 34,
+   "category": "prediction",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Even advanced AI forecasting (neural nets) only predicts index moves about 60% of the time; markets approach randomness and you need not predict.",
+   "quote": "have formed systems that predict market moves about 60% of the time",
+   "rule": {
+    "type": "guideline",
+    "metric": "forecast_accuracy",
+    "operator": "<=",
+    "value": 0.6,
+    "action": "warn",
+    "notes": "Cap assumed predictive accuracy of any forecast model at ~60%."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-011-a",
+   "secret": 11,
+   "chapter": "Maverick Investing",
+   "section": "The Prediction Game",
+   "page": 36,
+   "category": "prediction",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Be a contrarian at true extremes: buy when fear is extreme, sell when euphoria is extreme; be patient for real extremes.",
+   "quote": "Buy when there is a lot of fear in the market and sell when there is a lot of euphoria and greed in the market.",
+   "rule": {
+    "type": "guideline",
+    "metric": "sentiment_extreme",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Act only at real extremes."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-011-b",
+   "secret": 11,
+   "chapter": "Maverick Investing",
+   "section": "The Prediction Game",
+   "page": 36,
+   "category": "prediction",
+   "applies_to": [
+    "long_call",
+    "stock",
+    "short_put"
+   ],
+   "principle": "VIX moving above 35% suggests the market is near a bottom (bullish signal), except when the market is genuinely highly volatile, where VIX is less predictive.",
+   "quote": "The index moving above 35% suggests that we are near a market bottom.",
+   "rule": {
+    "type": "threshold",
+    "metric": "vix",
+    "operator": ">",
+    "value": 35,
+    "action": "recommend",
+    "notes": "If VIX > 35, flag possible market bottom / favor bullish strategies. Exception: if realized market volatility is itself very high, VIX is less predictive (Secret 11, p.36-37)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-012-a",
+   "secret": 12,
+   "chapter": "Tracks in the Charts",
+   "section": "The Prediction Game",
+   "page": 39,
+   "category": "prediction",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Use chart support and resistance when setting stop-losses and profit goals.",
+   "quote": "I look closely at support and resistance when designing my strategies, especially when setting stop-losses and profit goals.",
+   "rule": {
+    "type": "procedure",
+    "metric": "support_resistance",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Place stops/targets relative to support and resistance levels."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-012-b",
+   "secret": 12,
+   "chapter": "Tracks in the Charts",
+   "section": "The Prediction Game",
+   "page": 39,
+   "category": "volatility",
+   "applies_to": [
+    "long_call",
+    "long_put",
+    "straddle"
+   ],
+   "principle": "Breakouts from tight trading ranges signal a major change in volatility and improved odds of a big move.",
+   "quote": "I also watch for breakouts from tight trading ranges.",
+   "rule": {
+    "type": "guideline",
+    "metric": "range_breakout",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Breakout from narrow range = favorable for option buying."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-012-c",
+   "secret": 12,
+   "chapter": "Tracks in the Charts",
+   "section": "The Prediction Game",
+   "page": 40,
+   "category": "prediction",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Give more weight to trends with heavy volume and no supporting news; price below long-term support implies further decline; new highs tend to go higher and new lows lower.",
+   "quote": "I put much more importance on trends when there is a lot of volume and no news to support the move.",
+   "rule": {
+    "type": "guideline",
+    "metric": "trend_volume_news",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Trend signal weight: high volume + no news = strongest. New high -> likely higher; new low -> likely lower; break of long-term support -> likely continued fall."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-012-d",
+   "secret": 12,
+   "chapter": "Tracks in the Charts",
+   "section": "The Prediction Game",
+   "page": 41,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Suddenly very expensive/overpriced options on a stock that is not moving suggest an undisclosed news event—be suspicious.",
+   "quote": "When option premiums on a stock are suddenly very expensive and overpriced even though the stock price is not moving much, you should be suspicious.",
+   "rule": {
+    "type": "avoid",
+    "metric": "iv_spike_without_price_move",
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Flag IV spike with flat underlying as possible undisclosed event risk (especially for writers)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-013",
+   "secret": 13,
+   "chapter": "Use the Laws of Supply and Demand",
+   "section": "The Prediction Game",
+   "page": 45,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "For commodities at extreme high/low prices, buy options (limited risk) rather than futures; be patient and roll into new options on expiration until supply/demand reasserts.",
+   "quote": "Options, because of their limited risk, are ideal for taking a position if a commodity is really high or really low in price.",
+   "rule": {
+    "type": "prefer",
+    "metric": "commodity_price_extreme",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Prefer long options over futures when betting on mean reversion of commodity extremes."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-014-a",
+   "secret": 14,
+   "chapter": "Sell in May and Go Away",
+   "section": "The Prediction Game",
+   "page": 47,
+   "category": "prediction",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Seasonality: holding stocks October to start of May produced ~10x the gains of May–September over 50 years; markets tend to decline in May–June and September–October.",
+   "quote": "holding stocks only from October till the start of May showed 10 times greater gains than holding stocks only from May till September",
+   "rule": {
+    "type": "guideline",
+    "metric": "calendar_month",
+    "operator": null,
+    "value": [
+     5,
+     6,
+     9,
+     10
+    ],
+    "action": "warn",
+    "notes": "Bearish seasonal months: May, June, September, October. Use as a bias input only."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-014-b",
+   "secret": 14,
+   "chapter": "Sell in May and Go Away",
+   "section": "The Prediction Game",
+   "page": 47,
+   "category": "prediction",
+   "applies_to": [
+    "stock",
+    "long_call",
+    "short_put"
+   ],
+   "principle": "The best time to buy stocks is near the end of October (most crashes occurred in October; institutional tax-loss selling).",
+   "quote": "No question that the best time to buy stocks is near the end of October.",
+   "rule": {
+    "type": "guideline",
+    "metric": "calendar_date",
+    "operator": null,
+    "value": "late October",
+    "action": "recommend",
+    "notes": "Bullish entry seasonality near end of October; December weak due to individual tax-loss selling."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-014-c",
+   "secret": 14,
+   "chapter": "Sell in May and Go Away",
+   "section": "The Prediction Game",
+   "page": 48,
+   "category": "prediction",
+   "applies_to": [
+    "stock",
+    "long_call"
+   ],
+   "principle": "End-of-month effect: stocks tend to rise on the last trading day of the month and first four trading days of the next (up 70% of the time in bull markets, 50% in bear markets).",
+   "quote": "Stock prices tend to rise on the last trading day of the month and the first four days of the month.",
+   "rule": {
+    "type": "guideline",
+    "metric": "trading_day_of_month",
+    "operator": null,
+    "value": "last day + first 4 days",
+    "action": "recommend",
+    "notes": "Bullish window; frequencies 70% (bull) / 50% (bear)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-014-d",
+   "secret": 14,
+   "chapter": "Sell in May and Go Away",
+   "section": "The Prediction Game",
+   "page": 48,
+   "category": "prediction",
+   "applies_to": [
+    "stock",
+    "long_call"
+   ],
+   "principle": "Stocks tend to rise on the day before a holiday.",
+   "quote": "stock prices tend to rise on the day before a holiday",
+   "rule": {
+    "type": "guideline",
+    "metric": "pre_holiday",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Bullish bias on pre-holiday session."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-014-e",
+   "secret": 14,
+   "chapter": "Sell in May and Go Away",
+   "section": "The Prediction Game",
+   "page": 48,
+   "category": "prediction",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Commodity seasonals: corn highs June/July, lows December; soybeans highs May, lows Oct/Nov; wheat highs Dec/Jan, lows May; cattle highs Apr/May, lows July; hogs highs Jun–Aug, lows Nov/Dec.",
+   "quote": "corn prices (based on weekly nearby futures) tend to make their highs for the year in June or July and make their lows in December",
+   "rule": {
+    "type": "guideline",
+    "metric": "commodity_seasonal_month",
+    "operator": null,
+    "value": {
+     "corn": {
+      "high": [
+       6,
+       7
+      ],
+      "low": [
+       12
+      ]
+     },
+     "soybeans": {
+      "high": [
+       5
+      ],
+      "low": [
+       10,
+       11
+      ]
+     },
+     "wheat": {
+      "high": [
+       12,
+       1
+      ],
+      "low": [
+       5
+      ]
+     },
+     "cattle": {
+      "high": [
+       4,
+       5
+      ],
+      "low": [
+       7
+      ]
+     },
+     "hogs": {
+      "high": [
+       6,
+       7,
+       8
+      ],
+      "low": [
+       11,
+       12
+      ]
+     }
+    },
+    "action": "recommend",
+    "notes": "Based on a 10–14 year study of weekly nearby futures."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-015-a",
+   "secret": 15,
+   "chapter": "The 60% Rule",
+   "section": "The Prediction Game",
+   "page": 52,
+   "category": "prediction",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "The 60% Rule: assume you will be right at most 60% of the time regardless of conviction, and design strategies that still pay off at 60% or lower accuracy.",
+   "quote": "That rule assumes that I will only be right 60% of the time no matter how I feel about a position or projection.",
+   "rule": {
+    "type": "threshold",
+    "metric": "assumed_forecast_accuracy",
+    "operator": "<=",
+    "value": 0.6,
+    "action": "block",
+    "notes": "Any user directional conviction must be capped at 60% when computing expected value; reject strategies that are profitable only if directional accuracy > 60%. Stronger conviction should not raise this."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-015-b",
+   "secret": 15,
+   "chapter": "The 60% Rule",
+   "section": "The Prediction Game",
+   "page": 52,
+   "category": "prediction",
+   "applies_to": [
+    "stock"
+   ],
+   "principle": "For stock investing, buy a low-fee index fund/ETF (QQQ, SPY) by dollar averaging the same dollars each month, probably in the third week of the month.",
+   "quote": "putting the same number of dollars in the market each month (probably in the third week of the month)",
+   "rule": {
+    "type": "procedure",
+    "metric": "dca_schedule",
+    "operator": null,
+    "value": "monthly, 3rd week",
+    "action": "recommend",
+    "notes": "Core stock allocation via monthly dollar-cost averaging into index ETFs."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-015-c",
+   "secret": 15,
+   "chapter": "The 60% Rule",
+   "section": "The Prediction Game",
+   "page": 51,
+   "category": "psychology",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "The stronger you believe an event will occur, the more likely you are wrong; consensus agreement is a warning sign.",
+   "quote": "the stronger you think that an event is likely to occur, the more likely that you will be wrong",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Contrarian check on high-conviction inputs."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-016-a",
+   "secret": 16,
+   "chapter": "Predicting Stock Tops and Market Bottoms",
+   "section": "The Prediction Game",
+   "page": 53,
+   "category": "prediction",
+   "applies_to": [
+    "long_call",
+    "stock",
+    "long_put"
+   ],
+   "principle": "Topping signal: after a strong uptrend, extremely high volume for two or three days in a row with no upward price progress indicates a top—take profits on stock or calls (puts become attractive).",
+   "quote": "My rule of thumb is that the volume must be extremely high for two or three days in a row.",
+   "rule": {
+    "type": "threshold",
+    "metric": "consecutive_extreme_volume_days_no_progress",
+    "operator": ">=",
+    "value": 2,
+    "action": "exit",
+    "notes": "Condition: strong prior uptrend AND extremely high volume for 2–3 consecutive days AND no upward price progress -> take profits on long stock/calls; consider puts. 'Extremely high' not quantified."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-016-b",
+   "secret": 16,
+   "chapter": "Predicting Stock Tops and Market Bottoms",
+   "section": "The Prediction Game",
+   "page": 54,
+   "category": "prediction",
+   "applies_to": [
+    "long_call",
+    "stock",
+    "short_put"
+   ],
+   "principle": "Market bottoms: when VIX and VNX are at extreme highs (panic), start entering bullish strategies; must be true extremes (e.g. VIX >57% after 9/11).",
+   "quote": "when the VIX and VNX are extremely high, it is time to start entering bullish strategies",
+   "rule": {
+    "type": "threshold",
+    "metric": "vix",
+    "operator": ">",
+    "value": 35,
+    "action": "recommend",
+    "notes": "Uses 35% from Secret 11 as the 'near bottom' level; example extreme was VIX >57% (Sept 2001). Bottom may take a few weeks to form."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-016-c",
+   "secret": 16,
+   "chapter": "Predicting Stock Tops and Market Bottoms",
+   "section": "The Prediction Game",
+   "page": 54,
+   "category": "prediction",
+   "applies_to": [
+    "stock",
+    "long_call"
+   ],
+   "principle": "Bottoms form when sellers are exhausted—price stops falling on very high volume.",
+   "quote": "This occurs when a stock stops dropping in price on very high volume.",
+   "rule": {
+    "type": "guideline",
+    "metric": "selling_exhaustion",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Price stalls on very high volume after a decline."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-017-a",
+   "secret": 17,
+   "chapter": "Get the Biggest Bang for Your Buck",
+   "section": "Option Buying",
+   "page": 58,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Avoid paying more than 2 ($200) for any stock option or $400 for any futures option, to keep home-run potential.",
+   "quote": "I set a guideline to avoid paying more than 2 ($200) for any stock option and $400 for any futures option.",
+   "rule": {
+    "type": "threshold",
+    "metric": "option_price",
+    "operator": ">",
+    "value": {
+     "stock_option": 2.0,
+     "futures_option_dollars": 400
+    },
+    "action": "warn",
+    "notes": "Long stock option premium > 2.00 per share ($200/contract) or futures option > $400 -> warn/flag as expensive. (Secret 96 tightens stock options to under 1, LEAPS under 2.5.)"
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-017-b",
+   "secret": 17,
+   "chapter": "Get the Biggest Bang for Your Buck",
+   "section": "Option Buying",
+   "page": 57,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Buying expensive in-the-money options puts a lot at risk and lowers the chance of big percentage gains; cheap options give more bang for the buck.",
+   "quote": "the higher the price, the smaller the chance of a big percentage gain",
+   "rule": {
+    "type": "prefer",
+    "metric": "option_price",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Prefer lower-priced options when aiming for high returns."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-018-a",
+   "secret": 18,
+   "chapter": "Beware of Inertia",
+   "section": "Option Buying",
+   "page": 59,
+   "category": "risk_management",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "When you own expensive options, set a stop-loss on the underlying price and sell the option immediately when it is hit.",
+   "quote": "When you own expensive options, you should have a stop-loss price on the underlying stock or futures price.",
+   "rule": {
+    "type": "procedure",
+    "metric": "underlying_stop_defined",
+    "operator": "==",
+    "value": true,
+    "action": "exit",
+    "notes": "Require underlying-based stop for expensive (> guideline price) long options; on trigger, exit immediately."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-018-b",
+   "secret": 18,
+   "chapter": "Beware of Inertia",
+   "section": "Option Buying",
+   "page": 60,
+   "category": "risk_management",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Cheap options act as an automatic stop-loss: if wrong, you lose only the small premium.",
+   "quote": "The big advantage of cheap options is that you have an automatic stop-loss.",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Cheap long options may forgo explicit stops."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-019-a",
+   "secret": 19,
+   "chapter": "Cheap Is Not Always Cheap!",
+   "section": "Option Buying",
+   "page": 61,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Buy options that are both cheap and undervalued (below theoretical value); most cheap options are overpriced or worthless.",
+   "quote": "The vast majority of cheap options are overpriced or really worthless.",
+   "rule": {
+    "type": "threshold",
+    "metric": "market_price_vs_fair_value",
+    "operator": "<",
+    "value": 1.0,
+    "action": "block",
+    "notes": "Long option must be priced below model fair value (price/fair_value < 1) in addition to being cheap."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-019-b",
+   "secret": 19,
+   "chapter": "Cheap Is Not Always Cheap!",
+   "section": "Option Buying",
+   "page": 62,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "With truly undervalued options the risk-reward is so good you can win while right only ~30% of the time (Trester's record: 20% winners, 1500% returns in two years).",
+   "quote": "even if you are right only 30% of the time, you will be a winner",
+   "rule": {
+    "type": "guideline",
+    "metric": "win_rate",
+    "operator": null,
+    "value": 0.3,
+    "action": "recommend",
+    "notes": "Expected win rate for bargain-option buying can be low (20–30%); evaluate by expected value not win rate."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-020",
+   "secret": 20,
+   "chapter": "Swing for the Fences",
+   "section": "Option Buying",
+   "page": 65,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "As an option buyer, aim for home runs (500%–1000% returns); nickel-and-dime profits cannot offset the many losers.",
+   "quote": "Home runs are best defined as options that return 500% to 1000% returns.",
+   "rule": {
+    "type": "guideline",
+    "metric": "target_return_pct",
+    "operator": "between",
+    "value": [
+     500,
+     1000
+    ],
+    "action": "recommend",
+    "notes": "Profit-target design for long cheap options: let part ride toward 500–1000%."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-021",
+   "secret": 21,
+   "chapter": "Let It Ride!",
+   "section": "Option Buying",
+   "page": 67,
+   "category": "tactics",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Take profits on half of any long option position when the option doubles in price, and let the rest ride.",
+   "quote": "My rule here is to take profits on half of any position when your option doubles in price, and let the rest ride!",
+   "rule": {
+    "type": "threshold",
+    "metric": "option_price_multiple_of_cost",
+    "operator": ">=",
+    "value": 2.0,
+    "action": "scale_out",
+    "notes": "When option price >= 2x entry, sell 50% of contracts; hold remainder with trailing stop."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-022-a",
+   "secret": 22,
+   "chapter": "Don't Let Profits Slip Away",
+   "section": "Option Buying",
+   "page": 69,
+   "category": "risk_management",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Once you have a good paper profit, set a trailing stop on the underlying about 5% away (e.g. stock 50 -> stop 47.5) and exit the rest when hit.",
+   "quote": "A 5% stop-loss is a good rule of thumb.",
+   "rule": {
+    "type": "threshold",
+    "metric": "underlying_trailing_stop_pct",
+    "operator": "==",
+    "value": 5,
+    "action": "exit",
+    "notes": "For profitable long options: trailing stop on underlying at 5% from current price (below for calls, above for puts); ratchet as underlying moves favorably; exit remainder on touch."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-022-b",
+   "secret": 22,
+   "chapter": "Don't Let Profits Slip Away",
+   "section": "Option Buying",
+   "page": 70,
+   "category": "tactics",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Tighter stops may be appropriate; also exit even without a stop hit when the underlying flattens out or hits resistance/support.",
+   "quote": "you may still exit a position if you think the underlying stock or futures is flattening out and when you believe it has hit some resistance or support",
+   "rule": {
+    "type": "guideline",
+    "metric": "underlying_at_resistance_support",
+    "operator": null,
+    "value": null,
+    "action": "exit",
+    "notes": "Discretionary exit trigger: stalling or reaching chart resistance (calls)/support (puts)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-022-c",
+   "secret": 22,
+   "chapter": "Don't Let Profits Slip Away",
+   "section": "Option Buying",
+   "page": 70,
+   "category": "psychology",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Act quickly when things turn against you; with options you usually get only one chance to get out.",
+   "quote": "If you hesitate, you are lost !",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "exit",
+    "notes": "Execute exits promptly; no delay."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-023-a",
+   "secret": 23,
+   "chapter": "Beat the Clock",
+   "section": "Option Buying",
+   "page": 71,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Buy enough time: cheap, long-term options with strike near the underlying price are the best buys.",
+   "quote": "Cheap, long term options, where the strike price is in range of the underlying stock or futures price, are true gems in the rough.",
+   "rule": {
+    "type": "prefer",
+    "metric": "days_to_expiration",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Prefer longer-dated, near-the-money, cheap options. No minimum DTE given here (see Secret 24 and 96)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-023-b",
+   "secret": 23,
+   "chapter": "Beat the Clock",
+   "section": "Option Buying",
+   "page": 72,
+   "category": "tactics",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Always set a time limit on holding an option; for expensive and in-the-money options use a three-week holding period, then exit.",
+   "quote": "With more expensive options and in-the-money options, I usually set a three week hold period.",
+   "rule": {
+    "type": "threshold",
+    "metric": "holding_days",
+    "operator": ">",
+    "value": 21,
+    "action": "exit",
+    "notes": "For expensive or ITM long options: exit after 21 calendar days if nothing has happened. For others, set some time stop (unspecified)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-024-a",
+   "secret": 24,
+   "chapter": "Avoid an Option's Last Month",
+   "section": "Option Buying",
+   "page": 73,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Avoid holding long options in their last month before expiration, when they depreciate fastest; exit before the last month unless there's little premium left to salvage.",
+   "quote": "As a general rule, I avoid holding options in their last month before expiration.",
+   "rule": {
+    "type": "threshold",
+    "metric": "days_to_expiration",
+    "operator": "<",
+    "value": 30,
+    "action": "block",
+    "notes": "Block new long options with < ~1 month (≈30 days) to expiration and exit existing longs before the last month. Exceptions: see OTS-024-b and Secret 39."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-024-b",
+   "secret": 24,
+   "chapter": "Avoid an Option's Last Month",
+   "section": "Option Buying",
+   "page": 73,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Exception: buying options with one month or less left is acceptable if they are extremely cheap and undervalued and the underlying is close to the strike.",
+   "quote": "sometimes I buy options with one month or less before expiration if they are extremely cheap and undervalued and if the underlying stock or futures price is close to the strike price",
+   "rule": {
+    "type": "procedure",
+    "metric": "days_to_expiration",
+    "operator": "<=",
+    "value": 30,
+    "action": "warn",
+    "notes": "Allow last-month long purchase only if: price extremely cheap AND below fair value AND underlying near strike."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-024-c",
+   "secret": 24,
+   "chapter": "Avoid an Option's Last Month",
+   "section": "Option Buying",
+   "page": 73,
+   "category": "option_writing",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Write options a day or two before the last month begins (i.e., around the prior month's expiration).",
+   "quote": "I write options a day or two before the last month begins (expiration of the previous month).",
+   "rule": {
+    "type": "prefer",
+    "metric": "entry_timing",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Writer entry timing: when option enters its final month (~30 DTE or less)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-025-a",
+   "secret": 25,
+   "chapter": "The Secret of Scaling",
+   "section": "Option Buying",
+   "page": 75,
+   "category": "risk_management",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Never take a huge position: any single option position must be less than 5% of the total option-buying portfolio.",
+   "quote": "Make sure any option position is less than 5% of your total option buying portfolio.",
+   "rule": {
+    "type": "threshold",
+    "metric": "position_pct_of_option_buying_portfolio",
+    "operator": "<",
+    "value": 5,
+    "action": "block",
+    "notes": "Max cost of any single long option position < 5% of the option-buying capital."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-025-b",
+   "secret": 25,
+   "chapter": "The Secret of Scaling",
+   "section": "Option Buying",
+   "page": 75,
+   "category": "tactics",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Scale into positions in small steps, adding as the underlying moves while still getting good value; if a super bargain appears, skip scaling and take what you can get.",
+   "quote": "initially take a small position and then add to it as the underlying moves in price",
+   "rule": {
+    "type": "procedure",
+    "metric": "entry_tranches",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Staged entry; exception for super bargains."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-025-c",
+   "secret": 25,
+   "chapter": "The Secret of Scaling",
+   "section": "Option Buying",
+   "page": 75,
+   "category": "tactics",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Scale out: sell some when the option doubles, more when it triples, and so on, leaving a few for a spectacular move.",
+   "quote": "Sell a few options when they double in price, sell some more when they triple in price and so on",
+   "rule": {
+    "type": "procedure",
+    "metric": "option_price_multiple_of_cost",
+    "operator": ">=",
+    "value": [
+     2,
+     3
+    ],
+    "action": "scale_out",
+    "notes": "Exit tranches at 2x, 3x (and higher multiples) of cost; keep a small remainder."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-025-d",
+   "secret": 25,
+   "chapter": "The Secret of Scaling",
+   "section": "Option Buying",
+   "page": 76,
+   "category": "tactics",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Buy at least three options per position so scaling out is possible.",
+   "quote": "Try to buy at least three options to each position you take.",
+   "rule": {
+    "type": "threshold",
+    "metric": "contracts_per_position",
+    "operator": ">=",
+    "value": 3,
+    "action": "warn",
+    "notes": "Minimum 3 contracts per long-option position."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-026",
+   "secret": 26,
+   "chapter": "Beware of Delusions of Grandeur",
+   "section": "Option Buying",
+   "page": 77,
+   "category": "psychology",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Keep realistic expectations: the goal is a profit each year; unrealistic goals cause excess risk-taking and quitting.",
+   "quote": "Your goal should be to make a profit, period, each year",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Qualitative."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-027",
+   "secret": 27,
+   "chapter": "Don't Plunge!",
+   "section": "Option Buying",
+   "page": 80,
+   "category": "risk_management",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Never plunge everything into one 'sure thing'; spread purchases over time and positions.",
+   "quote": "Spread out your purchases over time and position, and never bet everything on that sure thing.",
+   "rule": {
+    "type": "avoid",
+    "metric": "single_position_pct_of_portfolio",
+    "operator": null,
+    "value": null,
+    "action": "block",
+    "notes": "Concentration check; see Secret 25 for numeric cap."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-028-a",
+   "secret": 28,
+   "chapter": "Analyze Your Option Position",
+   "section": "Option Buying",
+   "page": 84,
+   "category": "analysis",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Before buying, compare candidate options on fair price, probability of profit and delta; buy below fair price, prefer higher probability and higher delta; if none is good, pass or trade the underlying.",
+   "quote": "1. The fair price of an option 2. The probability of profit 3. The delta",
+   "rule": {
+    "type": "procedure",
+    "metric": "option_selection_score",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Rank long-option candidates: price < fair value (required), higher P(profit) better, higher delta better. If no candidate qualifies, pass."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-028-b",
+   "secret": 28,
+   "chapter": "Analyze Your Option Position",
+   "section": "Option Buying",
+   "page": 83,
+   "category": "analysis",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Avoid buying options whose strike the underlying is unlikely to reach meaningfully (e.g. a 20 call at 1 with stock at 13 expired worthless even when stock reached 20).",
+   "quote": "Options have their own risk-reward picture, and you must understand that picture before entering a position.",
+   "rule": {
+    "type": "procedure",
+    "metric": "breakeven_at_expiration",
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Compute breakeven (strike + premium) and confirm forecast move exceeds it."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-029",
+   "secret": 29,
+   "chapter": "The Secret of Profit Boxes",
+   "section": "Option Buying",
+   "page": 86,
+   "category": "tactics",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Profit Box: define a price range for the underlying; stay in while it remains in the box and exit immediately if it leaves; maximum holding period of three weeks.",
+   "quote": "you are only in the position for a maximum of three weeks and you have a very tight stop-loss",
+   "rule": {
+    "type": "procedure",
+    "metric": "holding_days",
+    "operator": "<=",
+    "value": 21,
+    "action": "exit",
+    "notes": "For ATM/ITM (high-delta, expensive) buys: exit if underlying leaves predefined box or after 21 days."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-030-a",
+   "secret": 30,
+   "chapter": "The Straddle Secret",
+   "section": "Option Buying",
+   "page": 88,
+   "category": "option_buying",
+   "applies_to": [
+    "straddle"
+   ],
+   "principle": "Only enter straddles where a simulation shows an 80% or better probability of hitting a profit point during the life of the trade; prefer cheap straddles with plenty of time on historically volatile stocks.",
+   "quote": "only enter such trades where you have an 80% or better probability of profit",
+   "rule": {
+    "type": "threshold",
+    "metric": "prob_touch_profit_simulated",
+    "operator": ">=",
+    "value": 0.8,
+    "action": "block",
+    "notes": "Straddle entry requires simulated probability >= 80% of reaching breakeven/profit at some time before expiration (path-dependent, not at-expiration). Breakevens = strike ± total premium."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-030-b",
+   "secret": 30,
+   "chapter": "The Straddle Secret",
+   "section": "Option Buying",
+   "page": 87,
+   "category": "option_buying",
+   "applies_to": [
+    "straddle"
+   ],
+   "principle": "Generally avoid straddles because they are expensive and lose if the underlying doesn't move—unless cheap with plenty of time.",
+   "quote": "if you can find a cheap straddle with plenty of time, you could find a strategy with a high probability of generating a profit",
+   "rule": {
+    "type": "prefer",
+    "metric": "straddle_cost",
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Expensive straddles discouraged."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-030-c",
+   "secret": 30,
+   "chapter": "The Straddle Secret",
+   "section": "Option Buying",
+   "page": 89,
+   "category": "tactics",
+   "applies_to": [
+    "straddle"
+   ],
+   "principle": "When a straddle is profitable, scale out and use tight trailing stops; after profiting on one side, consider selling the other side if premium remains.",
+   "quote": "when you take profits on one side of the position, you may wish to sell the other side if there is some option premium left",
+   "rule": {
+    "type": "procedure",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "scale_out",
+    "notes": "Apply Secret 21/22/25 exit rules to straddles."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-031",
+   "secret": 31,
+   "chapter": "Be Patient",
+   "section": "Option Buying",
+   "page": 91,
+   "category": "psychology",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Be patient: wait for trades with a good risk-reward picture and wait for the profits.",
+   "quote": "You need the patience to find an option play with a good risk-reward picture, and then you need the patience to wait for the profits!",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Qualitative."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-032-a",
+   "secret": 32,
+   "chapter": "The Option Buyer's Secret Weapon—Shock and Awe",
+   "section": "Option Buying",
+   "page": 94,
+   "category": "volatility",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Real price distributions have fat tails (moves up to 10 standard deviations), so the lognormal Black-Scholes model undervalues options—especially far out-of-the-money ones—giving buyers an edge from surprise volatility.",
+   "quote": "the pricing model is undervaluing the options, especially the out-of-the-money ones at the ends of the curve",
+   "rule": {
+    "type": "guideline",
+    "metric": "model_tail_adjustment",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Valuation note: treat lognormal model values of deep OTM options as understated; surprise volatility favors buyers and hurts naked writers."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-032-b",
+   "secret": 32,
+   "chapter": "The Option Buyer's Secret Weapon—Shock and Awe",
+   "section": "Option Buying",
+   "page": 95,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Buy options on underlyings with the greatest potential for surprise volatility (tech, hyped/overvalued stocks, single-drug pharma awaiting FDA, industries in flux).",
+   "quote": "buy options on stocks that have the greatest potential for surprise volatility",
+   "rule": {
+    "type": "prefer",
+    "metric": "surprise_volatility_potential",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Candidate screen: favor event-prone, high-volatility stocks for long options."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-033",
+   "secret": 33,
+   "chapter": "The Stock Advantage",
+   "section": "Option Buying",
+   "page": 97,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Prefer buying options on individual stocks over indexes or futures because stocks have the most surprise volatility (some exceed 100% historical volatility).",
+   "quote": "there is a big advantage to buying options on stocks rather than other instruments, such as futures",
+   "rule": {
+    "type": "prefer",
+    "metric": "underlying_type",
+    "operator": null,
+    "value": "stock",
+    "action": "recommend",
+    "notes": "Long-option candidate preference: stock > index/futures."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-034",
+   "secret": 34,
+   "chapter": "The Put Advantage",
+   "section": "Option Buying",
+   "page": 99,
+   "category": "option_buying",
+   "applies_to": [
+    "long_put"
+   ],
+   "principle": "Bias the option-buying portfolio with more puts than calls: puts produced the best returns and most home runs, stocks fall faster than they rise, and puts are usually cheaper.",
+   "quote": "I would bias my options portfolio with more puts than calls.",
+   "rule": {
+    "type": "prefer",
+    "metric": "put_call_ratio_of_long_positions",
+    "operator": ">",
+    "value": 1.0,
+    "action": "recommend",
+    "notes": "Long-option portfolio should hold more puts than calls (count or dollars); always hold both."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-035-a",
+   "secret": 35,
+   "chapter": "Diversify",
+   "section": "Option Buying",
+   "page": 101,
+   "category": "risk_management",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Diversify option buying across many positions, both puts and calls; few positions can wipe out the portfolio.",
+   "quote": "the more positions you have increases your odds of hitting a home run",
+   "rule": {
+    "type": "prefer",
+    "metric": "number_of_long_positions",
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Warn when the long-option book is concentrated in few positions or only one side (calls only / puts only)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-035-b",
+   "secret": 35,
+   "chapter": "Diversify",
+   "section": "Option Buying",
+   "page": 101,
+   "category": "risk_management",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Diversify over time: don't buy many positions at once; enter gradually and keep reserves, increasing buying when the market wakes up.",
+   "quote": "Don’t buy a lot of option positions at one time.",
+   "rule": {
+    "type": "avoid",
+    "metric": "pct_of_annual_budget_deployed_at_once",
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Spread entries over time; maintain cash reserve for losing streaks. No numeric limit given (Secret 96 says diversify over 2 years)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-035-c",
+   "secret": 35,
+   "chapter": "Diversify",
+   "section": "Option Buying",
+   "page": 102,
+   "category": "risk_management",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Budget a set dollar amount for option buying each year and invest it gradually over the year, possibly using seasonal tendencies.",
+   "quote": "plan to spend a set amount of dollars each year and gradually to invest that capital over that period",
+   "rule": {
+    "type": "procedure",
+    "metric": "annual_option_budget",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Track annual option-buying budget and pacing."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-036",
+   "secret": 36,
+   "chapter": "The Quick and the Dead",
+   "section": "Option Buying",
+   "page": 105,
+   "category": "tactics",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Option buying requires close surveillance and quick action; inertia (fear of loss, slowness to take profit) is the buyer's greatest enemy.",
+   "quote": "Inertia is the greatest enemy of the option buyer.",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Monitor long positions frequently; act on triggers immediately."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-037-a",
+   "secret": 37,
+   "chapter": "The Secret of Portfolio Insurance",
+   "section": "Option Buying",
+   "page": 107,
+   "category": "hedging",
+   "applies_to": [
+    "protective_put",
+    "long_put"
+   ],
+   "principle": "Always hold some puts to insure a stock/mutual-fund portfolio against unexpected declines.",
+   "quote": "always to hold some puts in their portfolio in order to protect their stock positions and mutual funds from unexpected market declines",
+   "rule": {
+    "type": "prefer",
+    "metric": "has_put_hedge",
+    "operator": "==",
+    "value": true,
+    "action": "recommend",
+    "notes": "If user holds equities, recommend a small put insurance sleeve."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-037-b",
+   "secret": 37,
+   "chapter": "The Secret of Portfolio Insurance",
+   "section": "Option Buying",
+   "page": 109,
+   "category": "hedging",
+   "applies_to": [
+    "protective_put",
+    "long_put"
+   ],
+   "principle": "Don't over-insure: buy cheap out-of-the-money puts as a safety net costing only a very small percentage of the portfolio (deductible-style protection).",
+   "quote": "your put insurance will not be a big investment, just a very small percentage of your portfolio",
+   "rule": {
+    "type": "guideline",
+    "metric": "put_insurance_pct_of_portfolio",
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Cheap OTM puts, small % of portfolio. Exact % not given (see 5–10% speculative cap in Secret 94)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-037-c",
+   "secret": 37,
+   "chapter": "The Secret of Portfolio Insurance",
+   "section": "Option Buying",
+   "page": 109,
+   "category": "hedging",
+   "applies_to": [
+    "protective_put",
+    "long_put"
+   ],
+   "principle": "Insurance puts should still be undervalued with decent probability of profit and delta; they need not be on the stocks you own, so be a bargain hunter.",
+   "quote": "make sure they are undervalued and have a decent probability of profit and delta",
+   "rule": {
+    "type": "procedure",
+    "metric": "market_price_vs_fair_value",
+    "operator": "<",
+    "value": 1.0,
+    "action": "warn",
+    "notes": "Apply long-option value screen to hedge puts too."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-037-d",
+   "secret": 37,
+   "chapter": "The Secret of Portfolio Insurance",
+   "section": "Option Buying",
+   "page": 110,
+   "category": "hedging",
+   "applies_to": [
+    "long_put"
+   ],
+   "principle": "In severe declines you sometimes get a second chance to buy puts at reasonable prices on stocks that haven't fallen yet—act quickly.",
+   "quote": "sometimes you are given a second chance to buy some put insurance",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Qualitative."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-038",
+   "secret": 38,
+   "chapter": "The Second Secret to Portfolio Insurance",
+   "section": "Option Buying",
+   "page": 111,
+   "category": "hedging",
+   "applies_to": [
+    "stock"
+   ],
+   "principle": "Structured products (e.g. principal-guaranteed index notes) give index exposure with built-in downside insurance at the cost of slightly smaller gains; read the prospectus.",
+   "quote": "Before purchasing shares in one of these structured instruments, do your homework.",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Alternative insurance; outside options tool scope."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-039-a",
+   "secret": 39,
+   "chapter": "A Long Shot Secret",
+   "section": "Option Buying",
+   "page": 115,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Long-shot expiration play: in the last week before expiration, buy very close-to-the-money index options (OEX, SPX) priced under 1, on weakness in the option price.",
+   "quote": "Try to buy options under 1 that are very close to the strike price.",
+   "rule": {
+    "type": "procedure",
+    "metric": "days_to_expiration",
+    "operator": "<=",
+    "value": 7,
+    "action": "warn",
+    "notes": "Speculative exception to Secret 24: DTE <= ~7 (last week), index options preferred, price < 1.00, underlying very close to strike, buy on option weakness. Expect many losses; consider paper-trading first; take fast profits."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-039-b",
+   "secret": 39,
+   "chapter": "A Long Shot Secret",
+   "section": "Option Buying",
+   "page": 116,
+   "category": "tactics",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "With expiring-option long shots, act fast on profits (example: bought at 1/8 and immediately placed sell at 1).",
+   "quote": "The lesson is that fast action is needed with this strategy.",
+   "rule": {
+    "type": "procedure",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "exit",
+    "notes": "Pre-place profit-taking orders on expiring long shots."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-040",
+   "secret": 40,
+   "chapter": "Take the Bet Instead of Making the Bet",
+   "section": "Option Writing",
+   "page": 120,
+   "category": "option_writing",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "To be a professional option trader you must do some option writing because it provides consistent income; writers can close the position any time by buying back.",
+   "quote": "to be a professional option trader, you must do some option writing because it provides a consistent source of income",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Strategy mix guideline."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-041",
+   "secret": 41,
+   "chapter": "The Secret Advantage of Option Writing",
+   "section": "Option Writing",
+   "page": 121,
+   "category": "option_writing",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Writing offers very high win probability (sometimes 99%); the writer only gets hurt by a big quick adverse move, but faces unlimited risk.",
+   "quote": "The only time the option writer gets hurt is when the underlying instrument makes a big quick move against you.",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Risk disclosure for naked writing."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-042",
+   "secret": 42,
+   "chapter": "The Secret of Quick Profits",
+   "section": "Option Writing",
+   "page": 123,
+   "category": "option_writing",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Write short-term options with high probability of profit for quick income, remembering the chance of financial ruin.",
+   "quote": "Writing short term options that have a high probability of profit can generate a lot of income for your portfolio quickly.",
+   "rule": {
+    "type": "prefer",
+    "metric": "days_to_expiration",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "See Secret 45 for numeric DTE."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-043",
+   "secret": 43,
+   "chapter": "Play It Naked",
+   "section": "Option Writing",
+   "page": 126,
+   "category": "option_writing",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Naked writing has unlimited/extreme risk, especially in crashes; only write naked in an ideal situation and stay defensive.",
+   "quote": "When at times I write naked puts and calls for speculation, I wait until I find an ideal situation.",
+   "rule": {
+    "type": "procedure",
+    "metric": "naked_write_conditions_met",
+    "operator": "==",
+    "value": true,
+    "action": "block",
+    "notes": "Naked writes require all ideal conditions (high probability, short time, overvalued, stop-loss, small size)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-044-a",
+   "secret": 44,
+   "chapter": "Probability—the First Secret for Option Writers",
+   "section": "Option Writing",
+   "page": 128,
+   "category": "option_writing",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Only write naked options when the probability of success exceeds 90%, found by writing far out-of-the-money options.",
+   "quote": "Whenever the probability of success is greater than 90%, I have a potential play.",
+   "rule": {
+    "type": "threshold",
+    "metric": "prob_success",
+    "operator": ">",
+    "value": 0.9,
+    "action": "block",
+    "notes": "Naked short option: require P(success) > 90% (probability the option expires worthless / stop not hit). Typically requires far OTM strike."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-044-b",
+   "secret": 44,
+   "chapter": "Probability—the First Secret for Option Writers",
+   "section": "Option Writing",
+   "page": 127,
+   "category": "risk_management",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Always use a stop-loss (based on the underlying) when writing naked; use a simulator to estimate probability of hitting the stop during the option's life.",
+   "quote": "Whenever you write naked options, you must use a stop-loss to survive.",
+   "rule": {
+    "type": "procedure",
+    "metric": "underlying_stop_defined",
+    "operator": "==",
+    "value": true,
+    "action": "block",
+    "notes": "Naked writes must have an underlying-price stop; compute P(touch stop) via simulation."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-044-c",
+   "secret": 44,
+   "chapter": "Probability—the First Secret for Option Writers",
+   "section": "Option Writing",
+   "page": 128,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "When an option is extremely overpriced or underpriced there is probably a reason—investigate (e.g. pending FDA review, takeover).",
+   "quote": "When an option is extremely overpriced or extremely underpriced, there is probably a reason.",
+   "rule": {
+    "type": "procedure",
+    "metric": "abs_mispricing",
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Flag extreme mispricings for event review before trading."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-044-d",
+   "secret": 44,
+   "chapter": "Probability—the First Secret for Option Writers",
+   "section": "Option Writing",
+   "page": 129,
+   "category": "option_writing",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "OTM writers have time and distance on their side: the underlying must move far enough and fast enough to hit the stop or strike before expiration.",
+   "quote": "the underlying price must move against them fast enough to beat the expiration date and far enough to hit their stop-loss or strike price",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Conceptual basis for short-DTE, far-OTM writing."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-045-a",
+   "secret": 45,
+   "chapter": "Time—the Second Secret for Option Writers",
+   "section": "Option Writing",
+   "page": 131,
+   "category": "option_writing",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Write options with less than one month to expiration and avoid writing options with more than two months to expiration.",
+   "quote": "For the writer, write options that have less than one month before expiration.",
+   "rule": {
+    "type": "threshold",
+    "metric": "days_to_expiration",
+    "operator": "<",
+    "value": 30,
+    "action": "recommend",
+    "notes": "Preferred writer DTE < ~30 days (one month)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-045-b",
+   "secret": 45,
+   "chapter": "Time—the Second Secret for Option Writers",
+   "section": "Option Writing",
+   "page": 131,
+   "category": "option_writing",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Avoid writing options with more than two months before expiration.",
+   "quote": "Avoid writing options that have more than two months before expiration.",
+   "rule": {
+    "type": "threshold",
+    "metric": "days_to_expiration",
+    "operator": ">",
+    "value": 60,
+    "action": "block",
+    "notes": "Block/strongly warn on short options (naked writes) with DTE > ~60 days (two months). Exceptions in book: covered call/LEAPS ratio examples and long-term blue-chip put writing to acquire stock (Secret 53)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-046-a",
+   "secret": 46,
+   "chapter": "Get Out of the Hot Seat!",
+   "section": "Option Writing",
+   "page": 133,
+   "category": "option_writing",
+   "applies_to": [
+    "short_call",
+    "short_put",
+    "vertical_spread"
+   ],
+   "principle": "Get out of the hot seat: buy back written options (naked or high-risk credit spreads) as soon as most of the premium has been captured.",
+   "quote": "When you are writing naked options or high risk credit spreads and when most of the premium has been captured or disappeared, you MUST EXIT your position.",
+   "rule": {
+    "type": "threshold",
+    "metric": "pct_premium_captured",
+    "operator": ">=",
+    "value": null,
+    "action": "exit",
+    "notes": "Exit short when 'most' of the premium is gone. Book gives no exact %; implement as configurable (e.g. user-defined) and cite as 'most of the premium'."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-046-b",
+   "secret": 46,
+   "chapter": "Get Out of the Hot Seat!",
+   "section": "Option Writing",
+   "page": 133,
+   "category": "option_writing",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Exit immediately on a major change in the underlying or overall market that you didn't plan for, even if the stop hasn't been hit.",
+   "quote": "if I see a major change in markets or the underlying security where it is moving against my position in a scenario I didn’t plan for, I will exit immediately",
+   "rule": {
+    "type": "procedure",
+    "metric": "scenario_change",
+    "operator": null,
+    "value": null,
+    "action": "exit",
+    "notes": "Discretionary exit trigger."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-046-c",
+   "secret": 46,
+   "chapter": "Get Out of the Hot Seat!",
+   "section": "Option Writing",
+   "page": 134,
+   "category": "tactics",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "The hot-seat concept also applies to a big profit on a long option: when the underlying stalls or reverses, take the money and run.",
+   "quote": "When the underlying stock or futures stalls or reverses trend, get out of the the hot seat.",
+   "rule": {
+    "type": "procedure",
+    "metric": "underlying_stall_or_reversal",
+    "operator": null,
+    "value": null,
+    "action": "exit",
+    "notes": "Exit trigger for profitable longs."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-047",
+   "secret": 47,
+   "chapter": "Expiration Writing",
+   "section": "Option Writing",
+   "page": 135,
+   "category": "option_writing",
+   "applies_to": [
+    "short_put",
+    "short_call"
+   ],
+   "principle": "Expiration writing: write comfortably out-of-the-money options expiring in just a few days, placing limit sell orders above the current bid, entering many orders in the last two or three days.",
+   "quote": "put in a lot of orders in the last two or three days before expiration",
+   "rule": {
+    "type": "procedure",
+    "metric": "days_to_expiration",
+    "operator": "<=",
+    "value": 3,
+    "action": "recommend",
+    "notes": "Expiration-writing setup: DTE 1–3 trading days, strike comfortably OTM, limit price above bid (e.g., bid .3 ask .8, sell at .40). Still subject to surprise volatility."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-048-a",
+   "secret": 48,
+   "chapter": "Defense, Defense, Defense",
+   "section": "Option Writing",
+   "page": 137,
+   "category": "risk_management",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Ten defensive steps for writers: use stops; only high-probability trades; only short-term options; only overvalued options; cover when most value is lost; never fear a loss; small positions; exit when uncomfortable; exit when the scenario/trend changes; diversify.",
+   "quote": "Here are ten defensive steps that I take to protect my portfolio from a disastrous hit",
+   "rule": {
+    "type": "procedure",
+    "metric": "writer_checklist",
+    "operator": null,
+    "value": [
+     "stop_loss",
+     "high_probability",
+     "short_term",
+     "overvalued",
+     "cover_when_most_value_lost",
+     "accept_losses",
+     "small_positions",
+     "exit_when_uncomfortable",
+     "exit_on_trend_change",
+     "diversify"
+    ],
+    "action": "block",
+    "notes": "Checklist gate for any short-option trade."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-048-b",
+   "secret": 48,
+   "chapter": "Defense, Defense, Defense",
+   "section": "Option Writing",
+   "page": 138,
+   "category": "risk_management",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "The two most important writer defenses are using a stop-loss and taking small positions.",
+   "quote": "The two most important steps to follow are the use of a stop-loss and taking small positions.",
+   "rule": {
+    "type": "procedure",
+    "metric": "stop_and_small_size",
+    "operator": "==",
+    "value": true,
+    "action": "block",
+    "notes": "Hard requirements for writers; small size not quantified."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-048-c",
+   "secret": 48,
+   "chapter": "Defense, Defense, Defense",
+   "section": "Option Writing",
+   "page": 138,
+   "category": "option_writing",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Only write overvalued options (market price above fair value).",
+   "quote": "4. Write only overvalued options.",
+   "rule": {
+    "type": "threshold",
+    "metric": "market_price_vs_fair_value",
+    "operator": ">",
+    "value": 1.0,
+    "action": "block",
+    "notes": "Short option price must exceed model fair value."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-048-d",
+   "secret": 48,
+   "chapter": "Defense, Defense, Defense",
+   "section": "Option Writing",
+   "page": 137,
+   "category": "psychology",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Always consider the worst-case scenario when writing: what's the worst that can happen, can I handle it?",
+   "quote": "Always ask yourself, “What is the worst thing that can happen to the position? Can I handle it? What can go wrong?”",
+   "rule": {
+    "type": "procedure",
+    "metric": "worst_case_loss_computed",
+    "operator": "==",
+    "value": true,
+    "action": "warn",
+    "notes": "Compute and display worst-case loss (e.g., gap/crash scenario) before a write."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-049-a",
+   "secret": 49,
+   "chapter": "When to Use Covered Call Writing",
+   "section": "Option Writing",
+   "page": 139,
+   "category": "option_writing",
+   "applies_to": [
+    "covered_call"
+   ],
+   "principle": "Covered call writing is ideal when you have a target sale price for the stock—write calls at that strike and get paid while waiting.",
+   "quote": "Covered call writing is ideal when you have a target where you wish to sell the stock.",
+   "rule": {
+    "type": "prefer",
+    "metric": "strike_equals_target_sale_price",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Covered call strike = user's target sale price."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-049-b",
+   "secret": 49,
+   "chapter": "When to Use Covered Call Writing",
+   "section": "Option Writing",
+   "page": 140,
+   "category": "option_writing",
+   "applies_to": [
+    "covered_call"
+   ],
+   "principle": "If you don't want to sell the stock, only write OTM calls with high probability of expiring, set a stop and buy back if hit, then roll further OTM if desired.",
+   "quote": "Only write an out-of-the-money option with a high probability of expiring, set a stop-loss and buy back the option if the stop is hit.",
+   "rule": {
+    "type": "procedure",
+    "metric": "covered_call_otm_and_stop",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "OTM strike + underlying stop + buy back on stop + optional roll."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-049-c",
+   "secret": 49,
+   "chapter": "When to Use Covered Call Writing",
+   "section": "Option Writing",
+   "page": 140,
+   "category": "option_writing",
+   "applies_to": [
+    "covered_call"
+   ],
+   "principle": "Always close covered call positions when most of the premium vanishes; avoid covered calls on stocks in strong uptrends unless a top is expected (then consider selling the stock).",
+   "quote": "Avoid covered call writing on a stock in a strong up-trend unless you believe it is making a top",
+   "rule": {
+    "type": "avoid",
+    "metric": "underlying_trend",
+    "operator": "==",
+    "value": "strong_uptrend",
+    "action": "warn",
+    "notes": "Warn on covered calls against strong uptrend; exit when most premium gone."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-050-a",
+   "secret": 50,
+   "chapter": "The Hidden Risk of Covered Call Writing",
+   "section": "Option Writing",
+   "page": 143,
+   "category": "option_writing",
+   "applies_to": [
+    "covered_call"
+   ],
+   "principle": "Covered calls cap upside yet keep all downside; roll out if the stock crosses the strike, with the stop set very close to the strike.",
+   "quote": "Your stop-loss should always be set very close to the strike price.",
+   "rule": {
+    "type": "procedure",
+    "metric": "stop_distance_from_strike",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Covered call stop on underlying very near the call strike; roll if crossed."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-050-b",
+   "secret": 50,
+   "chapter": "The Hidden Risk of Covered Call Writing",
+   "section": "Option Writing",
+   "page": 143,
+   "category": "hedging",
+   "applies_to": [
+    "covered_call",
+    "collar",
+    "stock"
+   ],
+   "principle": "Covered calls don't protect the downside (only a point or two); if the stock looks vulnerable, sell it or use a collar instead.",
+   "quote": "If your stock position looks vulnerable, sell the stock or do a collar (sell a call and buy a put); don’t write covered calls.",
+   "rule": {
+    "type": "prefer",
+    "metric": "downside_vulnerability",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "When bearish on held stock: recommend sale or collar, not covered call."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-051",
+   "secret": 51,
+   "chapter": "Covered Call Writing Strategies",
+   "section": "Option Writing",
+   "page": 145,
+   "category": "option_writing",
+   "applies_to": [
+    "covered_call"
+   ],
+   "principle": "Covered call writing on low-priced stocks (under $15) can yield much higher premiums relative to price—but only on stocks you want to own.",
+   "quote": "write calls on low priced stocks, priced under $15 a share",
+   "rule": {
+    "type": "threshold",
+    "metric": "stock_price",
+    "operator": "<",
+    "value": 15,
+    "action": "recommend",
+    "notes": "Higher premium-yield covered calls on stocks < $15; require user wants to own the stock."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-052-a",
+   "secret": 52,
+   "chapter": "Use Naked Put Writing to Buy Stock",
+   "section": "Option Writing",
+   "page": 148,
+   "category": "option_writing",
+   "applies_to": [
+    "short_put",
+    "cash_secured_put"
+   ],
+   "principle": "Only write naked puts on stocks you don't mind owning at the strike, and ensure you have enough capital to buy the stock.",
+   "quote": "I only write puts on stocks that I don’t mind owning at the strike price.",
+   "rule": {
+    "type": "procedure",
+    "metric": "capital_to_cover_assignment",
+    "operator": ">=",
+    "value": "strike*100*contracts",
+    "action": "block",
+    "notes": "Require cash/buying power >= strike × 100 × contracts and user flag 'willing to own'."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-052-b",
+   "secret": 52,
+   "chapter": "Use Naked Put Writing to Buy Stock",
+   "section": "Option Writing",
+   "page": 148,
+   "category": "risk_management",
+   "applies_to": [
+    "short_put"
+   ],
+   "principle": "For naked put writing to acquire stock, use mental stops so a gap below the strike lets you take the stock instead of buying back the put at a big loss.",
+   "quote": "when I write naked puts, I only use mental stops",
+   "rule": {
+    "type": "procedure",
+    "metric": "stop_type",
+    "operator": null,
+    "value": "mental",
+    "action": "recommend",
+    "notes": "For acquisition-intent puts, stop is advisory (alert) rather than a resting order."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-053-a",
+   "secret": 53,
+   "chapter": "Naked Put Writing Can Create a Win-Win Strategy",
+   "section": "Option Writing",
+   "page": 150,
+   "category": "option_writing",
+   "applies_to": [
+    "short_put",
+    "cash_secured_put"
+   ],
+   "principle": "Put writing is a win-win way to buy stock lower (net cost = strike − premium), but not appropriate when you want to buy immediately for a pending move.",
+   "quote": "Put writing is not appropriate when you want to buy a stock right away to take advantage of an immediate pending move.",
+   "rule": {
+    "type": "procedure",
+    "metric": "effective_purchase_price",
+    "operator": null,
+    "value": "strike - premium",
+    "action": "recommend",
+    "notes": "Show effective cost basis; suggest outright buy if user wants immediate exposure."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-053-b",
+   "secret": 53,
+   "chapter": "Naked Put Writing Can Create a Win-Win Strategy",
+   "section": "Option Writing",
+   "page": 150,
+   "category": "option_writing",
+   "applies_to": [
+    "short_put"
+   ],
+   "principle": "Takeover targets often have overvalued puts (arbitrage); write puts only at strikes with long-term chart support.",
+   "quote": "I only write puts on such stocks at strike prices at a point where they have long term support in the charts.",
+   "rule": {
+    "type": "procedure",
+    "metric": "strike_at_long_term_support",
+    "operator": "==",
+    "value": true,
+    "action": "recommend",
+    "notes": "Put strike at or below long-term support."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-053-c",
+   "secret": 53,
+   "chapter": "Naked Put Writing Can Create a Win-Win Strategy",
+   "section": "Option Writing",
+   "page": 151,
+   "category": "option_writing",
+   "applies_to": [
+    "short_put",
+    "cash_secured_put"
+   ],
+   "principle": "Alternative: write longer-term, way out-of-the-money puts on blue-chip stocks you love—either keep the premium or get the stock much cheaper.",
+   "quote": "he is writing longer term puts. These puts are way out-of-the-money on blue chip stocks that he loves",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Exception to short-DTE writer rule for acquisition-intent puts on blue chips."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-054",
+   "secret": 54,
+   "chapter": "Know the True Value Advantage",
+   "section": "Option Analysis",
+   "page": 156,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Options can be valued mathematically (Black-Scholes, based on cost of holding the underlying); the goal is to identify under/overpriced options and pounce.",
+   "quote": "Your goal is mathematically to identify underpriced or overpriced situations and to pounce on such opportunities.",
+   "rule": {
+    "type": "procedure",
+    "metric": "fair_value_model",
+    "operator": null,
+    "value": "Black-Scholes",
+    "action": "recommend",
+    "notes": "Compute theoretical value for every option considered."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-055-a",
+   "secret": 55,
+   "chapter": "Option Analysis Can Be Easy",
+   "section": "Option Analysis",
+   "page": 159,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Pre-trade checklist: (1) fair value—buy undervalued, sell overvalued; (2) probability of profit held to expiration; (3) probability of hitting stop or profit goal during life (simulator); (4) delta—buyers want higher, writers lower.",
+   "quote": "Make sure you buy undervalued and sell overvalued.",
+   "rule": {
+    "type": "procedure",
+    "metric": "pretrade_analysis",
+    "operator": null,
+    "value": [
+     "fair_value",
+     "prob_profit_expiration",
+     "prob_touch_stop_or_target",
+     "delta"
+    ],
+    "action": "block",
+    "notes": "All four metrics computed and displayed for every candidate."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-055-b",
+   "secret": 55,
+   "chapter": "Option Analysis Can Be Easy",
+   "section": "Option Analysis",
+   "page": 160,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "If you cannot get a statistical advantage (under/overvalued or good risk-reward), pass on the trade.",
+   "quote": "If you cannot get that advantage, pass on the trade.",
+   "rule": {
+    "type": "procedure",
+    "metric": "has_edge",
+    "operator": "==",
+    "value": true,
+    "action": "block",
+    "notes": "No-edge trades blocked."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-056-a",
+   "secret": 56,
+   "chapter": "The Key to Options Analysis",
+   "section": "Option Analysis",
+   "page": 163,
+   "category": "volatility",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Volatility of the underlying is the key unknown input for fair value and probability; historical (statistical) volatility is the standard deviation of price changes over a set period.",
+   "quote": "The historical volatility or statistical volatility is a standard deviation of change in price over a set period of days and weeks.",
+   "rule": {
+    "type": "procedure",
+    "metric": "volatility_input",
+    "operator": null,
+    "value": "historical_volatility",
+    "action": "recommend",
+    "notes": "Compute HV as annualized std dev of log price changes."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-056-b",
+   "secret": 56,
+   "chapter": "The Key to Options Analysis",
+   "section": "Option Analysis",
+   "page": 164,
+   "category": "volatility",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Match the volatility lookback to holding period: floor traders use 20–30 days; for longer holds use a longer-term historical volatility such as 100 days or 20 weeks.",
+   "quote": "you should use a longer term historical volatility (i.e. 100 days or 20 weeks)",
+   "rule": {
+    "type": "threshold",
+    "metric": "hv_lookback_days",
+    "operator": null,
+    "value": {
+     "short_term": [
+      20,
+      30
+     ],
+     "longer_holds": "100 days or 20 weeks"
+    },
+    "action": "recommend",
+    "notes": "Default HV lookback for retail holding periods: 100 trading days (or 20 weeks); 20–30 days only for very short-term trading."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-057-a",
+   "secret": 57,
+   "chapter": "Implied Volatility—An Option Analysis Shortcut",
+   "section": "Option Analysis",
+   "page": 165,
+   "category": "volatility",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Implied volatility is the volatility that makes the model price equal the market price; IV close to historical volatility suggests the option is fairly valued.",
+   "quote": "the implied volatility will usually come close to matching the historical volatility, suggesting the option is fairly valued",
+   "rule": {
+    "type": "procedure",
+    "metric": "iv_minus_hv",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Solve for IV iteratively; compare IV to HV: IV>HV overvalued, IV<HV undervalued."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-057-b",
+   "secret": 57,
+   "chapter": "Implied Volatility—An Option Analysis Shortcut",
+   "section": "Option Analysis",
+   "page": 167,
+   "category": "volatility",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "When IV is extremely low relative to its own history the option is underpriced; extremely high relative to history, overpriced. Same can be done with a historical-volatility chart.",
+   "quote": "When the implied volatility is extremely low, based on its past history, the underlying option is underpriced.",
+   "rule": {
+    "type": "threshold",
+    "metric": "iv_percentile",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Buy when IV near historical lows (low IV percentile); write when near highs. Book gives no percentile cutoff ('extremely')."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-057-c",
+   "secret": 57,
+   "chapter": "Implied Volatility—An Option Analysis Shortcut",
+   "section": "Option Analysis",
+   "page": 167,
+   "category": "volatility",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Implied volatility can also be used as the volatility input when calculating probability of profit or running a simulator.",
+   "quote": "implied volatility can be used when calculating a probability of profit or or when using a simulator",
+   "rule": {
+    "type": "procedure",
+    "metric": "probability_vol_input",
+    "operator": null,
+    "value": [
+     "historical_volatility",
+     "implied_volatility"
+    ],
+    "action": "recommend",
+    "notes": "Allow either HV or IV as probability-model input."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-058-a",
+   "secret": 58,
+   "chapter": "Keep Your Eyes on the Delta",
+   "section": "Option Analysis",
+   "page": 169,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Focus on delta and avoid getting lost in other Greeks (gamma, theta, vega).",
+   "quote": "it is best to concentrate on the delta and avoid getting lost in the statistics of the other Greeks",
+   "rule": {
+    "type": "prefer",
+    "metric": "greeks_displayed",
+    "operator": null,
+    "value": "delta",
+    "action": "recommend",
+    "notes": "Primary Greek in UI = delta."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-058-b",
+   "secret": 58,
+   "chapter": "Keep Your Eyes on the Delta",
+   "section": "Option Analysis",
+   "page": 170,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Higher delta is better for option buyers; lower delta is better for option writers.",
+   "quote": "the higher the delta, the better the play for the option buyer; the lower the delta, the better the play for the option writer",
+   "rule": {
+    "type": "prefer",
+    "metric": "delta",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Ranking: longs by higher |delta| (among undervalued choices), shorts by lower |delta|."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-059-a",
+   "secret": 59,
+   "chapter": "Use Probability Analysis",
+   "section": "Option Analysis",
+   "page": 171,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Compute probability of profit if held to expiration in a random market; best for comparing positions and for spreads held to expiration.",
+   "quote": "The probability calculator enables you to determine the probability of making a profit if you hold the option positions until expiration in a random market.",
+   "rule": {
+    "type": "procedure",
+    "metric": "prob_profit_expiration",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Lognormal, zero-bias P(underlying beyond breakeven at expiration)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-059-b",
+   "secret": 59,
+   "chapter": "Use Probability Analysis",
+   "section": "Option Analysis",
+   "page": 172,
+   "category": "analysis",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Option buyers' probability is never greater than 50% in a random market, so buyers must be active and act before expiration.",
+   "quote": "your probability will never be greater than 50% in a random market",
+   "rule": {
+    "type": "threshold",
+    "metric": "prob_profit_long_option",
+    "operator": "<=",
+    "value": 0.5,
+    "action": "warn",
+    "notes": "See OTS-007-a."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-060-a",
+   "secret": 60,
+   "chapter": "The Secret Weapon of Option Analysis",
+   "section": "Option Analysis",
+   "page": 173,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Use simulation (Monte Carlo) to estimate the probability of hitting a profit goal or stop-loss on the underlying during the life of the option.",
+   "quote": "Simulation enables you to determine the probability of hitting a profit goal or stop-loss price based on the underlying security or futures.",
+   "rule": {
+    "type": "procedure",
+    "metric": "prob_touch_simulated",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Path simulation of underlying (random walk, lognormal); stops/targets defined on underlying price."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-060-b",
+   "secret": 60,
+   "chapter": "The Secret Weapon of Option Analysis",
+   "section": "Option Analysis",
+   "page": 174,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Avoid adding a bullish/bearish bias to simulations, or use only a small bias.",
+   "quote": "Personally I would avoid that feature or enter a small bias",
+   "rule": {
+    "type": "threshold",
+    "metric": "simulation_drift",
+    "operator": null,
+    "value": 0,
+    "action": "warn",
+    "notes": "Default drift 0; allow only small bias; warn if user enters a large bias."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-060-c",
+   "secret": 60,
+   "chapter": "The Secret Weapon of Option Analysis",
+   "section": "Option Analysis",
+   "page": 174,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Simulation forces a game plan with profit goals and stops before entry; if the simulator's prediction doesn't look good, pass.",
+   "quote": "If the prediction from the simulator doesn’t look good, pass on the trade.",
+   "rule": {
+    "type": "procedure",
+    "metric": "plan_defined",
+    "operator": "==",
+    "value": true,
+    "action": "block",
+    "notes": "Require profit target and stop before entry; block if simulated outcome poor."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-061",
+   "secret": 61,
+   "chapter": "A Tool for Your Arsenal",
+   "section": "Option Analysis",
+   "page": 175,
+   "category": "analysis",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Percent-to-Double: the % move in the underlying needed for the option to double; smaller is better for buyers (reverse for writers); use only for short-term options.",
+   "quote": "the Percent to Double feature is a tool that should only be used for short term options",
+   "rule": {
+    "type": "procedure",
+    "metric": "pct_move_to_double",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Compute required underlying move for 2x option value (short-term options only); rank ascending for buyers."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-062",
+   "secret": 62,
+   "chapter": "Searching for the Best Plays",
+   "section": "Option Analysis",
+   "page": 178,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Use scanners to find under/overvalued plays, but vet results; extremely undervalued options often reflect a preset takeover price, and extremely overpriced ones may signal someone knows something.",
+   "quote": "when options are extremely overvalued or undervalued, you must question why!",
+   "rule": {
+    "type": "procedure",
+    "metric": "scan_result_vetting",
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Flag extreme scanner outliers (possible takeover/news)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-063",
+   "secret": 63,
+   "chapter": "Situational Analysis",
+   "section": "Option Analysis",
+   "page": 180,
+   "category": "analysis",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Situational analysis: all pieces must be in place—likely direction for the time span, overpriced options, high probability of winning (e.g., ~5% chance of hitting stop), and a supportive chart; act immediately on news; take small positions when writing naked.",
+   "quote": "When you find such a good statistical play, pounce on it, but don’t plunge.",
+   "rule": {
+    "type": "procedure",
+    "metric": "situational_checklist",
+    "operator": null,
+    "value": [
+     "directional_view",
+     "overpriced",
+     "high_probability",
+     "chart_resistance_support"
+    ],
+    "action": "recommend",
+    "notes": "Example: naked call with stop above resistance had 5% simulated stop-hit probability."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-064-a",
+   "secret": 64,
+   "chapter": "Unraveling the Mysteries of Baysian Analysis",
+   "section": "Option Analysis",
+   "page": 183,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Bayesian decision rule: assign subjective probabilities to price outcomes at expiration, multiply each by the P/L at that price, and sum to get Expected Value; prefer positive EV, recognizing thin EVs.",
+   "quote": "The result of this multiplication and addition process is called our Expected Value",
+   "rule": {
+    "type": "procedure",
+    "metric": "expected_value",
+    "operator": ">",
+    "value": 0,
+    "action": "warn",
+    "notes": "EV = Σ p_i × PL_i over scenarios. Example: IBM Jul 60 call at 3: 10%→+700, 20%→+200, 40%→0, 30%→−300 ⇒ EV +$20 per $300 risked (thin). Subjective probabilities should be capped per the 60% rule and can be replaced by probability calculator/simulator outputs."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-064-b",
+   "secret": 64,
+   "chapter": "Unraveling the Mysteries of Baysian Analysis",
+   "section": "Option Analysis",
+   "page": 185,
+   "category": "psychology",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Be realistic about subjective probabilities; don't let emotion or enthusiasm cloud judgment.",
+   "quote": "not let emotion and enthusiasm for the stock or futures cloud your judgment",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Qualitative."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-065",
+   "secret": 65,
+   "chapter": "Gone in 60 Minutes",
+   "section": "Option Analysis",
+   "page": 187,
+   "category": "preparation",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Keep analysis software simple: if you can't learn it in 60 minutes, don't use it.",
+   "quote": "if you can’t learn how to use the software in 60 minutes, don’t use it",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "UX design principle for the tool itself."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-066",
+   "secret": 66,
+   "chapter": "Your Crystal Ball to the Future or Risk-Reward Analysis Using AI",
+   "section": "Option Analysis",
+   "page": 190,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "AI tools can rate a trade by creating an automatic game plan and computing risk-reward and Bayesian expected value.",
+   "quote": "AI makes options analysis easy for the option trader by giving him or her a method to rate the play, plus Expected Value generated by Baysian Analysis",
+   "rule": {
+    "type": "procedure",
+    "metric": "trade_rating",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Auto game plan + rating + EV."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-067",
+   "secret": 67,
+   "chapter": "The Spread Advantage",
+   "section": "Spreading",
+   "page": 195,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread",
+    "calendar_spread",
+    "ratio_spread"
+   ],
+   "principle": "Spreads limit risk and can be designed with high probability of profit; for writers they remove the unlimited risk of naked writing; for buyers they trade home runs for singles and doubles.",
+   "quote": "For the option writer, spreads can remove the unlimited risk present with naked writing.",
+   "rule": {
+    "type": "prefer",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Prefer defined-risk spreads over naked writes."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-068",
+   "secret": 68,
+   "chapter": "The Secret Costs of Option Spreads—Beware of Slippage",
+   "section": "Spreading",
+   "page": 197,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread",
+    "calendar_spread",
+    "ratio_spread",
+    "straddle"
+   ],
+   "principle": "Minimize trading: spreads magnify commissions and slippage (four trades for a simple spread); keep it simple.",
+   "quote": "One of my major rules of successful option trading is to minimize your trading.",
+   "rule": {
+    "type": "guideline",
+    "metric": "total_round_trip_legs",
+    "operator": null,
+    "value": 4,
+    "action": "warn",
+    "notes": "Display total transaction costs (commission + bid/ask slippage across all legs, in and out)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-069",
+   "secret": 69,
+   "chapter": "Beware of Alligator Spreads",
+   "section": "Spreading",
+   "page": 201,
+   "category": "spreads",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Avoid alligator spreads—any spread needing three trades to enter (e.g., butterflies)—because commissions and slippage eat you alive.",
+   "quote": "Avoid any spread that involves three trades to get in the position",
+   "rule": {
+    "type": "threshold",
+    "metric": "entry_legs",
+    "operator": ">=",
+    "value": 3,
+    "action": "block",
+    "notes": "Block strategies with 3 or more entry legs (butterflies, condors, etc.)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-070",
+   "secret": 70,
+   "chapter": "Avoid Delta Neutral Strategies",
+   "section": "Spreading",
+   "page": 203,
+   "category": "spreads",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Avoid delta-neutral strategies that require frequently adding/removing legs.",
+   "quote": "On paper this strategy looks great, but in practice it rarely works well.",
+   "rule": {
+    "type": "avoid",
+    "metric": "strategy_type",
+    "operator": "==",
+    "value": "delta_neutral_adjusting",
+    "action": "block",
+    "notes": "Do not recommend dynamic delta-hedged strategies."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-071",
+   "secret": 71,
+   "chapter": "Avoid Repair Strategies",
+   "section": "Spreading",
+   "page": 205,
+   "category": "risk_management",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Avoid repair strategies; when a trade goes bad, cut your losses instead of adding legs.",
+   "quote": "when your option trade goes astray, cut your losses! Don’t use a repair strategy.",
+   "rule": {
+    "type": "avoid",
+    "metric": "action_type",
+    "operator": "==",
+    "value": "repair_adjustment",
+    "action": "block",
+    "notes": "On losing positions, recommend closing rather than adding legs."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-072-a",
+   "secret": 72,
+   "chapter": "How to Reduce the Cost of Option Buying",
+   "section": "Spreading",
+   "page": 207,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread",
+    "calendar_spread"
+   ],
+   "principle": "Debit spreads (vertical or calendar) reduce the cost of buying options but cap profits (no home runs).",
+   "quote": "Vertical spreads work well for reducing the cost of the position but limit your profits so that you can’t hit home runs.",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Trade-off note."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-072-b",
+   "secret": 72,
+   "chapter": "How to Reduce the Cost of Option Buying",
+   "section": "Spreading",
+   "page": 208,
+   "category": "volatility",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Vertical debit spreads work best when the option bought has lower implied volatility than the OTM option sold (e.g., buy at 30% IV, sell at 40% IV).",
+   "quote": "if the implied volatility of the option you are purchasing is 30%, but the out-of-the-money option you are writing has an implied volatility of 40%, you have a good play",
+   "rule": {
+    "type": "threshold",
+    "metric": "iv_sold_minus_iv_bought",
+    "operator": ">",
+    "value": 0,
+    "action": "recommend",
+    "notes": "Favor verticals where IV(short leg) > IV(long leg); example spread of 10 vol points. Also run probability analysis. Max loss = debit (= margin)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-073-a",
+   "secret": 73,
+   "chapter": "Rules of the Road",
+   "section": "Spreading",
+   "page": 209,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Stock/index debit spread design: buy close-to-the-money, sell further OTM; maximum profit must be at least 200%.",
+   "quote": "3. The maximum profit must be at least 200%.",
+   "rule": {
+    "type": "threshold",
+    "metric": "max_profit_pct_of_debit",
+    "operator": ">=",
+    "value": 200,
+    "action": "block",
+    "notes": "Stock/index debit spreads: (width − debit)/debit ≥ 2.0."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-073-b",
+   "secret": 73,
+   "chapter": "Rules of the Road",
+   "section": "Spreading",
+   "page": 209,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Stock/index debit spread: do not sell an option for less than .4.",
+   "quote": "4. Do not sell an option for less than .4.",
+   "rule": {
+    "type": "threshold",
+    "metric": "short_leg_premium",
+    "operator": ">=",
+    "value": 0.4,
+    "action": "block",
+    "notes": "Short leg price ≥ 0.40 for stock/index debit spreads."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-073-c",
+   "secret": 73,
+   "chapter": "Rules of the Road",
+   "section": "Spreading",
+   "page": 209,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Stock/index debit spread: try for probability of profit of 35% or better.",
+   "quote": "Try to design a spread with a probability of profit of 35% or better.",
+   "rule": {
+    "type": "threshold",
+    "metric": "prob_profit_expiration",
+    "operator": ">=",
+    "value": 0.35,
+    "action": "warn",
+    "notes": "Debit spread P(profit at expiration) ≥ 35%."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-073-d",
+   "secret": 73,
+   "chapter": "Rules of the Road",
+   "section": "Spreading",
+   "page": 209,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Debit spread long leg should be close-to-the-money and short leg further out-of-the-money.",
+   "quote": "1. Buy a close-to-the-money option. 2. Sell a further out-of-the-money option.",
+   "rule": {
+    "type": "procedure",
+    "metric": "leg_moneyness",
+    "operator": null,
+    "value": {
+     "long": "near_the_money",
+     "short": "further_otm"
+    },
+    "action": "block",
+    "notes": "Structure check."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-073-e",
+   "secret": 73,
+   "chapter": "Rules of the Road",
+   "section": "Spreading",
+   "page": 210,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Commodity debit spreads: short leg more than one strike out, max profit at least 300%, don't sell an option for less than $100, always use a spread order, probability of profit 35%+, commission no more than $20 round trip per side.",
+   "quote": "3. The maximum profit must be at least 300%.",
+   "rule": {
+    "type": "threshold",
+    "metric": "commodity_debit_spread_rules",
+    "operator": null,
+    "value": {
+     "short_leg_strikes_out": ">1",
+     "max_profit_pct_min": 300,
+     "short_leg_min_dollars": 100,
+     "spread_order": true,
+     "prob_profit_min": 0.35,
+     "max_commission_round_trip_per_side": 20
+    },
+    "action": "block",
+    "notes": "Applies to futures/commodity option debit spreads."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-074",
+   "secret": 74,
+   "chapter": "Go Online!",
+   "section": "Trading Tactics",
+   "page": 214,
+   "category": "tactics",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Trade online for faster execution, instant feedback and better prices.",
+   "quote": "the internet will give you an edge in the market by giving you better trade executions",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Execution channel."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-075-a",
+   "secret": 75,
+   "chapter": "The Hidden Cost of Trading",
+   "section": "Trading Tactics",
+   "page": 217,
+   "category": "tactics",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Slippage (bid-ask spread) is the hidden cost of trading and can be ~30% of an option's price (e.g., 1 bid / 1.3 ask); reduce trades and trade liquid options with tighter spreads; cheap options have proportionally higher slippage.",
+   "quote": "try to trade options with more liquidity, options with good volume that trade more often",
+   "rule": {
+    "type": "threshold",
+    "metric": "bid_ask_pct_of_price",
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Compute (ask−bid)/price; book example 30% is presented as a cost to avoid, no explicit cutoff. Prefer higher volume/open interest."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-075-b",
+   "secret": 75,
+   "chapter": "The Hidden Cost of Trading",
+   "section": "Trading Tactics",
+   "page": 218,
+   "category": "tactics",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Commissions: paying more than $5 per option means real trouble; try not to pay more than $3 per option.",
+   "quote": "If you are paying more than $5 per option in commissions, you are in real trouble. Try to avoid paying more than $3 per option.",
+   "rule": {
+    "type": "threshold",
+    "metric": "commission_per_contract",
+    "operator": ">",
+    "value": {
+     "warn": 3,
+     "block": 5
+    },
+    "action": "warn",
+    "notes": "Commission per contract > $3 warn; > $5 strong warning."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-076",
+   "secret": 76,
+   "chapter": "Act Like a Market-Maker",
+   "section": "Trading Tactics",
+   "page": 221,
+   "category": "tactics",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Act like a market maker: public limit orders at the bid have priority over market makers, so you can capture slippage with patient limit orders.",
+   "quote": "As a public player, you have priority over the market makers’ bid and asked prices.",
+   "rule": {
+    "type": "prefer",
+    "metric": "order_type",
+    "operator": null,
+    "value": "limit",
+    "action": "recommend",
+    "notes": "Default to limit orders; consider buying at the bid / selling at the ask."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-077",
+   "secret": 77,
+   "chapter": "Test the Waters—How to Get the Best Price",
+   "section": "Trading Tactics",
+   "page": 223,
+   "category": "tactics",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Test the waters: place a limit order between bid and ask (e.g., 1.15 on a 1–1.3 market); if unfilled after a few minutes, move to the ask.",
+   "quote": "Enter a limit price of 1.15 and see if the market maker will bite.",
+   "rule": {
+    "type": "procedure",
+    "metric": "limit_price",
+    "operator": null,
+    "value": "mid",
+    "action": "recommend",
+    "notes": "Order workflow: start at/near midpoint, wait a few minutes, then step to ask (buys) or bid (sells)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-078",
+   "secret": 78,
+   "chapter": "You Can Buy the World for 1/8",
+   "section": "Trading Tactics",
+   "page": 225,
+   "category": "tactics",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Don't chase, but be willing to pay an extra .10–.15 to enter a really good opportunity; when you must exit (especially naked writes) try a minute or two then pay what the market bears.",
+   "quote": "be willing to pay an extra .10 ($10) or .15 ($15) to enter a trade if you have a really good opportunity",
+   "rule": {
+    "type": "threshold",
+    "metric": "price_concession",
+    "operator": null,
+    "value": [
+     0.1,
+     0.15
+    ],
+    "action": "recommend",
+    "notes": "Allow up to $0.10–$0.15 concession on good entries; for forced naked-write exits, give 1–2 minutes then market."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-079",
+   "secret": 79,
+   "chapter": "How to Enter Spread Positions",
+   "section": "Trading Tactics",
+   "page": 227,
+   "category": "tactics",
+   "applies_to": [
+    "vertical_spread",
+    "calendar_spread"
+   ],
+   "principle": "Enter spreads with spread limit orders specifying the net debit/credit, avoiding loss of control when legging.",
+   "quote": "You should usually use spread limit orders to enter spread positions.",
+   "rule": {
+    "type": "prefer",
+    "metric": "spread_order_type",
+    "operator": null,
+    "value": "net_limit",
+    "action": "recommend",
+    "notes": "Default spread orders as net-price limit orders."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-080",
+   "secret": 80,
+   "chapter": "Secret Spreading Tactics",
+   "section": "Trading Tactics",
+   "page": 229,
+   "category": "tactics",
+   "applies_to": [
+    "vertical_spread",
+    "calendar_spread"
+   ],
+   "principle": "If legging into a spread, enter the long (buy) leg first so you are never naked, and avoid legging in fast-moving markets.",
+   "quote": "Usually you enter the buy side of the trade first so you are not naked at any time.",
+   "rule": {
+    "type": "procedure",
+    "metric": "leg_order",
+    "operator": null,
+    "value": "buy_first",
+    "action": "block",
+    "notes": "Never leg in short first; disallow legging in fast markets; spread orders must be limit orders."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-081",
+   "secret": 81,
+   "chapter": "Don't Tip Your Hand—Beware of Size",
+   "section": "Trading Tactics",
+   "page": 232,
+   "category": "tactics",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Don't tip your hand: quotes are typically guaranteed for 10 contracts a side, so enter orders of at most 10 contracts at a time.",
+   "quote": "enter orders of a maximum of 10 contracts at a time",
+   "rule": {
+    "type": "threshold",
+    "metric": "order_quantity",
+    "operator": "<=",
+    "value": 10,
+    "action": "warn",
+    "notes": "Split orders > 10 contracts into ≤10-lot child orders."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-082",
+   "secret": 82,
+   "chapter": "The Top Secret War Room",
+   "section": "Trading Tips",
+   "page": 235,
+   "category": "psychology",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Keep trades secret—telling others pressures your ego and makes it harder to take losses.",
+   "quote": "Don’t tell anyone what you are doing, including your wife or husband.",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Behavioral."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-083",
+   "secret": 83,
+   "chapter": "Don't Try to Catch a Falling Knife!",
+   "section": "Trading Tips",
+   "page": 239,
+   "category": "risk_management",
+   "applies_to": [
+    "short_put",
+    "stock"
+   ],
+   "principle": "Don't catch a falling knife: don't write puts into a major downtrend and don't buck strong momentum; naked writers should run for cover when the underlying moves against them.",
+   "quote": "Don’t write puts in the face of a major downtrend.",
+   "rule": {
+    "type": "avoid",
+    "metric": "underlying_trend",
+    "operator": "==",
+    "value": "major_downtrend",
+    "action": "block",
+    "notes": "Block new short puts / bull put spreads when underlying is in a major downtrend."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-084",
+   "secret": 84,
+   "chapter": "Only Play with Fun Money",
+   "section": "Trading Tips",
+   "page": 241,
+   "category": "risk_management",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Only buy options with 'fun money'—capital you are willing to lose entirely—set aside each year.",
+   "quote": "When you buy options, set aside some fun money every year and kiss it good-bye.",
+   "rule": {
+    "type": "procedure",
+    "metric": "annual_fun_money_budget",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Track annual speculative budget; see Secret 94 for 5–10% cap."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-085",
+   "secret": 85,
+   "chapter": "Know When to Fold Them",
+   "section": "Trading Tips",
+   "page": 243,
+   "category": "risk_management",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Know when to fold: exit when a trade goes bad, when you're uncomfortable, or when the underlying trend goes against you; taking losses is a virtue.",
+   "quote": "When the trend of the underlying goes against you, get out!",
+   "rule": {
+    "type": "procedure",
+    "metric": "trend_against_position",
+    "operator": null,
+    "value": null,
+    "action": "exit",
+    "notes": "Exit triggers: adverse trend, discomfort, trade failure."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-086",
+   "secret": 86,
+   "chapter": "The Secret of Sunk Cost",
+   "section": "Trading Tips",
+   "page": 245,
+   "category": "psychology",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Ignore sunk cost: decide whether you'd buy the position at today's price; if not, sell.",
+   "quote": "“Would I buy at today’s price?”",
+   "rule": {
+    "type": "procedure",
+    "metric": "would_buy_today",
+    "operator": "==",
+    "value": false,
+    "action": "exit",
+    "notes": "Re-evaluate positions at current price/fair value irrespective of entry cost; if current analysis wouldn't justify entry, recommend exit."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-087-a",
+   "secret": 87,
+   "chapter": "Always Use Stop-Losses, and Don't Look Back",
+   "section": "Trading Tips",
+   "page": 247,
+   "category": "risk_management",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Always use stop-losses for both buying and writing; they are a MUST for naked writers and credit spread traders.",
+   "quote": "Stop losses are a MUST for naked writers and credit spread traders.",
+   "rule": {
+    "type": "procedure",
+    "metric": "stop_defined",
+    "operator": "==",
+    "value": true,
+    "action": "block",
+    "notes": "Require stop for all positions; hard-block shorts/credit spreads without stops."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-087-b",
+   "secret": 87,
+   "chapter": "Always Use Stop-Losses, and Don't Look Back",
+   "section": "Trading Tips",
+   "page": 248,
+   "category": "risk_management",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Prefer contingency stops based on the underlying's price; if stops use option prices, use bid/ask, not last trade.",
+   "quote": "make sure to use the option bid or asked price, not the last price",
+   "rule": {
+    "type": "procedure",
+    "metric": "stop_reference_price",
+    "operator": null,
+    "value": "underlying (or option bid/ask, never last)",
+    "action": "block",
+    "notes": "Stop engine: trigger on underlying price; option-based stops must use bid (long exit) / ask (short exit)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-087-c",
+   "secret": 87,
+   "chapter": "Always Use Stop-Losses, and Don't Look Back",
+   "section": "Trading Tips",
+   "page": 248,
+   "category": "risk_management",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Trailing stop: keep it about 5% from the underlying and adjust as it moves in your favor; take profits on touch.",
+   "quote": "keeping it 5% away from the stock or futures price",
+   "rule": {
+    "type": "threshold",
+    "metric": "underlying_trailing_stop_pct",
+    "operator": "==",
+    "value": 5,
+    "action": "exit",
+    "notes": "Same as OTS-022-a."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-087-d",
+   "secret": 87,
+   "chapter": "Always Use Stop-Losses, and Don't Look Back",
+   "section": "Trading Tips",
+   "page": 249,
+   "category": "psychology",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Always obey stops, especially on writing positions; don't second-guess after being stopped out or taking profits.",
+   "quote": "Always obey your stop-loss point, especially when it comes to option writing positions.",
+   "rule": {
+    "type": "procedure",
+    "metric": "stop_override_allowed",
+    "operator": "==",
+    "value": false,
+    "action": "block",
+    "notes": "No overriding/moving stops away on shorts."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-088",
+   "secret": 88,
+   "chapter": "Check Your Track Record",
+   "section": "Trading Tips",
+   "page": 251,
+   "category": "psychology",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Review your track record at least once a year and write down guidelines from your mistakes.",
+   "quote": "review your track record at least once a year",
+   "rule": {
+    "type": "procedure",
+    "metric": "review_interval_days",
+    "operator": "<=",
+    "value": 365,
+    "action": "recommend",
+    "notes": "Annual performance review report."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-089",
+   "secret": 89,
+   "chapter": "The Dragon That You See Is Not the Dragon That Will Burn You",
+   "section": "Trading Tips",
+   "page": 253,
+   "category": "risk_management",
+   "applies_to": [
+    "short_call",
+    "short_put"
+   ],
+   "principle": "Be prepared for the unexpected: surprise volatility is the buyer's friend and writer's enemy; the next shock comes from an unexpected direction.",
+   "quote": "Such volatility is the friend of the option buyer but the enemy of the option writer.",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Stress test shorts for gaps."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-090",
+   "secret": 90,
+   "chapter": "Treasures on the Information Highway",
+   "section": "Trading Resources",
+   "page": 257,
+   "category": "preparation",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Use internet research and web-based scanners as part of homework.",
+   "quote": "To gain the edge, you must do your homework",
+   "rule": {
+    "type": "guideline",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Qualitative."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-091",
+   "secret": 91,
+   "chapter": "Avoid Analysis Paralysis",
+   "section": "Trading Resources",
+   "page": 260,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Avoid analysis paralysis: concentrate on delta, probability of hitting target, implied and historical volatility, and theoretical value; don't treat numbers as set in stone.",
+   "quote": "concentrate on the delta, probability of hitting your target, implied and historical volatility, and theoretical value",
+   "rule": {
+    "type": "procedure",
+    "metric": "core_metrics",
+    "operator": null,
+    "value": [
+     "delta",
+     "prob_touch_target",
+     "implied_volatility",
+     "historical_volatility",
+     "theoretical_value"
+    ],
+    "action": "recommend",
+    "notes": "Core metric set for UI."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-092-a",
+   "secret": 92,
+   "chapter": "How to Use Option Advisory Services",
+   "section": "Trading Resources",
+   "page": 262,
+   "category": "tactics",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "When using advisory recommendations, counter the crowd: use a different option or enter later, take profits before the recommended price, set stops further out, never chase unless still underpriced.",
+   "quote": "Never chase after an option recommendation unless the option continues to be underpriced.",
+   "rule": {
+    "type": "procedure",
+    "metric": "price_vs_fair_value_after_rec",
+    "operator": null,
+    "value": null,
+    "action": "block",
+    "notes": "For externally sourced ideas, only enter if still undervalued; adjust targets/stops away from crowd levels."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-092-b",
+   "secret": 92,
+   "chapter": "How to Use Option Advisory Services",
+   "section": "Trading Resources",
+   "page": 262,
+   "category": "tactics",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "The option price is the most important aspect of any play; if you can't get your price, wait or pass.",
+   "quote": "If you can’t get your price, wait till you can or pass.",
+   "rule": {
+    "type": "procedure",
+    "metric": "limit_price_respected",
+    "operator": "==",
+    "value": true,
+    "action": "block",
+    "notes": "Don't raise limit beyond value-justified price."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-093",
+   "secret": 93,
+   "chapter": "The 5 P's",
+   "section": "Trading Resources",
+   "page": 263,
+   "category": "preparation",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Write a game plan for each position (max risk, profit potential, stops, goals) and an overall plan of how many and what kinds of trades each month/year; ensure each has an edge and realistic objectives.",
+   "quote": "you need a well defined game plan of each position you enter, written down in black and white",
+   "rule": {
+    "type": "procedure",
+    "metric": "written_trade_plan",
+    "operator": "==",
+    "value": true,
+    "action": "block",
+    "notes": "Require plan fields: max risk, profit target, stop, time limit, edge rationale."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-094-a",
+   "secret": 94,
+   "chapter": "The Magic Pyramid",
+   "section": "Trading Resources",
+   "page": 268,
+   "category": "risk_management",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Magic Pyramid: at the peak, cheap home-run option buying with fun money—never more than 5%–10% of the portfolio.",
+   "quote": "never use more than 5%–10% of your portfolio to do so",
+   "rule": {
+    "type": "threshold",
+    "metric": "speculative_long_option_pct_of_portfolio",
+    "operator": "<=",
+    "value": [
+     5,
+     10
+    ],
+    "action": "block",
+    "notes": "Total capital in speculative cheap-option buying ≤ 5–10% of total portfolio (warn above 5%, block above 10%)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-094-b",
+   "secret": 94,
+   "chapter": "The Magic Pyramid",
+   "section": "Trading Resources",
+   "page": 267,
+   "category": "risk_management",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Asset allocation pyramid: large cash base, then high-rated short/intermediate bonds, 5–10% hard assets, stocks/funds (with options for income, acquisition and insurance), then aggressive spreads/naked writing, then speculative buying at the top.",
+   "quote": "About 5% to 10% of your portfolio should be in hard assets",
+   "rule": {
+    "type": "guideline",
+    "metric": "allocation_layers",
+    "operator": null,
+    "value": {
+     "cash": "large base",
+     "bonds": "short/intermediate high-rated",
+     "hard_assets_pct": [
+      5,
+      10
+     ],
+     "stocks": "with covered calls/put writing/put insurance/LEAPS spreads",
+     "aggressive_options": "debit/credit/diagonal/ratio spreads, naked writing",
+     "speculative_buying_pct_max": [
+      5,
+      10
+     ]
+    },
+    "action": "recommend",
+    "notes": "Portfolio framework."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-095-a",
+   "secret": 95,
+   "chapter": "Thar Is Gold in Them Thar Hills",
+   "section": "Power Plays",
+   "page": 271,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "The most powerful strategy is buying cheap, undervalued options (especially puts), exploiting fat-tailed surprise volatility.",
+   "quote": "the most powerful of all option strategies is to just BUY CHEAP OPTIONS, especially puts",
+   "rule": {
+    "type": "prefer",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Core strategy for speculative sleeve."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-095-b",
+   "secret": 95,
+   "chapter": "Thar Is Gold in Them Thar Hills",
+   "section": "Power Plays",
+   "page": 272,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Buying procedure: scan for undervalued options; check charts for no heavy overhead resistance (calls) or support beneath (puts) and that the underlying has made the needed move before in the time frame; check IV and HV are at a low ebb; run probability analysis.",
+   "quote": "to make sure these volatilities are at a low ebb on the charts",
+   "rule": {
+    "type": "procedure",
+    "metric": "long_option_pipeline",
+    "operator": null,
+    "value": [
+     "undervalued",
+     "no_resistance_calls_or_support_puts",
+     "historical_move_feasible",
+     "iv_and_hv_low_vs_history",
+     "probability_analysis"
+    ],
+    "action": "block",
+    "notes": "Full long-option screening pipeline."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-096-a",
+   "secret": 96,
+   "chapter": "Rules of the Road for Option Buying",
+   "section": "Power Plays",
+   "page": 273,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Stock option buying rules: buy only underpriced options.",
+   "quote": "1. Buy only underpriced options.",
+   "rule": {
+    "type": "threshold",
+    "metric": "market_price_vs_fair_value",
+    "operator": "<",
+    "value": 1.0,
+    "action": "block",
+    "notes": "Long price < fair value."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-096-b",
+   "secret": 96,
+   "chapter": "Rules of the Road for Option Buying",
+   "section": "Power Plays",
+   "page": 273,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Buy cheap stock options—priced under 1, or under 2.5 for LEAPS.",
+   "quote": "Buy cheap options—options priced under 1 or under 2.5 for Leaps.",
+   "rule": {
+    "type": "threshold",
+    "metric": "option_price",
+    "operator": "<",
+    "value": {
+     "standard": 1.0,
+     "leaps": 2.5
+    },
+    "action": "warn",
+    "notes": "Stock option premium < 1.00; LEAPS < 2.50 (per share)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-096-c",
+   "secret": 96,
+   "chapter": "Rules of the Road for Option Buying",
+   "section": "Power Plays",
+   "page": 274,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Buy close-to-the-money options where the stock has a good chance to move across the strike.",
+   "quote": "3. Buy close-to-the-money options.",
+   "rule": {
+    "type": "prefer",
+    "metric": "moneyness",
+    "operator": null,
+    "value": "near_the_money",
+    "action": "recommend",
+    "notes": "Prefer strikes near spot; require realistic chance of crossing strike. No % OTM limit given."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-096-d",
+   "secret": 96,
+   "chapter": "Rules of the Road for Option Buying",
+   "section": "Power Plays",
+   "page": 274,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Buy options with as much time as possible before expiration.",
+   "quote": "4. Buy options with as much time as possible before expiration.",
+   "rule": {
+    "type": "prefer",
+    "metric": "days_to_expiration",
+    "operator": null,
+    "value": "maximize",
+    "action": "recommend",
+    "notes": "Rank by more DTE (subject to price and value)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-096-e",
+   "secret": 96,
+   "chapter": "Rules of the Road for Option Buying",
+   "section": "Power Plays",
+   "page": 274,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Buy options where the underlying has potential for increased future volatility.",
+   "quote": "Buy options where the underlying stock has the potential for increased volatility in the future.",
+   "rule": {
+    "type": "prefer",
+    "metric": "volatility_expansion_potential",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Prefer low current IV/HV vs history, event-prone names."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-096-f",
+   "secret": 96,
+   "chapter": "Rules of the Road for Option Buying",
+   "section": "Power Plays",
+   "page": 274,
+   "category": "risk_management",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Put the same number of dollars in each long-option position.",
+   "quote": "6. Put the same number of dollars in each position.",
+   "rule": {
+    "type": "procedure",
+    "metric": "position_sizing_method",
+    "operator": null,
+    "value": "equal_dollar",
+    "action": "recommend",
+    "notes": "Equal-dollar sizing across long-option positions."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-096-g",
+   "secret": 96,
+   "chapter": "Rules of the Road for Option Buying",
+   "section": "Power Plays",
+   "page": 274,
+   "category": "risk_management",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Diversify option buying over time—over 2 years.",
+   "quote": "7. Diversify over time (2 years).",
+   "rule": {
+    "type": "procedure",
+    "metric": "diversification_horizon_years",
+    "operator": null,
+    "value": 2,
+    "action": "recommend",
+    "notes": "Pace option-buying entries across a 2-year horizon."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-096-h",
+   "secret": 96,
+   "chapter": "Rules of the Road for Option Buying",
+   "section": "Power Plays",
+   "page": 274,
+   "category": "tactics",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Buy in quantity to save commissions.",
+   "quote": "8. Buy in quantity to save commissions.",
+   "rule": {
+    "type": "guideline",
+    "metric": "contracts_per_order",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Balance with min 3 contracts (Secret 25) and ≤10 per order (Secret 81)."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-096-i",
+   "secret": 96,
+   "chapter": "Rules of the Road for Option Buying",
+   "section": "Power Plays",
+   "page": 274,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Try to buy options with at least a 20% chance of profit (stock and commodity options).",
+   "quote": "Try to buy options where there is at least a 20% chance of profit.",
+   "rule": {
+    "type": "threshold",
+    "metric": "prob_profit",
+    "operator": ">=",
+    "value": 0.2,
+    "action": "warn",
+    "notes": "Long option P(profit) ≥ 20%."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-096-j",
+   "secret": 96,
+   "chapter": "Rules of the Road for Option Buying",
+   "section": "Power Plays",
+   "page": 274,
+   "category": "option_buying",
+   "applies_to": [
+    "long_call",
+    "long_put"
+   ],
+   "principle": "Commodity option buying: buy only underpriced, close-to-the-money options with maximum time, volatility potential, chance to cross strike, ≥20% probability, diversify over 2 years, and pay no more than $400 per option.",
+   "quote": "2. Do not pay more than $400 for an option.",
+   "rule": {
+    "type": "threshold",
+    "metric": "commodity_option_cost_dollars",
+    "operator": "<=",
+    "value": 400,
+    "action": "block",
+    "notes": "Futures option premium ≤ $400 per contract."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-097-a",
+   "secret": 97,
+   "chapter": "Aggressive Writing with Limited Risk",
+   "section": "Power Plays",
+   "page": 275,
+   "category": "option_writing",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Prefer index credit spreads over naked stock writing: indexes dampen single-stock surprise volatility and spreads cap risk and margin.",
+   "quote": "A powerful play is the INDEX CREDIT SPREAD.",
+   "rule": {
+    "type": "prefer",
+    "metric": "underlying_type",
+    "operator": null,
+    "value": "broad_index",
+    "action": "recommend",
+    "notes": "For writing, recommend broad-based index credit spreads over naked stock options."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-097-b",
+   "secret": 97,
+   "chapter": "Aggressive Writing with Limited Risk",
+   "section": "Power Plays",
+   "page": 276,
+   "category": "risk_management",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Credit spread risk is the strike width less the credit; the wider the spread, the greater the risk.",
+   "quote": "The wider the spread, the greater the risk.",
+   "rule": {
+    "type": "procedure",
+    "metric": "max_loss",
+    "operator": null,
+    "value": "width*100 - credit*100",
+    "action": "recommend",
+    "notes": "Display max loss = (width − credit) × 100."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-097-c",
+   "secret": 97,
+   "chapter": "Aggressive Writing with Limited Risk",
+   "section": "Power Plays",
+   "page": 276,
+   "category": "risk_management",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Set the credit spread stop-loss out-of-the-money, away from the short strike (e.g., short OEX 400 call → stop about 395).",
+   "quote": "I always set my stop-loss out-of-the-money and away from the strike price of the option I am writing.",
+   "rule": {
+    "type": "procedure",
+    "metric": "stop_vs_short_strike",
+    "operator": null,
+    "value": "OTM side of short strike",
+    "action": "block",
+    "notes": "Call credit spread: stop below short strike; put credit spread: stop above short strike (example: ~5 points on OEX)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-097-d",
+   "secret": 97,
+   "chapter": "Aggressive Writing with Limited Risk",
+   "section": "Power Plays",
+   "page": 276,
+   "category": "risk_management",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Pass on a credit spread if the simulated probability of hitting the stop-loss during the life of the option exceeds 20%.",
+   "quote": "If the probability is greater than 20% of hitting the stop-loss during the life of the option, I pass.",
+   "rule": {
+    "type": "threshold",
+    "metric": "prob_touch_stop_simulated",
+    "operator": ">",
+    "value": 0.2,
+    "action": "block",
+    "notes": "Block index credit spread if simulated P(touch stop) > 20%."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-097-e",
+   "secret": 97,
+   "chapter": "Aggressive Writing with Limited Risk",
+   "section": "Power Plays",
+   "page": 277,
+   "category": "risk_management",
+   "applies_to": [
+    "vertical_spread",
+    "short_put"
+   ],
+   "principle": "Never buck the market trend—never enter put credit spreads in the teeth of a decline.",
+   "quote": "Never will I enter put spreads in the teeth of a decline.",
+   "rule": {
+    "type": "avoid",
+    "metric": "market_trend",
+    "operator": "==",
+    "value": "declining",
+    "action": "block",
+    "notes": "Block bull put spreads during market declines."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-097-f",
+   "secret": 97,
+   "chapter": "Aggressive Writing with Limited Risk",
+   "section": "Power Plays",
+   "page": 277,
+   "category": "option_writing",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Take profits and close a credit spread when it narrows and generates a good profit; also exit if the trend turns against you or you get uncomfortable.",
+   "quote": "make sure to take profits and close out your position if the spread narrows and generates a good profit during the life of the trade",
+   "rule": {
+    "type": "threshold",
+    "metric": "pct_max_profit_captured",
+    "operator": ">=",
+    "value": null,
+    "action": "exit",
+    "notes": "'Good profit' not quantified; configurable. Also exit on adverse trend."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-098-a",
+   "secret": 98,
+   "chapter": "Rules of the Road for Index Credit Spreads",
+   "section": "Power Plays",
+   "page": 279,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Index credit spread rules: use index options; sell a far-out-of-the-money option; buy one 5, 10 or 15 points further out.",
+   "quote": "Buy an index option that is 5, 10, or 15 points further out-of-the-money.",
+   "rule": {
+    "type": "threshold",
+    "metric": "spread_width_points",
+    "operator": "in",
+    "value": [
+     5,
+     10,
+     15
+    ],
+    "action": "block",
+    "notes": "Underlying must be an index; short leg far OTM; width ∈ {5,10,15} index points."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-098-b",
+   "secret": 98,
+   "chapter": "Rules of the Road for Index Credit Spreads",
+   "section": "Power Plays",
+   "page": 279,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Index credit spread: get a credit of at least .45.",
+   "quote": "4. Make certain to get a credit of at least .45.",
+   "rule": {
+    "type": "threshold",
+    "metric": "net_credit",
+    "operator": ">=",
+    "value": 0.45,
+    "action": "block",
+    "notes": "Net credit ≥ 0.45 per share ($45/spread)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-098-c",
+   "secret": 98,
+   "chapter": "Rules of the Road for Index Credit Spreads",
+   "section": "Power Plays",
+   "page": 280,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Index credit spread: enter with less than three weeks before expiration.",
+   "quote": "5. Enter such spreads with less than three weeks before expiration.",
+   "rule": {
+    "type": "threshold",
+    "metric": "days_to_expiration",
+    "operator": "<",
+    "value": 21,
+    "action": "block",
+    "notes": "DTE < 21 calendar days at entry."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-098-d",
+   "secret": 98,
+   "chapter": "Rules of the Road for Index Credit Spreads",
+   "section": "Power Plays",
+   "page": 280,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Index credit spread: set an out-of-the-money stop with an 85% chance of not being touched.",
+   "quote": "7. Set a stop-loss where there is an 85% chance of not touching the stop-loss.",
+   "rule": {
+    "type": "threshold",
+    "metric": "prob_not_touch_stop_simulated",
+    "operator": ">=",
+    "value": 0.85,
+    "action": "block",
+    "notes": "Stop placement: P(not touch) ≥ 85% (compare Secret 97: pass if P(touch) > 20%; Secret 97 example had 96%)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-099-a",
+   "secret": 99,
+   "chapter": "The Ratio Hedge",
+   "section": "Power Plays",
+   "page": 281,
+   "category": "hedging",
+   "applies_to": [
+    "ratio_spread",
+    "covered_call",
+    "stock"
+   ],
+   "principle": "Ratio hedge: own the stock and write more overpriced long-term calls than shares covered (e.g., 2 calls per 100 shares); involves naked risk—only for traders who tolerate it; key is finding overpriced options.",
+   "quote": "The key to success here is to find some overpriced options.",
+   "rule": {
+    "type": "procedure",
+    "metric": "short_option_overvalued",
+    "operator": "==",
+    "value": true,
+    "action": "warn",
+    "notes": "Requires overvalued short options; upside stop at the upper breakeven (example: 0–50 range on Rambus)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-099-b",
+   "secret": 99,
+   "chapter": "The Ratio Hedge",
+   "section": "Power Plays",
+   "page": 282,
+   "category": "analysis",
+   "applies_to": [
+    "ratio_spread"
+   ],
+   "principle": "Use a simulator to estimate the probability of hitting the ratio hedge's stop-loss points (example: 4% probability, 96% chance of breakeven or better).",
+   "quote": "your probability of hitting 50 would have been 4%, so there is a 96% chance of breaking even or making a profit",
+   "rule": {
+    "type": "procedure",
+    "metric": "prob_touch_stop_simulated",
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Compute P(touch) of upper/lower breakeven stops. No explicit threshold given for ratio hedges."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-100-a",
+   "secret": 100,
+   "chapter": "The Diagonal Spread",
+   "section": "Power Plays",
+   "page": 283,
+   "category": "spreads",
+   "applies_to": [
+    "calendar_spread"
+   ],
+   "principle": "Diagonal credit spread: write a near-term OTM option and buy a further-out-strike, longer-term option, only for a credit (or at most a very small debit); use a stop to avoid going in-the-money on the short.",
+   "quote": "However, I only do trades where there is a credit.",
+   "rule": {
+    "type": "threshold",
+    "metric": "net_credit",
+    "operator": ">=",
+    "value": 0,
+    "action": "block",
+    "notes": "Diagonal net price must be a credit (or at worst very small debit)."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-100-b",
+   "secret": 100,
+   "chapter": "The Diagonal Spread",
+   "section": "Power Plays",
+   "page": 285,
+   "category": "spreads",
+   "applies_to": [
+    "calendar_spread"
+   ],
+   "principle": "Diagonal rules: short strike about 3 to 5+ points OTM; long option expires 1+ month after the short with strike 2.5–5 points beyond the short; short option under 2 months to expiration.",
+   "quote": "Try to select a spread where the option you are writing has less than 2 months before expiration.",
+   "rule": {
+    "type": "threshold",
+    "metric": "diagonal_structure",
+    "operator": null,
+    "value": {
+     "short_otm_points_min": 3,
+     "short_otm_points_typical": [
+      3,
+      5
+     ],
+     "long_expiry_after_short_months_min": 1,
+     "strike_gap_points": [
+      2.5,
+      5
+     ],
+     "short_dte_max_days": 60
+    },
+    "action": "block",
+    "notes": "Structure validation for diagonal spreads; prefer 5-point spreads and long leg as far out in time as possible."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-100-c",
+   "secret": 100,
+   "chapter": "The Diagonal Spread",
+   "section": "Power Plays",
+   "page": 285,
+   "category": "risk_management",
+   "applies_to": [
+    "calendar_spread"
+   ],
+   "principle": "Diagonal stop: slightly in-the-money of the short strike (e.g., 55 call → stop 56); exit when stop hits, at short expiration, or when the short loses most of its value; can keep the long as a free option.",
+   "quote": "Set a stop-loss that is slightly in-the-money of the option that you have sold (i.e. a 55 call would have a stop at 56).",
+   "rule": {
+    "type": "procedure",
+    "metric": "stop_vs_short_strike",
+    "operator": null,
+    "value": "short_strike + ~1 point (calls)",
+    "action": "exit",
+    "notes": "Use simulator to confirm low P(touch stop). Book's track record: 15/18 (83%) profitable in 2002."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-101-a",
+   "secret": 101,
+   "chapter": "The Ultimate Power Play: The Secret Surrogate",
+   "section": "Power Plays",
+   "page": 287,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Long-term (LEAPS) debit spreads are powerful stock surrogates with potential payoffs up to 1000%.",
+   "quote": "It is a debit Leaps® spread or long term option debit spread.",
+   "rule": {
+    "type": "prefer",
+    "metric": null,
+    "operator": null,
+    "value": null,
+    "action": "recommend",
+    "notes": "Preferred bullish stock-surrogate structure."
+   },
+   "machine_checkable": false
+  },
+  {
+   "id": "OTS-101-b",
+   "secret": 101,
+   "chapter": "The Ultimate Power Play: The Secret Surrogate",
+   "section": "Power Plays",
+   "page": 289,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "LEAPS debit spread design: short strike several strikes away—10 points or more between strikes—and maximum profit of at least 400%.",
+   "quote": "Try to design one that has a spread of 10 points or more between strike prices and shows a maximum profit of at least 400%.",
+   "rule": {
+    "type": "threshold",
+    "metric": "leaps_debit_spread",
+    "operator": null,
+    "value": {
+     "strike_width_min_points": 10,
+     "max_profit_pct_min": 400
+    },
+    "action": "block",
+    "notes": "Width ≥ 10 points; (width − debit)/debit ≥ 4.0."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-101-c",
+   "secret": 101,
+   "chapter": "The Ultimate Power Play: The Secret Surrogate",
+   "section": "Power Plays",
+   "page": 289,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "LEAPS debit spread: use a simulator to find one with over an 80% chance of profiting (examples: 80% chance of doubling during life).",
+   "quote": "using a simulator, try to find one that has over an 80% chance of profiting",
+   "rule": {
+    "type": "threshold",
+    "metric": "prob_profit_simulated",
+    "operator": ">",
+    "value": 0.8,
+    "action": "warn",
+    "notes": "Simulated P(profit at some time during life) > 80%."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-101-d",
+   "secret": 101,
+   "chapter": "The Ultimate Power Play: The Secret Surrogate",
+   "section": "Power Plays",
+   "page": 289,
+   "category": "tactics",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Take profits on half of a LEAPS debit spread if it doubles; let the rest ride with a trailing stop.",
+   "quote": "Take profits on half of your position if the spread price doubles in value.",
+   "rule": {
+    "type": "threshold",
+    "metric": "spread_value_multiple_of_cost",
+    "operator": ">=",
+    "value": 2.0,
+    "action": "scale_out",
+    "notes": "Sell 50% at 2x; trailing stop on remainder."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-TUT-a",
+   "secret": null,
+   "chapter": "Tutorial",
+   "section": "Tutorial",
+   "page": 302,
+   "category": "tactics",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Liquidity (daily volume and open interest) matters: deep ITM/far OTM options may have none, and options with 7–9 months left normally lack the liquidity of 2–3 month options.",
+   "quote": "options that usually have lives of seven, eight, or nine months normally do not have the liquidity that an option of two or three months would maintain",
+   "rule": {
+    "type": "guideline",
+    "metric": "volume_open_interest",
+    "operator": null,
+    "value": null,
+    "action": "warn",
+    "notes": "Check average daily volume and open interest; warn on illiquid strikes/expirations. No numeric minimum given."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-TUT-b",
+   "secret": null,
+   "chapter": "Tutorial",
+   "section": "Tutorial",
+   "page": 300,
+   "category": "analysis",
+   "applies_to": [
+    "any"
+   ],
+   "principle": "Option price = intrinsic value + time value; time value declines to zero at expiration; experienced players mostly trade OTM options (time value only).",
+   "quote": "INTRINSIC VALUE + TIME VALUE = OPTION PRICE",
+   "rule": {
+    "type": "procedure",
+    "metric": "price_decomposition",
+    "operator": null,
+    "value": "intrinsic + time",
+    "action": "recommend",
+    "notes": "Display intrinsic and time value."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-TUT-c",
+   "secret": null,
+   "chapter": "Tutorial",
+   "section": "Tutorial",
+   "page": 308,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Debit spread math: cost = long − short price = max risk; max gain = strike width − cost; evaluate max % return and probability of profit/max return.",
+   "quote": "The result is the cost of the spread and your maximum risk.",
+   "rule": {
+    "type": "procedure",
+    "metric": "debit_spread_math",
+    "operator": null,
+    "value": "max_gain = width - debit; max_return = max_gain/debit",
+    "action": "recommend",
+    "notes": "Tutorial; short leg OTM by 2.5, 5, 10 or more points."
+   },
+   "machine_checkable": true
+  },
+  {
+   "id": "OTS-TUT-d",
+   "secret": null,
+   "chapter": "Tutorial",
+   "section": "Tutorial",
+   "page": 309,
+   "category": "spreads",
+   "applies_to": [
+    "vertical_spread"
+   ],
+   "principle": "Credit spread math: credit = short − long price; max risk = strike width − credit.",
+   "quote": "Your maximum risk is the difference between the strike prices",
+   "rule": {
+    "type": "procedure",
+    "metric": "credit_spread_math",
+    "operator": null,
+    "value": "max_risk = width - credit",
+    "action": "recommend",
+    "notes": "Tutorial."
+   },
+   "machine_checkable": true
+  }
+ ]
+}
