@@ -1,0 +1,15 @@
+{
+  "underlying": "XYZ",
+  "spot": 180.58,
+  "as_of": "2026-10-21",
+  "account_value": 100000,
+  "outlook": "bullish",
+  "history_csv": "XYZ.csv",
+  "benchmark_csv": "BENCH.csv",
+  "legs": [
+    {"action": "buy", "type": "call", "strike": 190, "expiration": "2027-01-15",
+     "quantity": 3, "bid": 7.20, "ask": 7.64, "price": 7.64, "open_interest": 726}
+  ],
+  "plan": {"stop": 170, "target": 200, "option_buying_portfolio": 50000,
+           "commission_per_contract": 0.65, "confidence": 0.75}
+}

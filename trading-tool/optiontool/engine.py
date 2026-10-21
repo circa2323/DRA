@@ -78,7 +78,8 @@ def management_plan(ctx: Context) -> list[Finding]:
         if cost and cost > 2.0 or any((m.moneyness or 0) < 0 for m in ctx.long_options):
             add("Expensive / in-the-money option: hold no more than 3 weeks (21 days).", "OTS-023-b")
         if dte is not None and dte >= 30:
-            add(f"Exit before the last month: by {dte - 30} days from now.", "OTS-024-a")
+            when = "now" if dte == 30 else f"within {dte - 30} days"
+            add(f"Exit before the option's last month: {when}.", "OTS-024-a")
         add("Exit if the underlying leaves your profit box or the trend turns against you; "
             "ask 'would I buy this today?'.", "OTS-029", "OTS-085", "OTS-086")
     if s == "vertical_spread" and not ctx.is_credit:

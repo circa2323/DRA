@@ -1,0 +1,11 @@
+{
+  "underlying": "XYZ",
+  "spot": 180.58,
+  "as_of": "2026-10-21",
+  "account_value": 20000,
+  "history_csv": "XYZ.csv",
+  "legs": [
+    {"action": "buy", "type": "call", "strike": 170, "expiration": "2026-11-20",
+     "quantity": 1, "bid": 12.48, "ask": 13.25, "price": 13.25}
+  ]
+}

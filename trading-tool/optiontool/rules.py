@@ -45,7 +45,7 @@ def _f(sev, msg, *ids):
 
 
 def pct(x: float) -> str:
-    return f"{x * 100:.0f}%"
+    return f"{x * 100:.1f}%" if abs(x) < 0.10 else f"{x * 100:.0f}%"
 
 
 LONG_SINGLE = ("long_call", "long_put")
@@ -467,8 +467,215 @@ def _leg_name(leg) -> str:
     return f"{verb} {leg.strike:g} {leg.type} {leg.expiration}"
 
 
-def all_principle_ids() -> set[str]:
+def all_principle_ids(library=None) -> set[str]:
+    """Ids registered on checks, plus (given a library) every id cited anywhere in the code."""
     out = set()
     for fn in CHECKS:
         out.update(fn.principles)
+    if library is not None:
+        from pathlib import Path
+        src = "".join(f.read_text() for f in Path(__file__).parent.glob("*.py"))
+        out.update(pid for pid in library.principles if f'"{pid}"' in src)
     return out
+
+
+# ================================================================ IAO (Fullman)
+BULLISH = ("long_call", "short_put", "covered_call")
+BEARISH = ("long_put", "short_call")
+
+
+def direction(ctx: Context) -> str | None:
+    s = ctx.strategy
+    if s in BULLISH:
+        return "bull"
+    if s in BEARISH:
+        return "bear"
+    if s == "vertical_spread":
+        t = ctx.trade.option_legs[0].type
+        # call debit / put credit = bullish; put debit / call credit = bearish
+        bull = (t == "call") != ctx.is_credit
+        return "bull" if bull else "bear"
+    return None
+
+
+def iv_regime(ctx: Context) -> tuple[str | None, str]:
+    """'high' / 'low' premium regime, judged against IV history or realised vol."""
+    s = ctx.settings
+    if ctx.iv_percentile is not None:
+        if ctx.iv_percentile >= s["iv_extreme_high_pct"]:
+            return "high", f"IV at {ctx.iv_percentile:.0f}th percentile of its history"
+        if ctx.iv_percentile <= s["iv_extreme_low_pct"]:
+            return "low", f"IV at {ctx.iv_percentile:.0f}th percentile of its history"
+        return None, f"IV at {ctx.iv_percentile:.0f}th percentile (mid-range)"
+    ivs = [m.iv for m in ctx.legs if m.iv]
+    if ivs and ctx.hv_short:
+        iv = sum(ivs) / len(ivs)
+        return ("high" if iv > ctx.hv_short else "low"), f"IV {iv:.0%} vs HV {ctx.hv_short:.0%}"
+    return None, "IV regime unknown"
+
+
+@check("IAO-02-09", "IAO-02-07", "OTS-085")
+def trade_with_the_trend(ctx: Context):
+    tv, d = ctx.technical, direction(ctx)
+    if tv is None or d is None:
+        return
+    t = tv.primary_trend
+    if (d == "bull" and t == "down") or (d == "bear" and t == "up"):
+        yield _f(WARN, f"{'Bullish' if d == 'bull' else 'Bearish'} position against the {t}trend: the stock "
+                       "is likely to resume its primary trend — treat as a short-term countertrend trade.",
+                 "IAO-02-09", "IAO-02-07", "OTS-085", *tv.trend_principles)
+    elif t in ("up", "down"):
+        yield _f(PASS, f"Position is aligned with the {t}trend.", "IAO-02-09", *tv.trend_principles)
+
+
+@check("IAO-00-03", "IAO-02-02", "IAO-12-02", "IAO-07-11", "OTS-057-b")
+def premium_regime(ctx: Context):
+    regime, why = iv_regime(ctx)
+    if regime is None:
+        return
+    buyer = not ctx.is_credit and bool(ctx.long_options) and not ctx.short_options
+    seller = ctx.is_credit or ctx.strategy in NAKED_SHORT + ("covered_call",)
+    if buyer and regime == "high":
+        yield _f(WARN, f"Buying premium while it is high ({why}): professionals sell when IV is high "
+                       "and buy when it is low.", "IAO-00-03", "IAO-07-11", "OTS-057-b")
+    elif seller and regime == "low":
+        yield _f(WARN, f"Selling premium while it is low ({why}): below-normal premiums; consider buying instead.",
+                 "IAO-00-03", "IAO-12-02", "OTS-057-b")
+    elif buyer or seller:
+        yield _f(PASS, f"{'Buying' if buyer else 'Selling'} premium in a {regime}-IV regime ({why}).",
+                 "IAO-00-03", "IAO-07-11")
+
+
+@check("IAO-11-08", "IAO-06-14", "IAO-16-30")
+def straddle_iv(ctx: Context):
+    if ctx.strategy not in ("straddle", "strangle"):
+        return
+    regime, why = iv_regime(ctx)
+    if regime == "high":
+        yield _f(BLOCK, f"Long straddle/strangle with high IV ({why}): buy them only when IV is low — "
+                        "high premiums need bigger moves.", "IAO-11-08")
+    elif regime == "low":
+        tv = ctx.technical
+        if tv is not None and tv.trend_strength in ("weak", "consolidating"):
+            yield _f(PASS, "Low IV in a narrowing consolidation — the setup for straddles.", "IAO-06-14", "IAO-06-13")
+
+
+@check("IAO-06-01", "IAO-06-02", "IAO-05-16", "IAO-02-21", "IAO-02-19", "IAO-12-01")
+def covered_call_timing(ctx: Context):
+    if ctx.strategy != "covered_call":
+        return
+    m = ctx.short_options[0]
+    if m.leg.strike <= ctx.trade.spot:
+        yield _f(WARN, "Overwrite strike at or below the stock price: pick a strike above it to keep some upside.",
+                 "IAO-02-21")
+    tv = ctx.technical
+    if tv is None:
+        return
+    if tv.overbought_daily and tv.overbought_weekly:
+        lo, hi = 21, 63
+        ok = lo <= (m.dte or 0) <= hi
+        yield _f(PASS if ok else INFO, f"Overbought on daily and weekly: classic overwrite; book uses 3–9 weeks "
+                                       f"(this one {m.dte}d).", "IAO-06-01")
+    elif tv.overbought_daily:
+        ok = 15 <= (m.dte or 0) <= 45
+        yield _f(PASS if ok else INFO, f"Overbought on daily only: book writes 15–45 day calls (this one {m.dte}d).",
+                 "IAO-06-02")
+    elif tv.primary_trend == "up" and not tv.momentum_fading:
+        yield _f(INFO, "Uptrend without overbought readings or fading momentum: no technical reason to cap upside yet.",
+                 "IAO-06-01", "IAO-16-17")
+    prem = m.market / ctx.trade.spot
+    upside = (m.leg.strike - ctx.trade.spot) / ctx.trade.spot
+    yield _f(INFO, f"Premium {prem:.1%} of the stock, {upside:.1%} upside to the strike (book's example fund "
+                   "guideline: ≥ 4% and ≥ 2.5%).", "IAO-12-01")
+
+
+@check("IAO-06-04", "IAO-05-01", "IAO-02-17")
+def oscillator_timing(ctx: Context):
+    tv, d = ctx.technical, direction(ctx)
+    if tv is None or d is None or ctx.is_credit:
+        return
+    if d == "bull" and ctx.strategy != "covered_call" and tv.overbought_daily and tv.overbought_weekly:
+        yield _f(WARN, "Buying bullish exposure while overbought on daily and weekly charts: the book's play "
+                       "here is to overwrite, not buy.", "IAO-06-01", "IAO-05-01")
+    if d == "bear" and tv.oversold_daily:
+        yield _f(WARN, "Buying puts while oversold: countertrend rallies are likely.", "IAO-06-06", "IAO-05-01")
+    if d == "bear" and tv.overbought_daily and not any(s.name.endswith("sell") or "sell" in s.name
+                                                        for s in tv.signals):
+        yield _f(INFO, "Overbought but no sell signal yet: the book waits for the oscillator to turn "
+                       "(preferably on the weekly) before buying puts.", "IAO-06-04", "IAO-02-17")
+
+
+@check("IAO-14-07", "IAO-14-09", "IAO-14-10", "IAO-14-14", "IAO-14-11", "IAO-14-06", "IAO-14-08",
+       "OTS-037-c", "OTS-037-b")
+def hedge_rules(ctx: Context):
+    if ctx.strategy not in ("protective_put", "collar"):
+        return
+    put = next(m for m in ctx.long_options if m.leg.type == "put")
+    if put.value_ratio is not None and put.value_ratio > 1.0:
+        yield _f(WARN, f"Insurance put costs {put.market:.2f} vs fair value {put.fair:.2f} "
+                       f"({pct(put.value_ratio - 1)} overvalued): insurance puts should still be undervalued.",
+                 "OTS-037-c")
+    if put.dte is not None and put.dte < 45:
+        yield _f(WARN, f"{put.dte}-day hedge: avoid ~1-month hedges; two-month-plus contracts cost less per unit "
+                       "of time.", "IAO-14-09", "IAO-14-10")
+    if put.delta is not None:
+        d = abs(put.delta)
+        if 0.40 <= d <= 0.55:
+            yield _f(PASS, f"Put delta {d:.2f}: ATM puts (0.40–0.55) are the best hedge value.", "IAO-14-07")
+        elif d > 0.55:
+            yield _f(INFO, f"Put delta {d:.2f}: in-the-money hedges are expensive.", "IAO-14-06")
+        else:
+            yield _f(INFO, f"Put delta {d:.2f}: out-of-the-money puts are catastrophe protection only.", "IAO-14-08")
+    if ctx.strategy == "protective_put":
+        if put.market / ctx.trade.spot > 0.10:
+            yield _f(WARN, "Put costs more than 10% of the stock price: switch to a collar.", "IAO-14-14")
+        regime, why = iv_regime(ctx)
+        if regime == "high":
+            yield _f(WARN, f"Protective puts work best when premiums are low ({why}); consider a collar.",
+                     "IAO-14-11", "IAO-15-01")
+
+
+@check("IAO-14-17", "IAO-02-04", "IAO-08-07")
+def short_option_structure(ctx: Context):
+    if ctx.strategy == "ratio_spread" and (ctx.min_dte or 0) > 60:
+        yield _f(WARN, "Ratio spreads only within a month or two of expiration.", "IAO-14-17")
+    if ctx.strategy == "short_call":
+        yield _f(WARN, "Naked call writing is inherently risky (short squeezes).", "IAO-02-04", "OTS-043")
+    if ctx.strategy == "short_put" and (ctx.min_dte or 0) >= 60:
+        yield _f(WARN, "Write puts with less than two months to expiration to maximise time decay.", "IAO-08-07")
+
+
+@check("IAO-09-05", "IAO-11-07", "IAO-16-28", "IAO-11-02")
+def event_risk(ctx: Context):
+    t = ctx.trade
+    exp = max((l.expiration for l in t.option_legs if l.expiration), default=None)
+    if t.ex_dividend_date and exp and t.ex_dividend_date <= exp:
+        for m in ctx.short_options:
+            if m.leg.type == "call" and (m.moneyness or 0) < 0:
+                yield _f(WARN, f"Short in-the-money call before ex-dividend {t.ex_dividend_date}: early "
+                               "assignment can cost the dividend.", "IAO-09-05", "IAO-11-07")
+    if t.earnings_date and exp and t.as_of.isoformat() <= t.earnings_date <= exp:
+        if ctx.short_options and not ctx.long_options:
+            yield _f(WARN, f"Short premium through earnings on {t.earnings_date}.", "IAO-16-28")
+        elif ctx.strategy in ("straddle", "strangle"):
+            yield _f(INFO, f"Earnings {t.earnings_date} inside the trade: buy before IV inflates; weigh theta "
+                           "against the expected pre-event move.", "IAO-16-30", "IAO-11-02")
+
+
+@check("IAO-02-11", "IAO-06-03")
+def horizon_in_trends(ctx: Context):
+    tv = ctx.technical
+    if tv is None or ctx.strategy not in ("long_call", "long_put") or ctx.min_dte is None:
+        return
+    if tv.primary_trend in ("up", "down") and direction(ctx) == ("bull" if tv.primary_trend == "up" else "bear"):
+        if ctx.min_dte < 90:
+            yield _f(INFO, f"{ctx.min_dte} days: in established trends the book works a 3–6 month horizon.",
+                     "IAO-02-11", "OTS-096-d")
+
+
+@check("IAO-02-12", "IAO-10-01")
+def volatile_market_sizing(ctx: Context):
+    tv = ctx.technical
+    if tv is not None and tv.hv is not None and tv.hv > 0.50:
+        yield _f(INFO, f"Realised volatility {tv.hv:.0%}: in volatile markets take smaller positions with "
+                       "nearer targets and stops.", "IAO-02-12", "IAO-10-01")

@@ -182,3 +182,44 @@ def _sma_optional(values: Series, period: int) -> Series:
         if len(window) == period and all(v is not None for v in window):
             out[i] = sum(window) / period
     return out
+
+
+def momentum(closes: Sequence[float], period: int = 10) -> Series:
+    """Close minus the close ``period`` bars ago (IAO-06-07)."""
+    out: Series = [None] * len(closes)
+    for i in range(period, len(closes)):
+        out[i] = closes[i] - closes[i - period]
+    return out
+
+
+def adx(highs: Sequence[float], lows: Sequence[float], closes: Sequence[float],
+        period: int = 14) -> tuple[Series, Series, Series]:
+    """Wilder's ADX with +DI and -DI."""
+    n = len(closes)
+    plus_di: Series = [None] * n
+    minus_di: Series = [None] * n
+    out: Series = [None] * n
+    if n <= 2 * period:
+        return out, plus_di, minus_di
+    tr, pdm, mdm = [0.0] * n, [0.0] * n, [0.0] * n
+    for i in range(1, n):
+        up, dn = highs[i] - highs[i - 1], lows[i - 1] - lows[i]
+        pdm[i] = up if up > dn and up > 0 else 0.0
+        mdm[i] = dn if dn > up and dn > 0 else 0.0
+        tr[i] = max(highs[i] - lows[i], abs(highs[i] - closes[i - 1]), abs(lows[i] - closes[i - 1]))
+    atr, sp, sm = sum(tr[1:period + 1]), sum(pdm[1:period + 1]), sum(mdm[1:period + 1])
+    dx: list[float] = []
+    for i in range(period, n):
+        if i > period:
+            atr = atr - atr / period + tr[i]
+            sp = sp - sp / period + pdm[i]
+            sm = sm - sm / period + mdm[i]
+        pdi = 100 * sp / atr if atr else 0.0
+        mdi = 100 * sm / atr if atr else 0.0
+        plus_di[i], minus_di[i] = pdi, mdi
+        dx.append(100 * abs(pdi - mdi) / (pdi + mdi) if pdi + mdi else 0.0)
+        if len(dx) == period:
+            out[i] = sum(dx) / period
+        elif len(dx) > period:
+            out[i] = (out[i - 1] * (period - 1) + dx[-1]) / period
+    return out, plus_di, minus_di

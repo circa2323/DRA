@@ -1,0 +1,12 @@
+{
+  "underlying": "XYZ",
+  "spot": 180.58,
+  "as_of": "2026-10-21",
+  "account_value": 100000,
+  "history_csv": "XYZ.csv",
+  "legs": [
+    {"action": "sell", "type": "put", "strike": 165, "expiration": "2026-11-20", "quantity": 2, "bid": 0.92, "ask": 0.98, "price": 0.92},
+    {"action": "buy",  "type": "put", "strike": 160, "expiration": "2026-11-20", "quantity": 2, "bid": 0.64, "ask": 0.70, "price": 0.70}
+  ],
+  "plan": {"stop": 168, "target": 180}
+}
