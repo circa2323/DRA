@@ -60,6 +60,30 @@ The app shows a warning when you pull outside regular trading hours, because
 pre-market spreads trip the liquidity and fair-value checks. It listens only on
 `127.0.0.1`. `config.json`, tokens and `data/` are git-ignored.
 
+### Screener: find which tickers to pull chains for
+
+On the **Screener** page, paste 20–100 tickers. A ticker can carry its own
+sector benchmark, e.g. `ABC=XLF`. The screener downloads each one's price
+history and ranks it using the books' history-based criteria, each with its
+citation:
+
+| Criterion | Source |
+|---|---|
+| price in a range where near-the-money options can be cheap | OTS-096-b/c (range is a user setting) |
+| liquidity | IAO-07-03, OTS-075-a |
+| trend and ADX | IAO-02-06/39/41, IAO-06-11 |
+| momentum | IAO-07-06, IAO-06-08 |
+| strength vs the benchmark | IAO-07-01, IAO-06-16 |
+| overbought / oversold | IAO-06-01, IAO-06-06 |
+| breakouts | IAO-04-23 |
+| contracting bands | IAO-05-15 |
+| surprise-volatility potential | OTS-032-b |
+
+It also estimates what an at-the-money option would cost, so you can see which
+names fit your per-trade cap. Tick the best few, click **Add checked to
+watchlist**, get their chains into the inbox, and press **Pull & analyze**.
+`python3 -m optiontool screen ABC DEF=XLF -v` does the same from a terminal.
+
 ### Small-account mode
 
 The books' sizing rules assume a large account: positions under 5% of the
@@ -206,6 +230,7 @@ optiontool/
   report.py      text / JSON output
   providers.py   Schwab Trader API + CSV-folder data sources, monthly-expiration picker
   pipeline.py    pull → snapshot → analyze; IV log; market-hours check
+  screener.py    rank many tickers on history-based book criteria
   webapp.py      local web app (stdlib http.server)
   cli.py         command line
 knowledge/       OTS.json, IAO.json, SCHEMA.md

@@ -3,6 +3,7 @@ import shutil
 import tempfile
 import threading
 import unittest
+import urllib.parse
 import urllib.request
 from datetime import date, datetime, timezone, timedelta
 from pathlib import Path
@@ -101,6 +102,49 @@ class CsvFolder(unittest.TestCase):
         self.assertEqual(h.closes, [1.5])
 
 
+class Screener(unittest.TestCase):
+    def _hist(self, sym, scale=1.0, reverse=False):
+        import math
+        h = load_csv(EX / "XYZ.csv", sym)
+        n = len(h.closes)
+        # clean trends: steady drift with small swings
+        drift = -0.002 if reverse else 0.002
+        closes = [100 * math.exp(drift * i) * (1 + 0.03 * math.sin(i / 4)) for i in range(n)]
+        out = providers.PriceHistory(sym)
+        for i, d in enumerate(h.dates):
+            c = closes[i] * scale
+            out.dates.append(d); out.opens.append(c); out.closes.append(c)
+            out.highs.append(c * 1.01); out.lows.append(c * 0.99); out.volumes.append(2_000_000)
+        return out
+
+    def test_ranks_and_filters(self):
+        from optiontool import screener
+        data = {"UP": self._hist("UP", 0.1), "DOWN": self._hist("DOWN", 0.3, reverse=True),
+                "PRICEY": self._hist("PRICEY", 2.0), "SPY": load_csv(EX / "BENCH.csv", "SPY")}
+        def fn(sym):
+            if sym not in data:
+                raise providers.ProviderError("no data")
+            return data[sym]
+        rows = screener.screen(["UP", "DOWN", "PRICEY", "NOPE"], fn)
+        by = {r.symbol: r for r in rows}
+        self.assertEqual(by["UP"].bias, "bull")
+        self.assertEqual(by["DOWN"].bias, "bear")
+        self.assertTrue(by["UP"].passed_filters)
+        self.assertFalse(by["PRICEY"].passed_filters)
+        self.assertFalse(by["NOPE"].ok)
+        self.assertEqual(rows[-1].symbol, "NOPE")
+        self.assertIn(rows[0].symbol, ("UP", "DOWN"))
+        for r in rows:
+            for x in r.reasons:
+                self.assertTrue(x["principles"])
+        self.assertEqual(screener.rows_to_json(rows)[0]["symbol"], rows[0].symbol)
+
+    def test_parse_symbols(self):
+        from optiontool import screener
+        self.assertEqual(screener.parse_symbols("abc, def=xlf ghi;abc"),
+                         (["ABC", "DEF", "GHI"], {"DEF": "XLF"}))
+
+
 class Pipeline(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp())
@@ -150,6 +194,22 @@ class Pipeline(unittest.TestCase):
             for path in ("/settings", "/history", "/principles?q=stop", "/principle/OTS-024-a", "/schwab",
                          f"/snapshot/{snap.name}"):
                 self.assertEqual(urllib.request.urlopen(base + path).status, 200, path)
+            # screener: run, wait, render, add to watchlist
+            shutil.copy(EX / "XYZ.csv", Path(self.cfg["csv_folder"]) / "ABC.csv")
+            shutil.copy(EX / "BENCH.csv", Path(self.cfg["csv_folder"]) / "SPY.csv")
+            body = urllib.parse.urlencode({"tickers": "ABC", "min_price": "1", "max_price": "500",
+                                           "min_avg_volume": "0", "benchmark": "SPY", "direction": "both"})
+            urllib.request.urlopen(base + "/screener", data=body.encode())
+            import time
+            for _ in range(50):
+                if not webapp.Handler.app.job["running"]:
+                    break
+                time.sleep(0.1)
+            scr = urllib.request.urlopen(base + "/screener").read().decode()
+            self.assertIn("ABC", scr)
+            self.assertIn("Add checked to watchlist", scr)
+            urllib.request.urlopen(base + "/screener/add", data=b"sym=ABC%7CSPY")
+            self.assertIn("ABC", pipeline.load_config(self.cfg_path)["watchlist"])
             # path traversal is refused
             self.assertIn("Not found", urllib.request.urlopen(base + "/snapshot/..%2F..").read().decode())
         finally:

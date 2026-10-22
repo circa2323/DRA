@@ -136,6 +136,27 @@ def cmd_pull(a, lib, cfg):
     return 0
 
 
+def cmd_screen(a, lib, cfg):
+    from . import pipeline, screener
+    from .providers import make_provider
+    conf = pipeline.load_config(a.config)
+    syms, bench = screener.parse_symbols(" ".join(a.tickers))
+    opts = {"min_price": a.min_price, "max_price": a.max_price, "min_avg_volume": a.min_volume,
+            "benchmark": a.benchmark.upper(), "direction": a.direction}
+    rows = screener.screen(syms, make_provider(conf).history, opts, bench)
+    for n, r in enumerate(rows, 1):
+        if not r.ok:
+            print(f"{n:3} {r.symbol:6} ERROR {r.error[:80]}")
+            continue
+        flag = "" if r.passed_filters else "  (fails price/volume filter)"
+        cost = "" if r.est_atm_cost is None else f"  est. ATM option ${r.est_atm_cost:,.0f}"
+        print(f"{n:3} {r.symbol:6} {r.bias:4} score {r.score:4g}  @ {r.price:.2f}{cost}{flag}")
+        if a.verbose:
+            for x in r.reasons:
+                print(f"        {x['points']:+g} {x['text']}  [{', '.join(x['principles'])}]")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="optiontool", description=__doc__)
     ap.add_argument("--knowledge", default=str(DEFAULT_DIR), help="folder of book JSON files")
@@ -191,6 +212,17 @@ def main(argv=None) -> int:
     sv.add_argument("--config", default="config.json")
     sv.add_argument("--port", type=int, default=8765)
     sv.set_defaults(fn=cmd_serve)
+
+    scr = sub.add_parser("screen", help="rank many tickers on the books' criteria (history only)")
+    scr.add_argument("tickers", nargs="+", help="tickers, optionally TICKER=BENCHMARK")
+    scr.add_argument("--config", default="config.json")
+    scr.add_argument("--min-price", type=float, default=10)
+    scr.add_argument("--max-price", type=float, default=50)
+    scr.add_argument("--min-volume", type=float, default=1_000_000)
+    scr.add_argument("--benchmark", default="SPY")
+    scr.add_argument("--direction", choices=["both", "bull", "bear"], default="both")
+    scr.add_argument("-v", "--verbose", action="store_true")
+    scr.set_defaults(fn=cmd_screen)
 
     pl = sub.add_parser("pull", help="pull data for the watchlist and analyze it (for schedulers)")
     pl.add_argument("--config", default="config.json")

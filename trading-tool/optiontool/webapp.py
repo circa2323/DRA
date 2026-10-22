@@ -17,9 +17,9 @@ from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from . import pipeline
+from . import pipeline, screener
 from .knowledge import Library
-from .providers import ProviderError, SchwabAuth
+from .providers import ProviderError, SchwabAuth, make_provider
 
 E = html.escape
 
@@ -29,7 +29,7 @@ class App:
         self.config_path = config_path
         self.library = Library()
         self.lock = threading.Lock()
-        self.job = {"running": False, "step": "", "error": "", "finished": None}
+        self.job = {"running": False, "step": "", "error": "", "finished": None, "kind": ""}
 
     @property
     def cfg(self) -> dict:
@@ -46,8 +46,35 @@ class App:
             if self.job["running"]:
                 return
             self.job = {"running": True, "step": "pulling data" if do_pull else "analyzing",
-                        "error": "", "finished": None}
+                        "error": "", "finished": None, "kind": "pull"}
         threading.Thread(target=self._run, args=(do_pull,), daemon=True).start()
+
+    def start_screen(self, text: str, opts: dict) -> None:
+        with self.lock:
+            if self.job["running"]:
+                return
+            self.job = {"running": True, "step": "screening tickers", "error": "", "finished": None,
+                        "kind": "screen"}
+        threading.Thread(target=self._run_screen, args=(text, opts), daemon=True).start()
+
+    def _run_screen(self, text: str, opts: dict) -> None:
+        try:
+            cfg = self.cfg
+            syms, bench = screener.parse_symbols(text)
+            if not syms:
+                raise ProviderError("enter at least one ticker")
+            provider = make_provider(cfg)
+            rows = screener.screen(syms, provider.history, opts, bench)
+            out = Path(cfg["data_dir"]).expanduser() / "screens"
+            out.mkdir(parents=True, exist_ok=True)
+            (out / "latest.json").write_text(json.dumps({
+                "ran_at": datetime.now().strftime("%Y-%m-%d %H:%M"), "opts": opts,
+                "rows": screener.rows_to_json(rows)}, indent=2), encoding="utf-8")
+        except Exception as e:
+            self.job["error"] = f"{e}" if isinstance(e, ProviderError) else traceback.format_exc(limit=4)
+        finally:
+            self.job["running"] = False
+            self.job["finished"] = datetime.now().strftime("%H:%M:%S")
 
     def _run(self, do_pull: bool) -> None:
         try:
@@ -101,7 +128,7 @@ def page(title: str, body: str, refresh: bool = False) -> str:
     return (f'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" '
             f'content="width=device-width,initial-scale=1">{meta}<title>{E(title)}</title>'
             f'<style>{CSS}</style></head><body><header><h1>Option Ideas from the Books</h1><nav>'
-            f'<a href="/">Ideas</a><a href="/history">History</a><a href="/settings">Settings</a>'
+            f'<a href="/">Ideas</a><a href="/screener">Screener</a><a href="/history">History</a><a href="/settings">Settings</a>'
             f'<a href="/principles">Principles</a></nav></header><main>{body}</main></body></html>')
 
 
@@ -183,6 +210,10 @@ class Handler(BaseHTTPRequestHandler):
         n = int(self.headers.get("Content-Length", 0))
         return {k: v[0] for k, v in urllib.parse.parse_qs(self.rfile.read(n).decode(), keep_blank_values=True).items()}
 
+    def _form_multi(self) -> dict:
+        n = int(self.headers.get("Content-Length", 0))
+        return urllib.parse.parse_qs(self.rfile.read(n).decode(), keep_blank_values=True)
+
     # ------------------------------------------------------------ GET
     def do_GET(self):
         path = urllib.parse.urlparse(self.path).path
@@ -202,6 +233,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(self.principle_page(urllib.parse.unquote(path.split("/", 2)[2])))
             if path == "/schwab":
                 return self._send(self.schwab_page())
+            if path == "/screener":
+                return self._send(self.screener_page())
             self._send(page("Not found", "<p>Not found.</p>"), 404)
         except Exception:
             self._send(page("Error", f'<pre class="err">{E(traceback.format_exc())}</pre>'), 500)
@@ -219,6 +252,10 @@ class Handler(BaseHTTPRequestHandler):
                 return self._redirect("/")
             if path == "/settings":
                 return self.save_settings(self._form())
+            if path == "/screener":
+                return self.run_screener(self._form())
+            if path == "/screener/add":
+                return self.add_to_watchlist(self._form_multi())
             if path == "/schwab/finish":
                 auth = app.schwab_auth()
                 if auth is None:
@@ -252,10 +289,10 @@ class Handler(BaseHTTPRequestHandler):
         if cfg.get("small_account_mode"):
             body.append('<p class="note warn">Small-account mode is on: the books\' position-size limits are '
                         f'shown as warnings, and your ${cfg.get("max_trade_risk") or 0:,.0f} per-trade cap is enforced.</p>')
-        if job["running"]:
+        if job["running"] and job.get("kind") == "pull":
             body.append(f'<div class="card"><b>Working…</b> {E(job["step"])}</div>')
             return page("Working…", "".join(body), refresh=True)
-        if job["error"]:
+        if job["error"] and job.get("kind") == "pull":
             body.append(f'<div class="card"><b>Last run failed</b><p class="err">{E(job["error"])}</p></div>')
         snap = pipeline.latest_snapshot(cfg)
         if snap and (snap / "results.json").exists():
@@ -347,6 +384,89 @@ This departs from the books; every other rule still applies.</p>
         c["csv_folder"] = f.get("csv_folder", c["csv_folder"]).strip()
         for k in ("app_key", "app_secret", "callback_url"):
             c["schwab"][k] = f.get(k, "").strip()
+        pipeline.save_config(self.app.config_path, c)
+        self._redirect("/settings")
+
+    def screener_page(self) -> str:
+        cfg, job = self.app.cfg, self.app.job
+        sc = cfg.get("screener", {})
+        o = {**screener.DEFAULTS, **sc.get("opts", {})}
+        cap = cfg.get("max_trade_risk")
+        sel = lambda v: " selected" if o["direction"] == v else ""
+        form = f'''<h2>Screener</h2><form method="post" action="/screener" class="card">
+<label>Tickers (spaces or commas; optional sector benchmark as <code>TICKER=ETF</code>, e.g. <code>ABC=XLF</code>)</label>
+<textarea name="tickers" rows="4">{E(sc.get("tickers", ""))}</textarea>
+<label>Price range ($): min / max</label>
+<input type="number" step="any" name="min_price" value="{o["min_price"]:g}">
+<input type="number" step="any" name="max_price" value="{o["max_price"]:g}">
+<label>Minimum average daily volume (shares)</label><input type="number" name="min_avg_volume" value="{o["min_avg_volume"]:.0f}">
+<label>Default benchmark</label><input type="text" name="benchmark" value="{E(o["benchmark"])}">
+<label>Direction</label><select name="direction"><option value="both"{sel("both")}>Both</option>
+<option value="bull"{sel("bull")}>Bullish only (calls)</option><option value="bear"{sel("bear")}>Bearish only (puts)</option></select>
+<p><button>Run screener</button></p>
+<p class="note">Uses price history only (downloaded automatically). Ranks trend, momentum, strength vs benchmark,
+overbought/oversold, breakouts and volatility, each citing its book principle. Then pull option chains for the top few.</p></form>'''
+        if job.get("running") and job.get("kind") == "screen":
+            return page("Screening…", form + f'<div class="card"><b>Working…</b> {E(job["step"])}</div>', refresh=True)
+        err = f'<div class="card"><p class="err">{E(job["error"])}</p></div>' if job.get("error") and job.get("kind") == "screen" else ""
+        path = Path(cfg["data_dir"]).expanduser() / "screens" / "latest.json"
+        if not path.exists():
+            return page("Screener", form + err)
+        data = json.loads(path.read_text(encoding="utf-8"))
+        rows = []
+        for n, r in enumerate(data["rows"], 1):
+            if not r["ok"]:
+                rows.append(f'<tr><td></td><td>{n}</td><td><b>{E(r["symbol"])}</b></td>'
+                            f'<td colspan="7" class="err">{E(r["error"][:160])}</td></tr>')
+                continue
+            cost = r["est_atm_cost"]
+            fits = cost is not None and cap and cost <= cap
+            cost_s = "" if cost is None else f'<span class="{"PASS" if fits else ""}">${cost:,.0f}</span>'
+            bias = {"bull": "Bullish", "bear": "Bearish", "wait": "Wait"}[r["bias"]]
+            dim = "" if r["passed_filters"] else ' style="opacity:.55"'
+            why = "".join(f'<div class="f">{"+" if x["points"] > 0 else ""}{x["points"]:g} {E(x["text"])} '
+                          f'{chips(x["principles"])}</div>' for x in r["reasons"])
+            rp = "" if r["rel_perf"] is None else f'{r["rel_perf"]:+.1%}'
+            hv = "" if r["hv"] is None else f'{r["hv"]:.0%}'
+            rows.append(
+                f'<tr{dim}><td><input type="checkbox" name="sym" value="{E(r["symbol"])}|{E(r["benchmark"])}"'
+                f'{" checked" if n <= 5 and r["passed_filters"] and r["bias"] != "wait" else ""}></td>'
+                f'<td>{n}</td><td><b>{E(r["symbol"])}</b></td><td>{bias}</td><td>{r["score"]:g}</td>'
+                f'<td>{r["price"]:.2f}</td><td>{cost_s}</td><td>{hv}</td><td>{E(r["trend"])} / {E(r["strength"])}</td>'
+                f'<td>{rp} vs {E(r["benchmark"])}</td></tr>'
+                f'<tr{dim}><td></td><td colspan="9"><details><summary class="note">why</summary>{why}</details></td></tr>')
+        cap_note = (f"Green = estimated at-the-money option cost fits your ${cap:,.0f} per-trade cap. "
+                    if cap else "")
+        table = (f'<div class="card"><p class="note">Ran {E(data["ran_at"])}. {cap_note}Option cost is an estimate from '
+                 'realised volatility, about 60 days out; out-of-the-money strikes are cheaper. Faded rows fail the price or '
+                 'volume filter.</p><form method="post" action="/screener/add"><div class="tablewrap"><table>'
+                 '<tr><th></th><th>#</th><th>Ticker</th><th>Bias</th><th>Score</th><th>Price</th><th>Est. ATM option</th>'
+                 '<th>HV</th><th>Trend</th><th>Rel. perf.</th></tr>' + "".join(rows) +
+                 '</table></div><p><button>Add checked to watchlist</button> '
+                 '<span class="note">Then get their option chains into the inbox and press Pull &amp; analyze.</span></p>'
+                 '</form></div>')
+        return page("Screener", form + err + table)
+
+    def run_screener(self, f: dict):
+        num = lambda k: float(f.get(k) or screener.DEFAULTS[k])
+        opts = {"min_price": num("min_price"), "max_price": num("max_price"),
+                "min_avg_volume": num("min_avg_volume"),
+                "benchmark": (f.get("benchmark") or "SPY").strip().upper(),
+                "direction": f.get("direction", "both")}
+        c = self.app.cfg
+        c["screener"] = {"tickers": f.get("tickers", ""), "opts": opts}
+        pipeline.save_config(self.app.config_path, c)
+        self.app.start_screen(f.get("tickers", ""), opts)
+        self._redirect("/screener")
+
+    def add_to_watchlist(self, f: dict):
+        c = self.app.cfg
+        for item in f.get("sym", []):
+            sym, _, bench = item.partition("|")
+            if sym and sym not in c["watchlist"]:
+                c["watchlist"].append(sym)
+            if sym and bench and bench != sym:
+                c["benchmarks"][sym] = bench
         pipeline.save_config(self.app.config_path, c)
         self._redirect("/settings")
 
