@@ -17,7 +17,7 @@ from datetime import date, datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from . import pipeline, positions, screener, ticket
+from . import __version__, pipeline, positions, screener, ticket
 from .knowledge import Library
 from .providers import ProviderError, SchwabAuth, make_provider
 from .rules import RELAXABLE, RELAXABLE_WARN
@@ -144,7 +144,8 @@ def page(title: str, body: str, refresh: bool = False) -> str:
     meta = '<meta http-equiv="refresh" content="3">' if refresh else ""
     return (f'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" '
             f'content="width=device-width,initial-scale=1">{meta}<title>{E(title)}</title>'
-            f'<style>{CSS}</style></head><body><header><h1>Option Ideas from the Books</h1><nav>'
+            f'<style>{CSS}</style></head><body><header><h1>Option Ideas from the Books '
+            f'<span class="note">v{__version__}</span></h1><nav>'
             f'<a href="/">Ideas</a><a href="/screener">Screener</a><a href="/trades">My trades</a><a href="/history">History</a><a href="/settings">Settings</a>'
             f'<a href="/principles">Principles</a></nav></header><main>{body}</main></body></html>')
 
@@ -754,8 +755,14 @@ Copy the full address from the address bar.</li>
 
 def serve(config_path: str = "config.json", port: int = 8765) -> None:
     Handler.app = App(config_path)
-    httpd = ThreadingHTTPServer(("127.0.0.1", port), Handler)
-    print(f"Option ideas app on http://127.0.0.1:{port}  (Ctrl+C to stop)")
+    try:
+        httpd = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    except OSError:
+        print(f"Port {port} is already in use — an older copy of the app is probably still running.\n"
+              "Close its window (or press Ctrl+C in it), then start this one again.")
+        return
+    print(f"Option ideas app v{__version__} on http://127.0.0.1:{port}  (Ctrl+C to stop)")
+    print(f"Running from: {Path(__file__).resolve().parent.parent}")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
