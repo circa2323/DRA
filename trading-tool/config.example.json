@@ -1,6 +1,7 @@
 {
-  "provider": "schwab",
+  "provider": "csv",
   "csv_folder": "data/inbox",
+  "fetch_history": true,
   "data_dir": "data",
   "watchlist": [
     "SPY",

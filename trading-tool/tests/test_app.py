@@ -81,6 +81,26 @@ class SchwabParsing(unittest.TestCase):
         self.assertFalse(auth.status()["logged_in"])
 
 
+class CsvFolder(unittest.TestCase):
+    def test_spot_file_and_yahoo_parse(self):
+        tmp = Path(tempfile.mkdtemp())
+        shutil.copy(EX / "XYZ_chain.csv", tmp / "XYZ_chain.csv")
+        shutil.copy(EX / "XYZ.csv", tmp / "XYZ.csv")
+        (tmp / "XYZ_spot.txt").write_text("$181.25\n")
+        p = providers.CsvFolderProvider(tmp)
+        self.assertEqual(p.chain("XYZ", date(2026, 10, 22), pipeline.DEFAULT_CONFIG).spot, 181.25)
+        (tmp / "XYZ_spot.txt").unlink()
+        self.assertEqual(p.chain("XYZ", date(2026, 10, 22), pipeline.DEFAULT_CONFIG).spot, 180.58)
+        self.assertTrue(p.stale_spot)
+        ts = 1761139800  # 2025-10-22 13:30 UTC
+        data = {"chart": {"result": [{"meta": {"gmtoffset": -14400}, "timestamp": [ts, ts + 86400],
+                 "indicators": {"quote": [{"open": [1, None], "high": [2, 3], "low": [0.5, 1],
+                                           "close": [1.5, 2], "volume": [10, 20]}]}}]}}
+        h = providers.parse_yahoo_chart("ABC", data)
+        self.assertEqual(h.dates, ["2025-10-22"])
+        self.assertEqual(h.closes, [1.5])
+
+
 class Pipeline(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp())

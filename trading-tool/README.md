@@ -36,7 +36,7 @@ python3 -m unittest discover -s tests
 
 ```bash
 cd trading-tool
-cp config.example.json config.json      # once
+cp config.example.json config.json      # once (starts in CSV-folder mode)
 python3 -m optiontool serve             # open http://127.0.0.1:8765
 ```
 
@@ -77,11 +77,22 @@ pre-market spreads trip the liquidity and fair-value checks. It listens only on
    * Schwab requires you to log in again every 7 days, and the app shows when
      that's due.
 
-### Data source: CSV folder (no API needed)
+### Data source: CSV folder (no API needed; the default)
 
-Put `<SYM>.csv` (price history) and `<SYM>_chain.csv` (option chain) files for
-every watchlist and benchmark symbol in the folder named in Settings, then
-press Pull.
+The folder named in Settings (default `data/inbox`) holds, for each watchlist
+ticker:
+
+| File | What | Needed? |
+|---|---|---|
+| `SYM_chain.csv` | option chain copied from your broker | yes |
+| `SYM_spot.txt` | the stock's live price when you copied the chain, e.g. `343.99` | strongly recommended |
+| `SYM.csv` | daily price history | no: downloaded from Yahoo Finance when missing |
+
+* **Without `SYM_spot.txt`**, the tool falls back to yesterday's close and the
+  page says so. That mismatch with live option quotes skews fair value and
+  probabilities.
+* **Benchmark symbols** (e.g. SPY for XLK) need only history, which is
+  downloaded automatically.
 
 ### Hands-off schedule
 

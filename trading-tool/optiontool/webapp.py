@@ -311,6 +311,8 @@ class Handler(BaseHTTPRequestHandler):
 <input type="number" name="min_dte" value="{c["min_dte"]}"> <input type="number" name="max_dte" value="{c["max_dte"]}">
 <input type="number" name="expiration_count" value="{c["expiration_count"]}">
 <label>CSV folder (CSV source)</label><input type="text" name="csv_folder" value="{E(c["csv_folder"])}">
+<p class="note">Per symbol: <code>SYM_chain.csv</code> (required for watchlist tickers), <code>SYM_spot.txt</code>
+(live price when the chain was copied), <code>SYM.csv</code> (price history — downloaded from Yahoo if absent).</p>
 <h3>Schwab Trader API</h3>
 <p class="note">From your app at developer.schwab.com. Stored in the local config file on this computer only.</p>
 <label>App key</label><input type="text" name="app_key" value="{E(s["app_key"])}">

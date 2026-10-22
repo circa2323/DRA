@@ -25,6 +25,7 @@ except Exception:  # pragma: no cover - no tz database
 DEFAULT_CONFIG = {
     "provider": "csv",                      # "schwab" or "csv"
     "csv_folder": "data/inbox",
+    "fetch_history": True,                  # CSV mode: download price history from Yahoo if no <SYM>.csv
     "data_dir": "data",
     "watchlist": ["SPY", "XLK", "AAPL", "NVDA"],
     "benchmarks": {"XLK": "SPY", "AAPL": "XLK", "NVDA": "XLK"},
@@ -117,7 +118,13 @@ def pull(cfg: dict, now: datetime | None = None) -> Path:
             (snap / f"{sym}_spot.txt").write_text(str(ch.spot))
         except ProviderError as e:
             errors[sym] = str(e)
+    if getattr(provider, "stale_spot", False):
+        errors_note = "no live price given for some chains (add <SYM>_spot.txt) — using last close"
+    else:
+        errors_note = ""
     open_, note = market_status(now)
+    if errors_note:
+        note = f"{note}; {errors_note}"
     (snap / "meta.json").write_text(json.dumps({
         "as_of": as_of.isoformat(), "pulled_at": now.isoformat(), "provider": provider.name,
         "market_note": note, "errors": errors}, indent=2))

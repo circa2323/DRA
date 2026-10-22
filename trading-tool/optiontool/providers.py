@@ -56,16 +56,27 @@ def monthly_expirations(expirations: list[str], as_of: date, min_dte: int = 20,
 
 # ---------------------------------------------------------------- CSV folder
 class CsvFolderProvider:
+    """Files in a folder, one set per symbol:
+
+    * ``<SYM>.csv``        daily price history (optional when ``fetch_history`` is on)
+    * ``<SYM>_chain.csv``  option chain
+    * ``<SYM>_spot.txt``   live underlying price when the chain was copied
+      (optional; otherwise a ``spot``/``underlying`` column in the chain, else the
+      last close — which is stale intraday, so the app warns)
+    """
     name = "csv"
 
-    def __init__(self, folder: str | Path):
+    def __init__(self, folder: str | Path, fetch_history: bool = False):
         self.folder = Path(folder).expanduser()
+        self.fetch_history = fetch_history
 
     def history(self, symbol: str) -> PriceHistory:
         path = self.folder / f"{symbol}.csv"
-        if not path.exists():
-            raise ProviderError(f"missing {path}")
-        return load_csv(path, symbol)
+        if path.exists():
+            return load_csv(path, symbol)
+        if self.fetch_history:
+            return yahoo_history(symbol)
+        raise ProviderError(f"missing {path}")
 
     def chain(self, symbol: str, as_of: date, settings: dict) -> ChainSnapshot:
         path = self.folder / f"{symbol}_chain.csv"
@@ -75,7 +86,51 @@ class CsvFolderProvider:
         keep = set(monthly_expirations([l.expiration for l in legs], as_of, **_exp_window(settings))) \
             if settings.get("monthlies_only", True) else None
         legs = [l for l in legs if keep is None or l.expiration in keep]
-        return ChainSnapshot(symbol, self.history(symbol).last, legs)
+        return ChainSnapshot(symbol, self._spot(symbol, path), legs)
+
+    def _spot(self, symbol: str, chain_path: Path) -> float:
+        f = self.folder / f"{symbol}_spot.txt"
+        if f.exists():
+            return float(f.read_text().strip().replace("$", "").replace(",", ""))
+        import csv as _csv
+        with chain_path.open(newline="") as fh:
+            for r in _csv.DictReader(fh):
+                for k, v in r.items():
+                    if (k or "").strip().lower() in ("spot", "underlying", "underlying_price", "last") and v:
+                        return float(str(v).replace("$", "").replace(",", ""))
+                break
+        self.stale_spot = True
+        return self.history(symbol).last
+
+
+def yahoo_history(symbol: str, years: int = 2) -> PriceHistory:
+    """Daily bars from Yahoo Finance's public chart endpoint (no key needed)."""
+    url = (f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(symbol)}"
+           f"?range={years}y&interval=1d")
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    return parse_yahoo_chart(symbol, _http_json(req))
+
+
+def parse_yahoo_chart(symbol: str, data: dict) -> PriceHistory:
+    try:
+        r = data["chart"]["result"][0]
+        q = r["indicators"]["quote"][0]
+        ts = r["timestamp"]
+        offset = r.get("meta", {}).get("gmtoffset", -4 * 3600)
+    except (KeyError, IndexError, TypeError):
+        raise ProviderError(f"Yahoo returned no history for {symbol}") from None
+    h = PriceHistory(symbol)
+    for i, t in enumerate(ts):
+        vals = [q["open"][i], q["high"][i], q["low"][i], q["close"][i]]
+        if any(v is None for v in vals):
+            continue
+        h.dates.append(datetime.fromtimestamp(t + offset, tz=timezone.utc).date().isoformat())
+        h.opens.append(float(vals[0]))
+        h.highs.append(float(vals[1]))
+        h.lows.append(float(vals[2]))
+        h.closes.append(float(vals[3]))
+        h.volumes.append(float(q["volume"][i] or 0))
+    return h
 
 
 def _exp_window(settings: dict) -> dict:
@@ -260,4 +315,4 @@ def make_provider(config: dict):
         auth = SchwabAuth(s["app_key"], s["app_secret"], s["callback_url"],
                           s.get("token_path", "~/.optiontool/schwab_token.json"))
         return SchwabProvider(auth)
-    return CsvFolderProvider(config.get("csv_folder", "data/inbox"))
+    return CsvFolderProvider(config.get("csv_folder", "data/inbox"), config.get("fetch_history", True))
