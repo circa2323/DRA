@@ -57,6 +57,11 @@ python3 -m unittest discover -s tests
   It drives historical volatility, which OTS uses as the fair-value input
   (OTS-056-a/b), and the IAO technicals.
 * **Option chain:** CSV with `expiration,strike,type,bid,ask[,iv,open_interest,volume]`.
+  * Headers are case-insensitive.
+  * Dates can be `YYYY-MM-DD` or `MM/DD/YYYY`; type can be `C`/`P`.
+  * `$`, thousands commas, `28.5%` and `--` are all accepted.
+  * Pull quotes during market hours: pre-market spreads trip the liquidity and
+    fair-value checks.
 * **IV history (optional):** a list of past IV readings. This enables the IV
   percentile (OTS-057-b, IAO-17-05). Without it, the IV regime is judged as IV vs
   historical volatility (IAO-07-11).

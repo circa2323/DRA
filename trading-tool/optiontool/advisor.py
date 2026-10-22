@@ -98,19 +98,53 @@ def ideas(tv: TechnicalView, iv_regime: str | None, holding_stock: bool = False)
 
 
 # ---------------------------------------------------------------- chain scanning
+def _num(v):
+    """Parse '1,234.50', '$2.10', '28.5%', '--' and blanks."""
+    if v is None:
+        return None
+    v = str(v).strip().replace(",", "").replace("$", "")
+    pct = v.endswith("%")
+    v = v.rstrip("%")
+    if v in ("", "-", "--", "N/A", "n/a"):
+        return None
+    x = float(v)
+    return x / 100.0 if pct else x
+
+
+def _iso(d: str) -> str:
+    """Accept YYYY-MM-DD, MM/DD/YYYY, M/D/YY or 'Nov 20 2026' style dates."""
+    from datetime import datetime
+    d = d.strip()
+    for fmt in ("%Y-%m-%d", "%m/%d/%Y", "%m/%d/%y", "%b %d %Y", "%d %b %Y", "%b %d, %Y", "%Y%m%d"):
+        try:
+            return datetime.strptime(d, fmt).date().isoformat()
+        except ValueError:
+            pass
+    raise ValueError(f"unrecognised expiration date {d!r}")
+
+
 def load_chain(path: str | Path) -> list[Leg]:
-    """CSV columns: expiration,strike,type,bid,ask[,iv,open_interest,volume]."""
+    """CSV columns: expiration,strike,type,bid,ask[,iv,open_interest,volume].
+
+    Header names are case-insensitive; type may be call/put/C/P; IV may be a
+    decimal (0.28), a percent number (28) or a percent string ('28%').
+    """
     legs = []
     with Path(path).open(newline="") as fh:
-        for r in csv.DictReader(fh):
-            num = lambda k: float(r[k]) if r.get(k) not in (None, "") else None
-            iv = num("iv")
+        for raw in csv.DictReader(fh):
+            r = {(k or "").strip().lower().replace(" ", "_"): v for k, v in raw.items()}
+            typ = (r.get("type") or "").strip().lower()
+            typ = {"c": "call", "p": "put", "calls": "call", "puts": "put"}.get(typ, typ)
+            if typ not in ("call", "put"):
+                continue
+            iv = _num(r.get("iv"))
             if iv is not None and iv > 3:
                 iv /= 100.0
-            legs.append(Leg("buy", r["type"].strip().lower(), 1, strike=float(r["strike"]),
-                            expiration=r["expiration"].strip(), bid=num("bid"), ask=num("ask"), iv=iv,
-                            open_interest=int(num("open_interest") or 0) if r.get("open_interest") else None,
-                            volume=int(num("volume") or 0) if r.get("volume") else None))
+            oi, vol = _num(r.get("open_interest")), _num(r.get("volume"))
+            legs.append(Leg("buy", typ, 1, strike=_num(r["strike"]), expiration=_iso(r["expiration"]),
+                            bid=_num(r.get("bid")), ask=_num(r.get("ask")), iv=iv or None,
+                            open_interest=int(oi) if oi is not None else None,
+                            volume=int(vol) if vol is not None else None))
     return legs
 
 
@@ -121,26 +155,34 @@ def _clone(leg: Leg, action: str, qty: int) -> Leg:
 
 
 def candidates(strategy: str, chain: list[Leg], spot: float, qty: int = 3) -> list[list[Leg]]:
-    """Concrete leg sets for a strategy name from ``ideas``."""
-    calls = [l for l in chain if l.type == "call" and l.bid is not None and l.ask]
-    puts = [l for l in chain if l.type == "put" and l.bid is not None and l.ask]
+    """Concrete leg sets for a strategy name from ``ideas``.
+
+    Pruned with the books' structural rules so dense chains stay tractable:
+    bought legs close to the money (OTS-073-d, OTS-096-c), sold debit-spread
+    legs worth at least .40 (OTS-073-b), hedge puts near the money (IAO-14-07),
+    covered/collar calls 2.5-15% out of the money (IAO-02-19, IAO-12-01).
+    """
+    live = [l for l in chain if l.bid is not None and l.ask and l.ask > 0]
+    calls = sorted((l for l in live if l.type == "call"), key=lambda l: (l.expiration, l.strike))
+    puts = sorted((l for l in live if l.type == "put"), key=lambda l: (l.expiration, l.strike))
     out: list[list[Leg]] = []
-    near = lambda l: abs(l.strike - spot) / spot <= 0.10
+    dist = lambda l: abs(l.strike - spot) / spot
+    near = lambda l: dist(l) <= 0.10
+    atm = lambda l: dist(l) <= 0.03
     if strategy == "long_call":
         out = [[_clone(c, "buy", qty)] for c in calls if near(c)]
     elif strategy == "long_put":
         out = [[_clone(p, "buy", qty)] for p in puts if near(p)]
     elif strategy == "short_put":
-        out = [[_clone(p, "sell", 1)] for p in puts if p.strike < spot]
+        out = [[_clone(p, "sell", 1)] for p in puts if spot * 0.80 <= p.strike < spot]
     elif strategy == "straddle":
-        for c in calls:
-            for p in puts:
-                if c.expiration == p.expiration and c.strike == p.strike and near(c):
-                    out.append([_clone(c, "buy", 1), _clone(p, "buy", 1)])
+        pmap = {(p.expiration, p.strike): p for p in puts}
+        out = [[_clone(c, "buy", 1), _clone(pmap[(c.expiration, c.strike)], "buy", 1)]
+               for c in calls if atm(c) and (c.expiration, c.strike) in pmap]
     elif strategy in ("covered_call", "protective_put", "collar"):
         stock = Leg("buy", "stock", 100, price=spot)
-        otm_calls = [c for c in calls if spot < c.strike <= spot * 1.15]
-        hedge_puts = [p for p in puts if spot * 0.90 <= p.strike <= spot * 1.02]
+        otm_calls = [c for c in calls if spot * 1.025 <= c.strike <= spot * 1.15]
+        hedge_puts = [p for p in puts if spot * 0.95 <= p.strike <= spot * 1.02]
         if strategy == "covered_call":
             out = [[stock, _clone(c, "sell", 1)] for c in otm_calls]
         elif strategy == "protective_put":
@@ -154,18 +196,33 @@ def candidates(strategy: str, chain: list[Leg], spot: float, qty: int = 3) -> li
         by_exp: dict[str, list[Leg]] = {}
         for l in pool:
             by_exp.setdefault(l.expiration, []).append(l)
-        for exp, ls in by_exp.items():
-            ls.sort(key=lambda l: l.strike)
-            for i, a in enumerate(ls):
-                for b in ls[i + 1:]:
-                    lo_leg, hi_leg = a, b
-                    if kind == "bull_call" and near(lo_leg):
-                        out.append([_clone(lo_leg, "buy", 1), _clone(hi_leg, "sell", 1)])
-                    elif kind == "bear_put" and near(hi_leg):
-                        out.append([_clone(hi_leg, "buy", 1), _clone(lo_leg, "sell", 1)])
-                    elif kind == "bear_call" and lo_leg.strike > spot:
-                        out.append([_clone(lo_leg, "sell", 1), _clone(hi_leg, "buy", 1)])
+        for ls in by_exp.values():
+            for a in ls:
+                for b in ls:
+                    if b.strike <= a.strike or (b.strike - a.strike) / spot > 0.15:
+                        continue
+                    if kind == "bull_call" and atm(a) and b.bid >= 0.40:
+                        out.append([_clone(a, "buy", 1), _clone(b, "sell", 1)])
+                    elif kind == "bear_put" and atm(b) and a.bid >= 0.40:
+                        out.append([_clone(b, "buy", 1), _clone(a, "sell", 1)])
+                    elif kind == "bear_call" and a.strike > spot and (b.strike - a.strike) / spot <= 0.05:
+                        out.append([_clone(a, "sell", 1), _clone(b, "buy", 1)])
     return out
+
+
+def _prescore(legs: list[Leg], spot: float, as_of: date, vol: float | None) -> float:
+    """Cheap edge estimate (model value minus price, signed) used to trim candidates."""
+    from .pricing import black_scholes
+    if not vol:
+        return 0.0
+    edge = 0.0
+    for l in legs:
+        if not l.is_option:
+            continue
+        t = max((date.fromisoformat(l.expiration) - as_of).days, 0) / 365
+        fair = black_scholes(l.type, spot, l.strike, t, vol).price
+        edge += l.sign * (fair - l.premium()) * l.quantity
+    return edge
 
 
 @dataclass
@@ -178,7 +235,7 @@ class Scored:
 def scan(symbol: str, hist: PriceHistory, chain: list[Leg], library: Library, settings: dict,
          as_of: date, account_value: float | None = None, plan_defaults: dict | None = None,
          holding_stock: bool = False, benchmark: PriceHistory | None = None,
-         iv_history: list[float] | None = None, limit: int = 5):
+         iv_history: list[float] | None = None, limit: int = 5, per_idea: int = 150):
     """Build candidates for each idea, evaluate them all, return the best."""
     from .technical import analyze
     from .rules import iv_regime
@@ -189,17 +246,21 @@ def scan(symbol: str, hist: PriceHistory, chain: list[Leg], library: Library, se
     probe = Trade(symbol, spot, [_clone(atm, "buy", 1)], as_of) if atm else None
     regime = None
     if probe:
-        regime, _ = iv_regime(context.build(probe, settings, hist, iv_history=iv_history, benchmark=benchmark))
+        regime, _ = iv_regime(context.build(probe, settings, hist, iv_history=iv_history,
+                                            benchmark=benchmark, technical=tv))
     found = ideas(tv, regime, holding_stock)
     results: list[Scored] = []
     for idea in found:
-        for legs in candidates(idea.strategy, chain, spot):
+        cands = candidates(idea.strategy, chain, spot)
+        if len(cands) > per_idea:
+            cands.sort(key=lambda legs: -_prescore(legs, spot, as_of, tv.hv))
+            cands = cands[:per_idea]
+        for legs in cands:
             trade = Trade(symbol, spot, legs, as_of, account_value=account_value)
             plan = dict(plan_defaults or {})
             plan.setdefault("stop", _default_stop(trade, tv))
             plan.setdefault("target", _default_target(trade, tv))
-            ctx = context.build(trade, settings, hist, plan, iv_history, benchmark)
-            ctx.technical = tv
+            ctx = context.build(trade, settings, hist, plan, iv_history, benchmark, technical=tv)
             dec = engine.evaluate(ctx, library)
             results.append(Scored(idea, dec, _score(dec)))
     results.sort(key=lambda r: -r.score)

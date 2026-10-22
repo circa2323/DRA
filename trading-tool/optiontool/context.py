@@ -82,7 +82,7 @@ class Context:
 
 def build(trade: Trade, settings: dict, history: PriceHistory | None = None,
           plan: dict | None = None, iv_history: list[float] | None = None,
-          benchmark: PriceHistory | None = None) -> Context:
+          benchmark: PriceHistory | None = None, technical=None) -> Context:
     ctx = Context(trade=trade, settings=settings, history=history, plan=plan or {})
     ctx.strategy = trade.strategy()
     ctx.is_index = trade.underlying.upper() in settings["index_symbols"]
@@ -126,9 +126,11 @@ def build(trade: Trade, settings: dict, history: PriceHistory | None = None,
         ctx.prob_profit = trade.prob_profit(ctx.vol)
         ctx.greeks = trade.net_greeks(lambda l: ctx.vol)
 
-    if history is not None:
-        from . import technical
-        ctx.technical = technical.analyze(history, benchmark)
+    if technical is not None:
+        ctx.technical = technical
+    elif history is not None:
+        from . import technical as tech
+        ctx.technical = tech.analyze(history, benchmark)
     return ctx
 
 

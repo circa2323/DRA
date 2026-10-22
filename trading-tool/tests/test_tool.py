@@ -161,6 +161,29 @@ class Rules(unittest.TestCase):
             self.assertTrue(f.principles, f.message)
 
 
+class ChainParsing(unittest.TestCase):
+    def test_broker_formats(self):
+        import tempfile
+        from optiontool import advisor
+        text = ("Expiration,Strike,Type,Bid,Ask,IV,Open Interest,Volume\n"
+                '11/20/2026,"1,005.00",C,$2.10,2.25,28.5%,"1,234",--\n'
+                "2026-12-18,250,put,0.95,1.05,0.31,,12\n")
+        with tempfile.NamedTemporaryFile("w", suffix=".csv", delete=False) as fh:
+            fh.write(text)
+        a, b = advisor.load_chain(fh.name)
+        self.assertEqual((a.expiration, a.strike, a.type, a.bid, a.iv, a.open_interest, a.volume),
+                         ("2026-11-20", 1005.0, "call", 2.10, 0.285, 1234, None))
+        self.assertEqual((b.type, b.iv, b.open_interest, b.volume), ("put", 0.31, None, 12))
+
+    def test_dense_chain_is_pruned(self):
+        from optiontool import advisor
+        chain = [Leg("buy", t, 1, float(k), e, bid=1.0, ask=1.1, iv=0.2)
+                 for e in ("2026-11-20", "2026-12-18") for k in range(85, 116) for t in ("call", "put")]
+        legs = advisor.candidates("vertical_spread:bull_call", chain, 100)
+        self.assertTrue(legs)
+        self.assertTrue(all(abs(l[0].strike - 100) <= 3 for l in legs))   # bought leg near the money
+
+
 class EndToEnd(unittest.TestCase):
     def test_example_with_history(self):
         import json
