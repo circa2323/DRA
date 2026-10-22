@@ -60,6 +60,20 @@ The app shows a warning when you pull outside regular trading hours, because
 pre-market spreads trip the liquidity and fair-value checks. It listens only on
 `127.0.0.1`. `config.json`, tokens and `data/` are git-ignored.
 
+### Small-account mode
+
+The books' sizing rules assume a large account: positions under 5% of the
+option budget, and the budget at 5–10% of the portfolio. Below roughly $50k,
+almost every trade fails them.
+
+Ticking **Small-account mode** in Settings changes three things:
+* those two percentage limits become warnings instead of rejections;
+* candidates are 1 contract;
+* your own **max loss per trade** (dollars) is enforced as a hard limit.
+
+Every other rule still applies. The page shows a banner while the mode is on,
+because trading this way departs from the books.
+
 ### Data source: Schwab Trader API (recommended)
 
 1. At https://developer.schwab.com, create an app with the **Market Data

@@ -141,6 +141,19 @@ class Rules(unittest.TestCase):
                      account_value=200000)
         self.assertIn("OTS-025-a", ids(d, "BLOCK"))
 
+    def test_small_account_mode(self):
+        legs = [Leg("buy", "call", 1, 105, "2027-01-15", 0.80)]
+        strict = evaluate(legs, plan={**self.PLAN, "option_buying_portfolio": 20}, account_value=200)
+        self.assertIn("OTS-025-a", ids(strict, "BLOCK"))
+        small = evaluate(legs, plan={**self.PLAN, "option_buying_portfolio": 200, "small_account_mode": True,
+                                     "max_trade_risk": 100}, account_value=200)
+        self.assertNotIn("OTS-025-a", ids(small, "BLOCK"))
+        self.assertNotIn("OTS-094-a", ids(small, "BLOCK"))
+        self.assertIn("OTS-025-a", ids(small, "WARN"))
+        over = evaluate([Leg("buy", "call", 1, 100, "2027-01-15", 3.50)],
+                        plan={**self.PLAN, "small_account_mode": True, "max_trade_risk": 100}, account_value=200)
+        self.assertIn("OTS-004-b", ids(over, "BLOCK"))
+
     def test_debit_spread_return(self):
         e = "2027-01-15"
         d = evaluate([Leg("buy", "call", 1, 100, e, 5.0), Leg("sell", "call", 1, 105, e, 2.5)], plan=self.PLAN)

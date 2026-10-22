@@ -249,6 +249,9 @@ class Handler(BaseHTTPRequestHandler):
             '<form method="post" action="/analyze"><button class="sec">Re-analyze last pull</button></form>'
             f'<span class="note">{src_note} · watchlist: {E(", ".join(cfg["watchlist"]))}</span></div>',
             f'<p class="note {"" if open_ else "warn"}">Right now: {E(note)}</p>']
+        if cfg.get("small_account_mode"):
+            body.append('<p class="note warn">Small-account mode is on: the books\' position-size limits are '
+                        f'shown as warnings, and your ${cfg.get("max_trade_risk") or 0:,.0f} per-trade cap is enforced.</p>')
         if job["running"]:
             body.append(f'<div class="card"><b>Working…</b> {E(job["step"])}</div>')
             return page("Working…", "".join(body), refresh=True)
@@ -307,6 +310,12 @@ class Handler(BaseHTTPRequestHandler):
 <label>Tickers you own (covered-call / hedge ideas)</label><input type="text" name="holdings" value="{E(", ".join(c["holdings"]))}">
 <label>Account value ($)</label><input type="number" name="account_value" value="{v(c["account_value"])}">
 <label>Option-buying budget ($, for the 5%-per-position rule)</label><input type="number" name="option_budget" value="{v(c["option_budget"])}">
+<label><input type="checkbox" name="small_account_mode" value="1"{" checked" if c.get("small_account_mode") else ""}>
+ Small-account mode</label>
+<p class="note">For accounts too small for the books' sizing rules. Their 5%-per-position and 5–10%-of-account limits
+become warnings instead of rejections, candidates are 1 contract, and your per-trade cap below is enforced instead.
+This departs from the books; every other rule still applies.</p>
+<label>Max loss per trade ($, your cap)</label><input type="number" name="max_trade_risk" value="{v(c.get("max_trade_risk"))}">
 <label>Expirations: days out (min / max) and how many monthlies</label>
 <input type="number" name="min_dte" value="{c["min_dte"]}"> <input type="number" name="max_dte" value="{c["max_dte"]}">
 <input type="number" name="expiration_count" value="{c["expiration_count"]}">
@@ -331,6 +340,8 @@ class Handler(BaseHTTPRequestHandler):
         c["holdings"] = split(f.get("holdings", ""))
         c["account_value"] = num(f.get("account_value", ""))
         c["option_budget"] = num(f.get("option_budget", ""))
+        c["small_account_mode"] = f.get("small_account_mode") == "1"
+        c["max_trade_risk"] = num(f.get("max_trade_risk", ""))
         for k in ("min_dte", "max_dte", "expiration_count"):
             c[k] = int(f.get(k) or c[k])
         c["csv_folder"] = f.get("csv_folder", c["csv_folder"]).strip()

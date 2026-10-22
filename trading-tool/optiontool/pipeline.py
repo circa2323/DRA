@@ -32,6 +32,8 @@ DEFAULT_CONFIG = {
     "holdings": [],                         # tickers you own (covered-call / hedge ideas)
     "account_value": None,
     "option_budget": None,                  # option-buying portfolio (OTS-025-a)
+    "small_account_mode": False,            # book % limits warn instead of block; max_trade_risk enforced
+    "max_trade_risk": None,                 # dollars you allow one trade to lose (user setting)
     "min_dte": 20, "max_dte": 160, "expiration_count": 4, "strike_band": 0.15,
     "top": 5,
     "schwab": {"app_key": "", "app_secret": "", "callback_url": "https://127.0.0.1",
@@ -221,9 +223,15 @@ def _analyze_one(cfg, snap, sym, as_of, meta, library, settings) -> TickerResult
         bench = load_csv(snap / f"{bsym}.csv", bsym) if bsym and (snap / f"{bsym}.csv").exists() else None
         chain = advisor.load_chain(snap / f"{sym}_chain.csv")
         plan = {"option_buying_portfolio": cfg["option_budget"]} if cfg.get("option_budget") else {}
+        small = bool(cfg.get("small_account_mode"))
+        if small:
+            plan["small_account_mode"] = True
+        if cfg.get("max_trade_risk"):
+            plan["max_trade_risk"] = float(cfg["max_trade_risk"])
         tv, regime, found, best = advisor.scan(
             sym, hist, chain, library, settings, as_of, cfg.get("account_value"), plan,
-            sym in cfg.get("holdings", []), bench, iv_history(cfg, sym), cfg.get("top", 5))
+            sym in cfg.get("holdings", []), bench, iv_history(cfg, sym), cfg.get("top", 5),
+            contracts=1 if small else 3)
         return TickerResult(
             sym, True, spot=hist.last, benchmark=bsym, technical=tv.summary_lines(), regime=regime,
             ideas=[{"strategy": i.strategy, "rationale": i.rationale, "principles": list(i.principles)}

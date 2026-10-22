@@ -235,7 +235,8 @@ class Scored:
 def scan(symbol: str, hist: PriceHistory, chain: list[Leg], library: Library, settings: dict,
          as_of: date, account_value: float | None = None, plan_defaults: dict | None = None,
          holding_stock: bool = False, benchmark: PriceHistory | None = None,
-         iv_history: list[float] | None = None, limit: int = 5, per_idea: int = 150):
+         iv_history: list[float] | None = None, limit: int = 5, per_idea: int = 150,
+         contracts: int = 3):
     """Build candidates for each idea, evaluate them all, return the best."""
     from .technical import analyze
     from .rules import iv_regime
@@ -251,7 +252,12 @@ def scan(symbol: str, hist: PriceHistory, chain: list[Leg], library: Library, se
     found = ideas(tv, regime, holding_stock)
     results: list[Scored] = []
     for idea in found:
-        cands = candidates(idea.strategy, chain, spot)
+        cands = candidates(idea.strategy, chain, spot, contracts)
+        cap = (plan_defaults or {}).get("max_trade_risk")
+        if cap:   # drop debit trades whose cost alone exceeds the user's cap
+            cands = [c for c in cands if sum(l.sign * l.premium() * l.quantity * l.multiplier
+                                              for l in c if l.is_option) <= cap or
+                     any(l.type == "stock" for l in c)]
         if len(cands) > per_idea:
             cands.sort(key=lambda legs: -_prescore(legs, spot, as_of, tv.hv))
             cands = cands[:per_idea]

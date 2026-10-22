@@ -389,7 +389,7 @@ def credit_stop_odds(ctx: Context):
 
 
 # ---------------------------------------------------------------- money management
-@check("OTS-025-a", "OTS-027", "OTS-094-a", "OTS-084", "OTS-048-b")
+@check("OTS-025-a", "OTS-027", "OTS-094-a", "OTS-084", "OTS-048-b", "OTS-004-b", "OTS-001-b")
 def position_size(ctx: Context):
     acct = ctx.trade.account_value
     if not acct:
@@ -399,18 +399,32 @@ def position_size(ctx: Context):
     if ctx.loss_unlimited:
         yield _f(WARN, "Loss is open-ended; size from the stop, keep positions small.", "OTS-048-b")
         return
+    small = bool(ctx.plan.get("small_account_mode"))
+    # small-account mode: the books' percentage limits become warnings, and the
+    # user's own dollar cap per trade is enforced instead (user setting)
+    limit = WARN if small else BLOCK
+    tag = " (small-account mode: book limit exceeded)" if small else ""
+    cap = ctx.plan.get("max_trade_risk")
+    if cap is not None:
+        if risk > cap:
+            yield _f(BLOCK, f"Risking ${risk:,.0f} exceeds your ${cap:,.0f} per-trade cap (user setting). "
+                            "Start with very small positions.", "OTS-004-b", "OTS-084")
+        else:
+            yield _f(PASS, f"Risk ${risk:,.0f} is within your ${cap:,.0f} per-trade cap (user setting).", "OTS-004-b")
+    if risk > acct:
+        yield _f(BLOCK, f"Risking ${risk:,.0f} is more than the ${acct:,.0f} account.", "OTS-001-b")
     buying_book = ctx.plan.get("option_buying_portfolio")
     if ctx.long_options and not ctx.is_credit and buying_book:
         share = risk / buying_book
         if share >= 0.05:
-            yield _f(BLOCK, f"Risking ${risk:,.0f} = {pct(share)} of the option-buying portfolio; each "
-                            "position must be under 5%.", "OTS-025-a", "OTS-027")
+            yield _f(limit, f"Risking ${risk:,.0f} = {pct(share)} of the option-buying portfolio; each "
+                            f"position must be under 5%{tag}.", "OTS-025-a", "OTS-027")
         else:
             yield _f(PASS, f"Position is {pct(share)} of the option-buying portfolio (< 5%).", "OTS-025-a")
     share = (risk + ctx.trade.capital_at_risk_elsewhere) / acct
     if ctx.long_options and not ctx.is_credit and share > 0.10:
-        yield _f(BLOCK, f"Speculative option buying would be {pct(share)} of the portfolio; never more "
-                        "than 5–10%.", "OTS-094-a", "OTS-084")
+        yield _f(limit, f"Speculative option buying would be {pct(share)} of the portfolio; never more "
+                        f"than 5–10%{tag}.", "OTS-094-a", "OTS-084")
     elif ctx.long_options and not ctx.is_credit and share > 0.05:
         yield _f(WARN, f"Speculative option buying would be {pct(share)} of the portfolio (book range 5–10%).",
                  "OTS-094-a")
