@@ -27,6 +27,7 @@ class Finding:
     principles: tuple[str, ...]
     check: str = ""
     small_budget: bool = False   # a book sizing limit relaxed by small-account mode
+    aggressive: bool = False     # a book rule relaxed by aggressive mode
 
 
 CHECKS: list = []
@@ -50,6 +51,36 @@ def pct(x: float) -> str:
 
 
 LONG_SINGLE = ("long_call", "long_put")
+
+# Book rules that aggressive mode turns from BLOCK into a labeled WARN. Rules
+# that protect the account itself (per-trade cap, cash for assignment,
+# unlimited risk, stops for writers, 3-leg structures) are never relaxed.
+RELAXABLE = {
+    "OTS-019-a": "buy only below fair value",
+    "OTS-024-a": "no long options in their last month",
+    "OTS-073-a": "debit spread must pay 2x",
+    "OTS-073-b": "sold leg worth at least .40",
+    "OTS-073-d": "bought leg nearer the money",
+    "OTS-101-b": "LEAPS spread rules",
+    "OTS-030-a": "straddle 80% touch odds",
+    "IAO-11-08": "straddles only when IV is low",
+    "OTS-098-a": "index credit spread width",
+    "OTS-098-b": "index credit of .45+",
+    "OTS-098-c": "index credit spread under 3 weeks",
+    "OTS-097-d": "credit spread stop-touch odds",
+    "OTS-048-c": "write only overvalued options",
+    "OTS-045-b": "no writing beyond 2 months",
+}
+
+# Soft book guidance (already warnings) that aggressive mode also accepts.
+RELAXABLE_WARN = {
+    "OTS-096-i": "at least 20% chance of profit",
+    "OTS-073-c": "debit spread 35% chance of profit",
+    "OTS-017-a": "pay no more than 2.00 for an option",
+    "IAO-00-03": "buy premium only when it's cheap",
+    "OTS-045-a": "write with under a month left",
+    "IAO-11-08": "straddles only when IV is low",
+}
 NAKED_SHORT = ("short_call", "short_put", "short_straddle", "short_strangle")
 
 
@@ -68,12 +99,16 @@ def fair_value_available(ctx: Context):
         yield _f(INFO, f"Volatility input: {ctx.vol_source} = {pct(ctx.vol)}.", "OTS-056-a", "OTS-056-b")
 
 
-@check("OTS-093", "OTS-060-c", "OTS-087-a", "OTS-044-b")
+@check("OTS-093", "OTS-060-c", "OTS-087-a", "OTS-044-b", "OTS-030-c", "IAO-16-31")
 def game_plan(ctx: Context):
     plan = ctx.plan
     has_stop = plan.get("stop") is not None
     has_target = plan.get("target") is not None
     writer = bool(ctx.short_options) and (ctx.is_credit or ctx.strategy in NAKED_SHORT)
+    if not has_stop and ctx.strategy in ("straddle", "strangle") and not ctx.short_options:
+        yield _f(INFO, "Long straddle/strangle: risk is the premium paid; manage by selling the winning side "
+                       "and by time, not a single stock stop.", "OTS-030-c", "IAO-16-31")
+        return
     if not has_stop:
         sev = BLOCK if writer else WARN
         why = "stop-losses are a MUST for writers and credit spreads" if writer else \

@@ -112,6 +112,51 @@ Ticking **Small-account mode** in Settings changes three things:
 Every other rule still applies. The page shows a banner while the mode is on,
 because trading this way departs from the books.
 
+### Aggressive mode, cheaper and shorter trades
+
+These are all in **Settings**:
+
+* **Aggressive mode (off-book).** Selected book rules become warnings instead of
+  rejections:
+  * buy only below fair value;
+  * no long options in their last month;
+  * the debit-spread 2× payoff rule;
+  * the straddle and credit-spread odds rules;
+  * a few soft guidelines, such as the 20% chance-of-profit floor.
+
+  Trades let through this way are labeled **Buy – Aggressive (off-book)**, and
+  their ticket lists every rule they break. Rules that protect the account
+  never relax: your per-trade cap, the account limit, cash for assignment,
+  unlimited risk, writers' stops, and no 3-leg structures.
+* **Max option price.** Only buy options at or below this price, e.g. 0.50.
+  Long options are sized to as many contracts (up to 3, per OTS-025-d) as fit
+  your per-trade cap.
+* **Include weekly / short-dated expirations.** Also lower "days out (min)".
+  Short-dated tickets get a "take profits fast, close 2 days before expiry"
+  exit.
+* **Upcoming events** (`TICKER=YYYY-MM-DD`). Adds strangle ideas ahead of
+  earnings or announcements while premiums are still low (IAO-16-30).
+
+New strategy types: put credit spreads in uptrends with high IV, sized to the
+cap; strangles before events; and expiration-week index long shots (OTS-039-a).
+
+### My trades
+
+Click **I placed this trade — track it** on any order ticket and enter your
+actual fill price, or add a single option by hand on the **My trades** page.
+Every **Pull & analyze** re-checks open trades against the books' exit rules
+and shows one action with its reason and citation:
+
+| Action | When |
+|---|---|
+| **EXIT** | stop hit (OTS-087-a); 5% trailing stop after a profit (OTS-022-a); close-by date reached (OTS-024-a / OTS-023-b); 2 days to expiry; trend turned against you (OTS-085) |
+| **TAKE PROFIT** | option doubled (OTS-021); tripled (OTS-025-c); stock target reached |
+| **BUY BACK** | credit trades with 80% of the premium captured (OTS-046-a) |
+| **HOLD** | none of the above |
+
+Mark a trade closed with your exit price to keep a running P/L. Held tickers
+are pulled automatically. In CSV mode, keep their `_chain.csv` in the inbox.
+
 ### Data source: Schwab Trader API (recommended)
 
 1. At https://developer.schwab.com, create an app with the **Market Data
@@ -245,6 +290,8 @@ optiontool/
   providers.py   Schwab Trader API + CSV-folder data sources, monthly-expiration picker
   pipeline.py    pull → snapshot → analyze; IV log; market-hours check
   screener.py    rank many tickers on history-based book criteria
+  ticket.py      action labels and order tickets
+  positions.py   My trades: exit-rule checks on open positions
   webapp.py      local web app (stdlib http.server)
   cli.py         command line
 knowledge/       OTS.json, IAO.json, SCHEMA.md

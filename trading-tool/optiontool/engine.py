@@ -42,6 +42,16 @@ def evaluate(ctx: Context, library: Library) -> Decision:
             findings.append(f)
     for f in findings:
         _verify(f, library)
+    if ctx.plan.get("aggressive_mode"):
+        for f in findings:
+            first = f.principles[0] if f.principles else ""
+            if f.severity == BLOCK and first in rules.RELAXABLE:
+                f.severity = WARN
+                f.aggressive = True
+                f.message += f" (aggressive mode: book rule \"{rules.RELAXABLE[first]}\" relaxed)"
+            elif f.severity == WARN and first in rules.RELAXABLE_WARN and not f.small_budget:
+                f.aggressive = True
+                f.message += f" (aggressive mode: book guideline \"{rules.RELAXABLE_WARN[first]}\" accepted)"
     findings.sort(key=lambda f: SEVERITY_ORDER[f.severity])
     if any(f.severity == BLOCK for f in findings):
         verdict = "REJECT"

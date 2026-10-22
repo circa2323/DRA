@@ -84,7 +84,7 @@ class CsvFolderProvider:
             raise ProviderError(f"missing {path}")
         legs = advisor.load_chain(path)
         keep = set(monthly_expirations([l.expiration for l in legs], as_of, **_exp_window(settings))) \
-            if settings.get("monthlies_only", True) else None
+            if not settings.get("include_weeklies", False) else None
         legs = [l for l in legs if keep is None or l.expiration in keep]
         return ChainSnapshot(symbol, self._spot(symbol, path), legs)
 
@@ -242,7 +242,7 @@ class SchwabProvider:
         snap = parse_schwab_chain(symbol, data)
         band = settings.get("strike_band", 0.15)
         exps = monthly_expirations([l.expiration for l in snap.legs], as_of, **w) \
-            if settings.get("monthlies_only", True) else None
+            if not settings.get("include_weeklies", False) else None
         snap.legs = [l for l in snap.legs
                      if abs(l.strike - snap.spot) / snap.spot <= band and (exps is None or l.expiration in exps)]
         return snap

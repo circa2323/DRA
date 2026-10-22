@@ -13,13 +13,16 @@ import json
 import threading
 import traceback
 import urllib.parse
-from datetime import datetime
+from datetime import date, datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from . import pipeline, screener, ticket
+from . import pipeline, positions, screener, ticket
 from .knowledge import Library
 from .providers import ProviderError, SchwabAuth, make_provider
+from .rules import RELAXABLE, RELAXABLE_WARN
+
+RELAXED = list(RELAXABLE.values()) + list(RELAXABLE_WARN.values())
 
 E = html.escape
 
@@ -124,7 +127,10 @@ background:var(--bg);color:var(--ink);font:inherit}label{display:block;margin:10
 .sum:last-child{border-bottom:0}.sum .tk{font-weight:700;min-width:52px}.sum .what{flex:1;min-width:220px}
 .badge{display:inline-block;min-width:150px;text-align:center;font-weight:700;border-radius:7px;padding:3px 10px;
 font-size:13px;color:#fff}.b-BUY{background:var(--acc-ok)}.b-SMALL{background:#2f7f8a}
-.b-CONSIDER{background:var(--cau)}.b-REJECT{background:#8a8a90}
+.b-CONSIDER{background:var(--cau)}.b-AGGR{background:#7b4fc4}
+.ticket.aggr{border-color:#7b4fc4}.a-EXIT{background:var(--rej)}.a-BUYBACK,.a-PROFIT{background:var(--acc-ok)}
+.a-HOLD{background:#5b6b8a}.a-EXPIRED{background:#8a8a90}
+.inline{display:inline;width:auto}input.inline{width:auto;display:inline-block;max-width:120px;margin-right:8px}label.inline{margin:0 6px 0 0}.b-REJECT{background:#8a8a90}
 .ticket{border:2px solid var(--acc-ok);border-radius:10px;padding:12px 14px;margin:8px 0 4px;width:100%}
 .ticket.small{border-color:#2f7f8a}.ticket h3{margin:0 0 6px;font-size:16px}
 .ticket .leg{font:600 16px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
@@ -139,7 +145,7 @@ def page(title: str, body: str, refresh: bool = False) -> str:
     return (f'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" '
             f'content="width=device-width,initial-scale=1">{meta}<title>{E(title)}</title>'
             f'<style>{CSS}</style></head><body><header><h1>Option Ideas from the Books</h1><nav>'
-            f'<a href="/">Ideas</a><a href="/screener">Screener</a><a href="/history">History</a><a href="/settings">Settings</a>'
+            f'<a href="/">Ideas</a><a href="/screener">Screener</a><a href="/trades">My trades</a><a href="/history">History</a><a href="/settings">Settings</a>'
             f'<a href="/principles">Principles</a></nav></header><main>{body}</main></body></html>')
 
 
@@ -155,7 +161,10 @@ def fmt(x, spec: str) -> str:
     return "" if x is None else format(x, spec)
 
 
-BADGE = {ticket.BUY: "BUY", ticket.SMALL: "SMALL", ticket.CONSIDER: "CONSIDER", ticket.REJECT: "REJECT"}
+BADGE = {ticket.BUY: "BUY", ticket.SMALL: "SMALL", ticket.AGGR: "AGGR", ticket.CONSIDER: "CONSIDER",
+         ticket.REJECT: "REJECT"}
+ABADGE = {positions.EXIT: "EXIT", positions.BUYBACK: "BUYBACK", positions.PROFIT: "PROFIT",
+          positions.HOLD: "HOLD", positions.DONE: "EXPIRED"}
 
 
 def _label(c: dict) -> str:
@@ -165,17 +174,34 @@ def _label(c: dict) -> str:
     return {"ACCEPT": ticket.BUY, "CAUTION": ticket.CONSIDER}.get(c["verdict"], ticket.REJECT)
 
 
-def render_ticket(t: dict, label: str) -> str:
-    small = label == ticket.SMALL
-    note = ('<p class="note warn">Small-budget logic: this passes every book rule except the position-size '
-            'limits you chose to relax. You can lose the full cost shown above.</p>') if small else ""
+def render_ticket(t: dict, label: str, findings: list | None = None) -> str:
+    kind = {ticket.SMALL: " small", ticket.AGGR: " aggr"}.get(label, "")
+    note = ""
+    if label == ticket.SMALL:
+        note = ('<p class="note warn">Small-budget logic: this passes every book rule except the position-size '
+                'limits you chose to relax. You can lose the full cost shown above.</p>')
+    elif label == ticket.AGGR:
+        relaxed = [f["message"].split(" (aggressive mode")[0] for f in (findings or [])
+                   if "aggressive mode" in f["message"]]
+        items = "".join(f"<li>{E(x)}</li>" for x in relaxed)
+        note = ('<p class="note warn"><b>Off-book:</b> aggressive mode let this through even though it breaks '
+                f'these book rules:</p><ul class="note warn">{items}</ul>')
     mp = "unlimited" if t["max_profit"] is None else f'${t["max_profit"]:,.0f}'
     ml = "unlimited" if t["max_loss"] is None else f'${t["max_loss"]:,.0f}'
     pp = "" if t["prob_profit"] is None else f'{t["prob_profit"]:.0%}'
     legs = "".join(f'<div class="leg">{E(x)}</div>' for x in t["legs"])
     exits = "".join(f"<li>{E(x)}</li>" for x in t["exits"])
     total = "Cost" if t["debit"] else "Credit received"
-    return (f'<div class="ticket{" small" if small else ""}"><h3>Order to place</h3>{legs}<dl>'
+    track = ""
+    if t.get("contracts"):
+        payload = E(json.dumps({k: t.get(k) for k in ("symbol", "strategy", "contracts", "stop", "target",
+                                                       "close_by", "spot", "debit")}))
+        track = (f'<form method="post" action="/trades/add" class="bar" style="margin-top:10px">'
+                 f'<input type="hidden" name="ticket" value="{payload}">'
+                 f'<label class="inline note">Your fill price ($/share)</label>'
+                 f'<input class="inline" type="number" step="0.01" name="fill" value="{t["limit_price"]:.2f}">'
+                 f'<button class="sec">I placed this trade — track it</button></form>')
+    return (f'<div class="ticket{kind}"><h3>Order to place</h3>{legs}<dl>'
             f'<dt>Order type</dt><dd>{E(t["order"])}</dd>'
             f'<dt>Price</dt><dd>{E(t["price_rule"])}</dd>'
             f'<dt>{total}</dt><dd>about ${t["total"]:,.0f}</dd>'
@@ -185,7 +211,23 @@ def render_ticket(t: dict, label: str) -> str:
             f'<dt>Good for</dt><dd>{E(t["time_in_force"])}</dd></dl>'
             f'<b>Before you submit:</b> check your broker\'s bid/ask for this exact contract. If you can\'t get '
             f'your price, pass (OTS-092-b).<p style="margin:8px 0 0"><b>After you\'re filled:</b></p><ol>{exits}</ol>'
-            f'{note}</div>')
+            f'{note}{track}</div>')
+
+
+def render_positions(items: list[dict], compact: bool = True) -> str:
+    if not items:
+        return ""
+    rows = []
+    for r in items:
+        a = r["action"]
+        pnl = "" if r.get("pnl") is None else f' · P/L {"+" if r["pnl"] >= 0 else "-"}${abs(r["pnl"]):,.0f}'
+        val = "" if r.get("value") is None else f' · now {abs(r["value"]):.2f} vs entry {abs(r["entry"]):.2f}'
+        top = r["reasons"][0]
+        rows.append(f'<div class="sum"><span class="badge a-{ABADGE.get(a, "HOLD")}">{E(a)}</span>'
+                    f'<span class="what"><b>{E(r["description"])}</b>{E(val)}{E(pnl)}<br>'
+                    f'{E(top["text"])} {chips(top["principles"])}</span></div>')
+    link = '<p class="note"><a href="/trades">Manage my trades →</a></p>' if compact else ""
+    return f'<div class="card"><h2>My trades</h2>{"".join(rows)}{link}</div>'
 
 
 def render_summary(res: dict) -> str:
@@ -221,10 +263,10 @@ def render_summary(res: dict) -> str:
         cost = f'<span class="note">≈ ${tk["total"]:,.0f}</span>' if tk and lab != ticket.REJECT else ""
         row = (f'<div class="sum"><span class="badge b-{BADGE[lab]}">{E(lab)}</span>'
                f'<span class="tk">{E(t["symbol"])}</span><span class="what">{what}</span>{cost}')
-        if lab in (ticket.BUY, ticket.SMALL) and tk:
-            row += render_ticket(tk, lab)
+        if lab in (ticket.BUY, ticket.SMALL, ticket.AGGR) and tk:
+            row += render_ticket(tk, lab, best["findings"])
         rows.append(row + "</div>")
-    order = [ticket.BUY, ticket.SMALL, ticket.CONSIDER, ticket.REJECT]
+    order = [ticket.BUY, ticket.SMALL, ticket.AGGR, ticket.CONSIDER, ticket.REJECT]
     rows.sort(key=lambda r: next(i for i, k in enumerate(order) if f"b-{BADGE[k]}" in r))
     tally = "".join(f'<span><span class="badge b-{BADGE[k]}" style="min-width:0">{counts[k]}</span> {E(k)}</span>'
                     for k in order)
@@ -234,7 +276,7 @@ def render_summary(res: dict) -> str:
 def render_results(res: dict) -> str:
     out = [f'<p class="note">Snapshot {E(res["snapshot"])} · as of {E(res["as_of"])} · '
            f'source: {E(res["provider"])} · pulled when: {E(res["market_note"])}</p>',
-           render_summary(res), '<h3>Details</h3>']
+           render_positions(res.get("positions") or []), render_summary(res), '<h3>Details</h3>']
     for t in res["tickers"]:
         if not t["ok"]:
             out.append(f'<div class="card"><h2>{E(t["symbol"])}</h2><p class="err">{E(t["error"])}</p></div>')
@@ -323,6 +365,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(self.schwab_page())
             if path == "/screener":
                 return self._send(self.screener_page())
+            if path == "/trades":
+                return self._send(self.trades_page())
             self._send(page("Not found", "<p>Not found.</p>"), 404)
         except Exception:
             self._send(page("Error", f'<pre class="err">{E(traceback.format_exc())}</pre>'), 500)
@@ -342,6 +386,12 @@ class Handler(BaseHTTPRequestHandler):
                 return self.save_settings(self._form())
             if path == "/screener":
                 return self.run_screener(self._form())
+            if path == "/trades/add":
+                return self.add_trade(self._form())
+            if path == "/trades/manual":
+                return self.add_manual_trade(self._form())
+            if path == "/trades/close":
+                return self.close_trade(self._form())
             if path == "/screener/add":
                 return self.add_to_watchlist(self._form_multi())
             if path == "/schwab/finish":
@@ -374,6 +424,9 @@ class Handler(BaseHTTPRequestHandler):
             '<form method="post" action="/analyze"><button class="sec">Re-analyze last pull</button></form>'
             f'<span class="note">{src_note} · watchlist: {E(", ".join(cfg["watchlist"]))}</span></div>',
             f'<p class="note {"" if open_ else "warn"}">Right now: {E(note)}</p>']
+        if cfg.get("aggressive_mode"):
+            body.append('<p class="note warn">Aggressive mode is on: some book rules are relaxed; those trades are '
+                        'labeled "Buy – Aggressive (off-book)".</p>')
         if cfg.get("small_account_mode"):
             body.append('<p class="note warn">Small-account mode is on: the books\' position-size limits are '
                         f'shown as warnings, and your ${cfg.get("max_trade_risk") or 0:,.0f} per-trade cap is enforced.</p>')
@@ -441,6 +494,19 @@ class Handler(BaseHTTPRequestHandler):
 become warnings instead of rejections, candidates are 1 contract, and your per-trade cap below is enforced instead.
 This departs from the books; every other rule still applies.</p>
 <label>Max loss per trade ($, your cap)</label><input type="number" name="max_trade_risk" value="{v(c.get("max_trade_risk"))}">
+<label><input type="checkbox" name="aggressive_mode" value="1"{" checked" if c.get("aggressive_mode") else ""}>
+ Aggressive mode (off-book)</label>
+<p class="note">Turns these book rules from Reject into labeled warnings: {E("; ".join(RELAXED))}.
+Your per-trade cap, the account limit, cash-for-assignment, unlimited-risk and stop rules stay hard. Trades it lets
+through are labeled <b>Buy – Aggressive (off-book)</b> and list the rules they break.</p>
+<label>Max option price ($/share, e.g. 0.50 = $50 a contract; blank = no limit)</label>
+<input type="number" step="0.01" name="max_option_price" value="{v(c.get("max_option_price"))}">
+<label><input type="checkbox" name="include_weeklies" value="1"{" checked" if c.get("include_weeklies") else ""}>
+ Include weekly / short-dated expirations</label>
+<p class="note">Also lower the "days out (min)" below to e.g. 3. Short-dated options lose value fastest (OTS-024-a);
+expect them to show as aggressive unless the books' exceptions apply.</p>
+<label>Upcoming events (one per line: <code>TICKER=YYYY-MM-DD</code>, e.g. earnings) — adds strangle ideas</label>
+<textarea name="events" rows="3">{E(chr(10).join(f"{k}={d}" for k, d in (c.get("events") or {}).items()))}</textarea>
 <label>Expirations: days out (min / max) and how many monthlies</label>
 <input type="number" name="min_dte" value="{c["min_dte"]}"> <input type="number" name="max_dte" value="{c["max_dte"]}">
 <input type="number" name="expiration_count" value="{c["expiration_count"]}">
@@ -466,6 +532,18 @@ This departs from the books; every other rule still applies.</p>
         c["account_value"] = num(f.get("account_value", ""))
         c["option_budget"] = num(f.get("option_budget", ""))
         c["small_account_mode"] = f.get("small_account_mode") == "1"
+        c["aggressive_mode"] = f.get("aggressive_mode") == "1"
+        c["include_weeklies"] = f.get("include_weeklies") == "1"
+        c["max_option_price"] = num(f.get("max_option_price", ""))
+        ev = {}
+        for line in f.get("events", "").replace(",", "\n").splitlines():
+            k, _, d = line.partition("=")
+            if k.strip() and d.strip():
+                try:
+                    ev[k.strip().upper()] = date.fromisoformat(d.strip()).isoformat()
+                except ValueError:
+                    pass
+        c["events"] = ev
         c["max_trade_risk"] = num(f.get("max_trade_risk", ""))
         for k in ("min_dte", "max_dte", "expiration_count"):
             c[k] = int(f.get(k) or c[k])
@@ -534,6 +612,105 @@ overbought/oversold, breakouts and volatility, each citing its book principle. T
                  '<span class="note">Then get their option chains into the inbox and press Pull &amp; analyze.</span></p>'
                  '</form></div>')
         return page("Screener", form + err + table)
+
+    def trades_page(self) -> str:
+        cfg = self.app.cfg
+        book = positions.load(cfg)
+        snap = pipeline.latest_snapshot(cfg)
+        latest = {}
+        if snap and (snap / "results.json").exists():
+            for r in json.loads((snap / "results.json").read_text(encoding="utf-8")).get("positions") or []:
+                latest[r["id"]] = r
+        open_ = [p for p in book if p.get("status") == "open"]
+        rows = []
+        for p in open_:
+            r = latest.get(p["id"])
+            if r:
+                status = render_positions([r], compact=False).replace('<div class="card"><h2>My trades</h2>', "")[:-6]
+            else:
+                status = (f'<div class="sum"><span class="badge a-HOLD">NEW</span><span class="what"><b>'
+                          f'{E(positions.describe(p))}</b><br>Press Pull &amp; analyze to check it.</span></div>')
+            plan = " · ".join(x for x in (
+                f"entry {abs(p['entry']):.2f} {'debit' if p['entry'] >= 0 else 'credit'}",
+                f"stop {p['stop']:.2f}" if p.get("stop") is not None else "",
+                f"target {p['target']:.2f}" if p.get("target") is not None else "",
+                f"close by {p['close_by']}" if p.get("close_by") else "", f"opened {p['opened']}") if x)
+            rows.append(f'{status}<p class="note">{E(plan)}</p>'
+                        f'<form method="post" action="/trades/close" class="bar"><input type="hidden" name="id" '
+                        f'value="{E(p["id"])}"><label class="inline note">Closed at ($/share)</label>'
+                        f'<input class="inline" type="number" step="0.01" name="exit" required>'
+                        f'<button class="sec">Mark closed</button></form>')
+        closed = [p for p in book if p.get("status") == "closed"]
+        total = sum(p.get("pnl", 0) for p in closed)
+        hist = "".join(f'<div class="f">{E(p["closed_on"])} · {E(positions.describe(p))} · '
+                       f'{"+" if p["pnl"] >= 0 else "-"}${abs(p["pnl"]):,.0f}</div>' for p in reversed(closed))
+        manual = '''<form method="post" action="/trades/manual" class="card"><h3>Add a trade by hand</h3>
+<p class="note">For a single option you placed yourself. Multi-leg trades: use the button on the order ticket.</p>
+<label>Ticker</label><input type="text" name="symbol" required>
+<label>Bought or sold</label><select name="action"><option value="buy">Bought (long)</option><option value="sell">Sold (short)</option></select>
+<label>Call or put</label><select name="type"><option>call</option><option>put</option></select>
+<label>Strike</label><input type="number" step="0.01" name="strike" required>
+<label>Expiration</label><input type="text" name="expiration" placeholder="2026-12-18" required>
+<label>Contracts</label><input type="number" name="qty" value="1" required>
+<label>Fill price ($/share)</label><input type="number" step="0.01" name="fill" required>
+<label>Stop on the stock price (optional)</label><input type="number" step="0.01" name="stop">
+<label>Stock target (optional)</label><input type="number" step="0.01" name="target">
+<label>Close by (optional)</label><input type="text" name="close_by" placeholder="2026-11-18">
+<p><button>Add trade</button></p></form>'''
+        return page("My trades", f'<h2>My trades</h2><div class="card"><h3>Open</h3>{"".join(rows) or "<p>No open trades.</p>"}'
+                    f'<p class="note">Each Pull &amp; analyze re-checks these against the books\' exit rules.</p></div>'
+                    f'<div class="card"><h3>Closed · total {"+" if total >= 0 else "-"}${abs(total):,.0f}</h3>'
+                    f'{hist or "<p class=note>None yet.</p>"}</div>{manual}')
+
+    def add_trade(self, f: dict):
+        t = json.loads(f["ticket"])
+        fill = abs(float(f.get("fill") or 0))
+        net = fill if t.get("debit", True) else -fill
+        cfg = self.app.cfg
+        book = positions.load(cfg)
+        book.append(positions.new_position(t["symbol"], t["contracts"], net, datetime.now().date().isoformat(),
+                                           t.get("stop"), t.get("target"), t.get("close_by"), t.get("strategy", ""),
+                                           t.get("spot")))
+        positions.save(cfg, book)
+        self._redirect("/trades")
+
+    def add_manual_trade(self, f: dict):
+        from .advisor import _iso
+        num = lambda k: float(f[k]) if f.get(k, "").strip() else None
+        contract = {"action": f["action"], "type": f["type"], "strike": float(f["strike"]),
+                    "expiration": _iso(f["expiration"]), "qty": int(f.get("qty") or 1), "price": float(f["fill"])}
+        net = contract["price"] if contract["action"] == "buy" else -contract["price"]
+        cfg = self.app.cfg
+        spot = None
+        snap = pipeline.latest_snapshot(cfg)
+        sym = f["symbol"].strip().upper()
+        if snap and (snap / f"{sym}_spot.txt").exists():
+            spot = float((snap / f"{sym}_spot.txt").read_text(encoding="utf-8"))
+        pos = positions.new_position(sym, [contract], net, datetime.now().date().isoformat(), num("stop"),
+                                     num("target"), (_iso(f["close_by"]) if f.get("close_by", "").strip() else None),
+                                     f"{'long' if f['action'] == 'buy' else 'short'}_{f['type']}", spot)
+        if not spot:
+            pos["bias"] = (1 if f["type"] == "call" else -1) * (1 if f["action"] == "buy" else -1)
+        book = positions.load(cfg)
+        book.append(pos)
+        positions.save(cfg, book)
+        self._redirect("/trades")
+
+    def close_trade(self, f: dict):
+        cfg = self.app.cfg
+        book = positions.load(cfg)
+        for p in book:
+            if p["id"] == f.get("id") and p.get("status") == "open":
+                exit_px = abs(float(f["exit"]))
+                qty = max(c["qty"] for c in p["contracts"])
+                if p["entry"] >= 0:
+                    pnl = (exit_px - p["entry"]) * 100 * qty
+                else:
+                    pnl = (-p["entry"] - exit_px) * 100 * qty
+                p.update(status="closed", closed_on=datetime.now().date().isoformat(), exit=exit_px,
+                         pnl=round(pnl, 2))
+        positions.save(cfg, book)
+        self._redirect("/trades")
 
     def run_screener(self, f: dict):
         num = lambda k: float(f.get(k) or screener.DEFAULTS[k])

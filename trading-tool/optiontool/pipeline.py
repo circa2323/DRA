@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 from pathlib import Path
 
-from . import advisor, report, ticket
+from . import advisor, positions, report, ticket
 from . import settings as settings_mod
 from .data import PriceHistory, load_csv
 from .knowledge import Library
@@ -34,6 +34,10 @@ DEFAULT_CONFIG = {
     "option_budget": None,                  # option-buying portfolio (OTS-025-a)
     "small_account_mode": False,            # book % limits warn instead of block; max_trade_risk enforced
     "max_trade_risk": None,                 # dollars you allow one trade to lose (user setting)
+    "aggressive_mode": False,               # relax selected book rules to labeled warnings
+    "max_option_price": None,               # only buy options at or below this per-share price
+    "include_weeklies": False,              # keep weekly expirations (short-dated trades)
+    "events": {},                           # {"SYM": "YYYY-MM-DD"} earnings / announcements
     "min_dte": 20, "max_dte": 160, "expiration_count": 4, "strike_band": 0.15,
     "top": 5,
     "schwab": {"app_key": "", "app_secret": "", "callback_url": "https://127.0.0.1",
@@ -90,6 +94,7 @@ class RunResult:
     provider: str
     market_note: str
     tickers: list[TickerResult]
+    positions: list[dict] = field(default_factory=list)
 
     def to_json(self) -> str:
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
@@ -103,7 +108,8 @@ def pull(cfg: dict, now: datetime | None = None) -> Path:
     as_of = now.date()
     snap = Path(cfg["data_dir"]).expanduser() / "snapshots" / now.strftime("%Y-%m-%d_%H%M")
     snap.mkdir(parents=True, exist_ok=True)
-    symbols = list(dict.fromkeys(cfg["watchlist"] + [b for b in cfg["benchmarks"].values() if b]))
+    held = positions.open_symbols(cfg)
+    symbols = list(dict.fromkeys(cfg["watchlist"] + held + [b for b in cfg["benchmarks"].values() if b]))
     errors = {}
     for sym in symbols:
         try:
@@ -111,6 +117,14 @@ def pull(cfg: dict, now: datetime | None = None) -> Path:
         except ProviderError as e:
             errors[sym] = str(e)
             continue
+        if sym in held:   # every expiration, wide strikes: we need the exact contracts you hold
+            try:
+                pc = provider.chain(sym, as_of, {**cfg, "min_dte": 0, "max_dte": 800,
+                                                 "include_weeklies": True, "strike_band": 0.6})
+                _write_chain(snap / f"{sym}_poschain.csv", pc.legs)
+                (snap / f"{sym}_spot.txt").write_text(str(pc.spot), encoding="utf-8")
+            except ProviderError as e:
+                errors.setdefault(f"{sym} (my trades)", str(e))
         if sym not in cfg["watchlist"]:
             continue
         try:
@@ -199,9 +213,45 @@ def analyze(cfg: dict, snap: Path, library: Library | None = None) -> RunResult:
     out = []
     for sym in cfg["watchlist"]:
         out.append(_analyze_one(cfg, snap, sym, as_of, meta, library, settings))
-    result = RunResult(snap.name, meta["as_of"], meta["provider"], meta["market_note"], out)
+    result = RunResult(snap.name, meta["as_of"], meta["provider"], meta["market_note"], out,
+                       check_positions(cfg, snap, as_of))
     (snap / "results.json").write_text(result.to_json(), encoding="utf-8")
     return result
+
+
+def check_positions(cfg: dict, snap: Path, as_of: date) -> list[dict]:
+    """Run the management rules on every open trade, using this snapshot's prices."""
+    from .technical import analyze as tech
+    book = positions.load(cfg)
+    out = []
+    for pos in book:
+        if pos.get("status") != "open":
+            continue
+        sym = pos["symbol"]
+        spot, trend, chain = None, None, None
+        try:
+            if (snap / f"{sym}_spot.txt").exists():
+                spot = float((snap / f"{sym}_spot.txt").read_text(encoding="utf-8"))
+            if (snap / f"{sym}.csv").exists():
+                h = load_csv(snap / f"{sym}.csv", sym)
+                spot = spot or h.last
+                trend = tech(h).primary_trend if len(h) > 60 else None
+            for name in (f"{sym}_poschain.csv", f"{sym}_chain.csv"):
+                if (snap / name).exists():
+                    chain = advisor.load_chain(snap / name)
+                    break
+            res = positions.check(pos, spot, chain, as_of, trend)
+        except Exception as e:
+            res = {"id": pos["id"], "symbol": sym, "action": "HOLD", "value": None, "pnl": None, "spot": spot,
+                   "days_left": None, "reasons": [{"action": "HOLD", "text": f"Could not check: {e}",
+                                                   "principles": ["OTS-093"]}]}
+        res["description"] = positions.describe(pos)
+        res["entry"] = pos["entry"]
+        res["stop"], res["target"], res["close_by"] = pos.get("stop"), pos.get("target"), pos.get("close_by")
+        out.append(res)
+    positions.save(cfg, book)    # keeps the updated high/low-water marks
+    out.sort(key=lambda r: positions.PRIORITY.get(r["action"], 9))
+    return out
 
 
 def _analyze_one(cfg, snap, sym, as_of, meta, library, settings) -> TickerResult:
@@ -226,12 +276,16 @@ def _analyze_one(cfg, snap, sym, as_of, meta, library, settings) -> TickerResult
         small = bool(cfg.get("small_account_mode"))
         if small:
             plan["small_account_mode"] = True
+        if cfg.get("aggressive_mode"):
+            plan["aggressive_mode"] = True
         if cfg.get("max_trade_risk"):
             plan["max_trade_risk"] = float(cfg["max_trade_risk"])
         tv, regime, found, best = advisor.scan(
             sym, hist, chain, library, settings, as_of, cfg.get("account_value"), plan,
             sym in cfg.get("holdings", []), bench, iv_history(cfg, sym), cfg.get("top", 5),
-            contracts=1 if small else 3)
+            contracts=3, event_date=(cfg.get("events") or {}).get(sym),
+            short_dated=bool(cfg.get("include_weeklies")),
+            max_option_price=cfg.get("max_option_price"))
         return TickerResult(
             sym, True, spot=hist.last, benchmark=bsym, technical=tv.summary_lines(), regime=regime,
             ideas=[{"strategy": i.strategy, "rationale": i.rationale, "principles": list(i.principles)}

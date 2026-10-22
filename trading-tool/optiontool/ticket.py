@@ -8,8 +8,9 @@ from datetime import date, timedelta
 from .engine import Decision
 from .rules import BLOCK, WARN
 
-BUY, SMALL, CONSIDER, REJECT = "BUY", "Buy – Small Budget Logic", "Consider", "Reject"
-ORDER = {BUY: 0, SMALL: 1, CONSIDER: 2, REJECT: 3}
+BUY, SMALL, AGGR, CONSIDER, REJECT = ("BUY", "Buy – Small Budget Logic", "Buy – Aggressive (off-book)",
+                                      "Consider", "Reject")
+ORDER = {BUY: 0, SMALL: 1, AGGR: 2, CONSIDER: 3, REJECT: 4}
 
 
 def action_label(dec: Decision) -> str:
@@ -21,8 +22,8 @@ def action_label(dec: Decision) -> str:
     warns = [f for f in dec.findings if f.severity == WARN]
     if not warns:
         return BUY
-    if all(f.small_budget for f in warns):
-        return SMALL
+    if all(f.small_budget or f.aggressive for f in warns):
+        return AGGR if any(f.aggressive for f in warns) else SMALL
     return CONSIDER
 
 
@@ -87,6 +88,7 @@ def build(dec: Decision) -> dict:
                      "captured — OTS-046-a).")
     if target is not None:
         exits.append(f"Stock target: ${target:,.2f}.")
+    close_by = None
     if long_premium and opt_legs:
         exp = min(date.fromisoformat(l.expiration) for l in opt_legs)
         exit_by = exp - timedelta(days=30)
@@ -95,9 +97,19 @@ def build(dec: Decision) -> dict:
             why = "3-week limit for expensive / in-the-money options and the last-month rule (OTS-023-b, OTS-024-a)"
         else:
             why = "out before the option's last month (OTS-024-a)"
+        close_by = exit_by if exit_by >= t.as_of else max(t.as_of, exp - timedelta(days=2))
         if exit_by >= t.as_of:
             exits.append(f"TIME: close by {exit_by.strftime('%b %d, %Y').replace(' 0', ' ')} — {why}.")
+        else:
+            last = max(t.as_of, exp - timedelta(days=2))
+            exits.append(f"TIME: short-dated — take profits fast and close by {last.strftime('%b %d, %Y').replace(' 0', ' ')} "
+                         "at the latest; don't hold into expiration (OTS-039-b, OTS-024-a).")
     return {
+        "close_by": close_by.isoformat() if close_by else None,
+        "stop": stop, "target": target,
+        "symbol": sym, "strategy": c.strategy, "spot": t.spot,
+        "contracts": [{"action": l.action, "type": l.type, "strike": l.strike, "expiration": l.expiration,
+                       "qty": l.quantity, "price": round(l.premium(), 2)} for l in t.legs if l.is_option],
         "headline": " + ".join(lines),
         "legs": lines,
         "order": order,

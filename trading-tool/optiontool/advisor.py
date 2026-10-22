@@ -27,7 +27,8 @@ class Idea:
     principles: tuple[str, ...]
 
 
-def ideas(tv: TechnicalView, iv_regime: str | None, holding_stock: bool = False) -> list[Idea]:
+def ideas(tv: TechnicalView, iv_regime: str | None, holding_stock: bool = False,
+          event_date: str | None = None, short_dated: bool = False, is_index: bool = False) -> list[Idea]:
     out: list[Idea] = []
     add = lambda s, why, *ids: out.append(Idea(s, why, ids))
     t, strength = tv.primary_trend, tv.trend_strength
@@ -56,6 +57,8 @@ def ideas(tv: TechnicalView, iv_regime: str | None, holding_stock: bool = False)
             if hi:
                 add("short_put", "Uptrend with high IV: sell OTM puts instead of buying shares.",
                     "IAO-16-04", "IAO-15-13", "IAO-00-03")
+                add("vertical_spread:bull_put", "Uptrend with high IV: put credit spread — sell an OTM put and "
+                    "buy a lower one, so the risk is capped.", "IAO-16-04", "IAO-15-13", "OTS-067", "OTS-097-b")
                 add("vertical_spread:bull_call", "Uptrend with high IV: bull call spread (sell the OTM leg "
                     "against the one bought).", "IAO-08-02", "OTS-072-b")
             else:
@@ -85,6 +88,15 @@ def ideas(tv: TechnicalView, iv_regime: str | None, holding_stock: bool = False)
         if hi and strength != "consolidating":
             add("short_put", "Sideways with high IV: sell premium early in the range, not late in a narrowing "
                 "triangle.", "IAO-02-37", "IAO-16-13")
+            add("vertical_spread:bull_put", "Sideways with high IV: put credit spread with capped risk.",
+                "IAO-02-37", "OTS-067", "OTS-097-b")
+    if event_date and iv_regime != "high":
+        add("strangle", f"Event on {event_date} with premiums not yet inflated: buy a strangle (OTM call + "
+            "OTM put) weeks ahead, before IV rises.", "IAO-16-30", "IAO-06-14", "IAO-11-08")
+    if short_dated and is_index and t in ("up", "down"):
+        side = "call" if t == "up" else "put"
+        add(f"long_shot:{side}", f"Expiration-week long shot: a near-the-money index {side} under $1 with "
+            "days left — small, fast, take profits immediately.", "OTS-039-a", "OTS-039-b")
     if holding_stock:
         if lo:
             add("protective_put", "Hedging with low IV: 2–3 month ATM protective put.", "IAO-14-10",
@@ -154,7 +166,15 @@ def _clone(leg: Leg, action: str, qty: int) -> Leg:
                leg.iv, leg.open_interest, leg.volume)
 
 
-def candidates(strategy: str, chain: list[Leg], spot: float, qty: int = 3) -> list[list[Leg]]:
+def _qty(leg: Leg, qty: int, cap: float | None) -> int:
+    """Up to ``qty`` contracts (3 per OTS-025-d), as many as fit the per-trade cap."""
+    if not cap or not leg.ask:
+        return qty
+    return max(1, min(qty, int(cap // (leg.ask * 100))))
+
+
+def candidates(strategy: str, chain: list[Leg], spot: float, qty: int = 3, cap: float | None = None,
+               max_price: float | None = None, as_of: date | None = None) -> list[list[Leg]]:
     """Concrete leg sets for a strategy name from ``ideas``.
 
     Pruned with the books' structural rules so dense chains stay tractable:
@@ -169,10 +189,21 @@ def candidates(strategy: str, chain: list[Leg], spot: float, qty: int = 3) -> li
     dist = lambda l: abs(l.strike - spot) / spot
     near = lambda l: dist(l) <= 0.10
     atm = lambda l: dist(l) <= 0.03
+    cheap = lambda l: max_price is None or l.ask <= max_price
+    wide = lambda l: dist(l) <= 0.15
     if strategy == "long_call":
-        out = [[_clone(c, "buy", qty)] for c in calls if near(c)]
+        out = [[_clone(c, "buy", _qty(c, qty, cap))] for c in calls if wide(c) and cheap(c)]
     elif strategy == "long_put":
-        out = [[_clone(p, "buy", qty)] for p in puts if near(p)]
+        out = [[_clone(p, "buy", _qty(p, qty, cap))] for p in puts if wide(p) and cheap(p)]
+    elif strategy.startswith("long_shot:"):
+        side = calls if strategy.endswith("call") else puts
+        today = as_of or date.today()
+        out = [[_clone(l, "buy", _qty(l, qty, cap))] for l in side
+               if 0 < (date.fromisoformat(l.expiration) - today).days <= 7 and atm(l) and l.ask < 1.0]
+    elif strategy == "strangle":
+        cs = [c for c in calls if spot * 1.02 <= c.strike <= spot * 1.10]
+        ps = [p for p in puts if spot * 0.90 <= p.strike <= spot * 0.98]
+        out = [[_clone(c, "buy", 1), _clone(p, "buy", 1)] for c in cs for p in ps if c.expiration == p.expiration]
     elif strategy == "short_put":
         out = [[_clone(p, "sell", 1)] for p in puts if spot * 0.80 <= p.strike < spot]
     elif strategy == "straddle":
@@ -207,6 +238,8 @@ def candidates(strategy: str, chain: list[Leg], spot: float, qty: int = 3) -> li
                         out.append([_clone(b, "buy", 1), _clone(a, "sell", 1)])
                     elif kind == "bear_call" and a.strike > spot and (b.strike - a.strike) / spot <= 0.05:
                         out.append([_clone(a, "sell", 1), _clone(b, "buy", 1)])
+                    elif kind == "bull_put" and b.strike < spot and (b.strike - a.strike) / spot <= 0.05:
+                        out.append([_clone(b, "sell", 1), _clone(a, "buy", 1)])
     return out
 
 
@@ -273,7 +306,8 @@ def scan(symbol: str, hist: PriceHistory, chain: list[Leg], library: Library, se
          as_of: date, account_value: float | None = None, plan_defaults: dict | None = None,
          holding_stock: bool = False, benchmark: PriceHistory | None = None,
          iv_history: list[float] | None = None, limit: int = 5, per_idea: int = 150,
-         contracts: int = 3):
+         contracts: int = 3, event_date: str | None = None, short_dated: bool = False,
+         max_option_price: float | None = None):
     """Build candidates for each idea, evaluate them all, return the best."""
     from .technical import analyze
     from .rules import iv_regime
@@ -286,11 +320,12 @@ def scan(symbol: str, hist: PriceHistory, chain: list[Leg], library: Library, se
     if probe:
         regime, _ = iv_regime(context.build(probe, settings, hist, iv_history=iv_history,
                                             benchmark=benchmark, technical=tv))
-    found = ideas(tv, regime, holding_stock)
+    found = ideas(tv, regime, holding_stock, event_date, short_dated,
+                  symbol.upper() in settings.get("index_symbols", []))
     results: list[Scored] = []
     for idea in found:
-        cands = candidates(idea.strategy, chain, spot, contracts)
         cap = (plan_defaults or {}).get("max_trade_risk")
+        cands = candidates(idea.strategy, chain, spot, contracts, cap, max_option_price, as_of)
         cands = [c for c in cands if _feasible(c, spot, cap, account_value)]
         if len(cands) > per_idea:
             cands.sort(key=lambda legs: -_prescore(legs, spot, as_of, tv.hv))
@@ -298,8 +333,14 @@ def scan(symbol: str, hist: PriceHistory, chain: list[Leg], library: Library, se
         for legs in cands:
             trade = Trade(symbol, spot, legs, as_of, account_value=account_value)
             plan = dict(plan_defaults or {})
-            plan.setdefault("stop", _default_stop(trade, tv))
-            plan.setdefault("target", _default_target(trade, tv))
+            if "stop" not in plan:
+                plan["stop"] = _default_stop(trade, tv)
+            if "target" not in plan:
+                plan["target"] = _default_target(trade, tv)
+            if plan["stop"] is None and trade.strategy() in ("straddle", "strangle"):
+                be = trade.breakevens()
+                if len(be) == 2:
+                    plan["target_down"], plan["target_up"] = be
             ctx = context.build(trade, settings, hist, plan, iv_history, benchmark, technical=tv)
             dec = engine.evaluate(ctx, library)
             results.append(Scored(idea, dec, _score(dec)))
@@ -315,21 +356,38 @@ def scan(symbol: str, hist: PriceHistory, chain: list[Leg], library: Library, se
     return tv, regime, found, picked[:limit]
 
 
-def _default_stop(trade: Trade, tv: TechnicalView) -> float:
-    """Stop on the underlying at chart support/resistance (OTS-012-a, IAO-03-13)."""
-    long_stock = any(l.type == "stock" and l.action == "buy" for l in trade.legs)
-    bear = not long_stock and (any(l.type == "put" and l.action == "buy" for l in trade.legs) or
-                               any(l.type == "call" and l.action == "sell" for l in trade.legs))
-    if bear:
+def _bias(trade: Trade) -> int:
+    """+1 bullish, -1 bearish, 0 neutral — from how the payoff moves with the stock."""
+    up, dn = trade.payoff_at(trade.spot * 1.5), trade.payoff_at(trade.spot * 0.5)
+    if abs(up - dn) < 1e-6 or (up > 0 and dn > 0 and min(up, dn) > 0.3 * max(up, dn)):
+        return 0
+    return 1 if up > dn else -1
+
+
+def _default_stop(trade: Trade, tv: TechnicalView) -> float | None:
+    """Stop on the underlying at chart support/resistance (OTS-012-a, IAO-03-13).
+    None for neutral long-premium positions, whose risk is the premium paid."""
+    b = _bias(trade)
+    if b == 0:
+        return None
+    shorts = [l for l in trade.option_legs if l.action == "sell"]
+    if shorts and trade.net_debit() < 0:
+        # credit trades: stop on the out-of-the-money side of the short strike (OTS-097-c)
+        k = shorts[0].strike
+        if b > 0:   # short put
+            return round(min(max(k * 1.01, (k + trade.spot) / 2), trade.spot * 0.995), 2)
+        return round(max(min(k * 0.99, (k + trade.spot) / 2), trade.spot * 1.005), 2)
+    if b < 0:
         return round(max(tv.resistance or trade.spot * 1.05, trade.spot * 1.02), 2)
     return round(min(tv.support or trade.spot * 0.95, trade.spot * 0.98), 2)
 
 
-def _default_target(trade: Trade, tv: TechnicalView) -> float:
-    long_stock = any(l.type == "stock" and l.action == "buy" for l in trade.legs)
-    bear = not long_stock and any(l.type == "put" and l.action == "buy" for l in trade.legs)
+def _default_target(trade: Trade, tv: TechnicalView) -> float | None:
+    b = _bias(trade)
     rng = (tv.resistance or trade.spot) - (tv.support or trade.spot)
-    return round(trade.spot - rng if bear else trade.spot + rng, 2)
+    if b == 0:
+        return None
+    return round(trade.spot - rng if b < 0 else trade.spot + rng, 2)
 
 
 def _score(dec: engine.Decision) -> float:
