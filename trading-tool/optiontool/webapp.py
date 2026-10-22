@@ -17,7 +17,7 @@ from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from . import pipeline, screener
+from . import pipeline, screener, ticket
 from .knowledge import Library
 from .providers import ProviderError, SchwabAuth, make_provider
 
@@ -120,6 +120,17 @@ table{border-collapse:collapse;font-size:13px;margin:6px 0;width:100%}td,th{padd
 input[type=text],input[type=number],textarea{width:100%;padding:7px;border:1px solid var(--line);border-radius:6px;
 background:var(--bg);color:var(--ink);font:inherit}label{display:block;margin:10px 0 3px;font-weight:600}
 .tablewrap{overflow-x:auto}
+.sum{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line)}
+.sum:last-child{border-bottom:0}.sum .tk{font-weight:700;min-width:52px}.sum .what{flex:1;min-width:220px}
+.badge{display:inline-block;min-width:150px;text-align:center;font-weight:700;border-radius:7px;padding:3px 10px;
+font-size:13px;color:#fff}.b-BUY{background:var(--acc-ok)}.b-SMALL{background:#2f7f8a}
+.b-CONSIDER{background:var(--cau)}.b-REJECT{background:#8a8a90}
+.ticket{border:2px solid var(--acc-ok);border-radius:10px;padding:12px 14px;margin:8px 0 4px;width:100%}
+.ticket.small{border-color:#2f7f8a}.ticket h3{margin:0 0 6px;font-size:16px}
+.ticket .leg{font:600 16px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
+.ticket dl{display:grid;grid-template-columns:max-content 1fr;gap:3px 12px;margin:8px 0;font-size:14px}
+.ticket dt{color:var(--mute)}.ticket dd{margin:0}.ticket ol{margin:6px 0 0 18px;padding:0;font-size:14px}
+.counts span{margin-right:14px}
 """
 
 
@@ -144,16 +155,88 @@ def fmt(x, spec: str) -> str:
     return "" if x is None else format(x, spec)
 
 
+BADGE = {ticket.BUY: "BUY", ticket.SMALL: "SMALL", ticket.CONSIDER: "CONSIDER", ticket.REJECT: "REJECT"}
+
+
+def _label(c: dict) -> str:
+    """Older snapshots have no label; derive one from the verdict."""
+    if "label" in c:
+        return c["label"]
+    return {"ACCEPT": ticket.BUY, "CAUTION": ticket.CONSIDER}.get(c["verdict"], ticket.REJECT)
+
+
+def render_ticket(t: dict, label: str) -> str:
+    small = label == ticket.SMALL
+    note = ('<p class="note warn">Small-budget logic: this passes every book rule except the position-size '
+            'limits you chose to relax. You can lose the full cost shown above.</p>') if small else ""
+    mp = "unlimited" if t["max_profit"] is None else f'${t["max_profit"]:,.0f}'
+    ml = "unlimited" if t["max_loss"] is None else f'${t["max_loss"]:,.0f}'
+    pp = "" if t["prob_profit"] is None else f'{t["prob_profit"]:.0%}'
+    legs = "".join(f'<div class="leg">{E(x)}</div>' for x in t["legs"])
+    exits = "".join(f"<li>{E(x)}</li>" for x in t["exits"])
+    total = "Cost" if t["debit"] else "Credit received"
+    return (f'<div class="ticket{" small" if small else ""}"><h3>Order to place</h3>{legs}<dl>'
+            f'<dt>Order type</dt><dd>{E(t["order"])}</dd>'
+            f'<dt>Price</dt><dd>{E(t["price_rule"])}</dd>'
+            f'<dt>{total}</dt><dd>about ${t["total"]:,.0f}</dd>'
+            f'<dt>Max loss</dt><dd>{ml}</dd><dt>Max profit</dt><dd>{mp}</dd>'
+            f'<dt>Break-even</dt><dd>{E(", ".join(f"${b:,.2f}" for b in t["breakevens"]) or "n/a")}</dd>'
+            f'<dt>Chance of profit</dt><dd>{pp} at expiration (model estimate)</dd>'
+            f'<dt>Good for</dt><dd>{E(t["time_in_force"])}</dd></dl>'
+            f'<b>Before you submit:</b> check your broker\'s bid/ask for this exact contract. If you can\'t get '
+            f'your price, pass (OTS-092-b).<p style="margin:8px 0 0"><b>After you\'re filled:</b></p><ol>{exits}</ol>'
+            f'{note}</div>')
+
+
+def render_summary(res: dict) -> str:
+    rows, counts = [], {k: 0 for k in BADGE}
+    for t in res["tickers"]:
+        if not t["ok"]:
+            counts[ticket.REJECT] += 1
+            rows.append(f'<div class="sum"><span class="badge b-REJECT">Reject</span><span class="tk">{E(t["symbol"])}</span>'
+                        f'<span class="what note">No data: {E(t["error"].splitlines()[0][:120])}</span></div>')
+            continue
+        if not t["candidates"]:
+            counts[ticket.REJECT] += 1
+            why = "; ".join(i["rationale"] for i in t["ideas"]) or "no setup"
+            rows.append(f'<div class="sum"><span class="badge b-REJECT">Reject</span><span class="tk">{E(t["symbol"])}</span>'
+                        f'<span class="what">No trade today — {E(why)}</span></div>')
+            continue
+        best = t["candidates"][0]
+        lab = _label(best)
+        counts[lab] += 1
+        tk = best.get("ticket")
+        what = E(tk["headline"]) if tk else E(best["strategy"].replace("_", " "))
+        if lab == ticket.REJECT:
+            first = next((f["message"] for f in best["findings"] if f["severity"] == "BLOCK"), "")
+            what = f"Best idea fails a hard rule — {E(first[:140])}"
+        elif lab == ticket.CONSIDER:
+            n = sum(1 for f in best["findings"] if f["severity"] == "WARN")
+            what += f' <span class="note">({n} book warning{"s" if n != 1 else ""} — see details)</span>'
+        cost = f'<span class="note">≈ ${tk["total"]:,.0f}</span>' if tk and lab != ticket.REJECT else ""
+        row = (f'<div class="sum"><span class="badge b-{BADGE[lab]}">{E(lab)}</span>'
+               f'<span class="tk">{E(t["symbol"])}</span><span class="what">{what}</span>{cost}')
+        if lab in (ticket.BUY, ticket.SMALL) and tk:
+            row += render_ticket(tk, lab)
+        rows.append(row + "</div>")
+    order = [ticket.BUY, ticket.SMALL, ticket.CONSIDER, ticket.REJECT]
+    rows.sort(key=lambda r: next(i for i, k in enumerate(order) if f"b-{BADGE[k]}" in r))
+    tally = "".join(f'<span><span class="badge b-{BADGE[k]}" style="min-width:0">{counts[k]}</span> {E(k)}</span>'
+                    for k in order)
+    return (f'<div class="card"><h2>Today\'s summary</h2><p class="counts">{tally}</p>{"".join(rows)}</div>')
+
+
 def render_results(res: dict) -> str:
     out = [f'<p class="note">Snapshot {E(res["snapshot"])} · as of {E(res["as_of"])} · '
-           f'source: {E(res["provider"])} · pulled when: {E(res["market_note"])}</p>']
+           f'source: {E(res["provider"])} · pulled when: {E(res["market_note"])}</p>',
+           render_summary(res), '<h3>Details</h3>']
     for t in res["tickers"]:
         if not t["ok"]:
             out.append(f'<div class="card"><h2>{E(t["symbol"])}</h2><p class="err">{E(t["error"])}</p></div>')
             continue
         bench = f' vs {E(t["benchmark"])}' if t.get("benchmark") else ""
-        s = [f'<div class="card"><h2>{E(t["symbol"])} <span class="note">@ {t["spot"]:.2f}{bench} · '
-             f'premium regime: {E(t["regime"] or "unknown")}</span></h2>']
+        s = [f'<details class="card"><summary><b>{E(t["symbol"])}</b> <span class="note">@ {t["spot"]:.2f}{bench} · '
+             f'premium regime: {E(t["regime"] or "unknown")} · ideas, candidates, reasons and sources</span></summary>']
         for i in t["ideas"]:
             name = "Wait — no setup" if i["strategy"] == "none" else i["strategy"].replace("_", " ")
             s.append(f'<div class="idea"><b>{E(name)}</b> — {E(i["rationale"])} {chips(i["principles"])}</div>')
@@ -175,14 +258,14 @@ def render_results(res: dict) -> str:
             mgmt = "".join(f'<div class="f">→ {E(m["message"])} {chips(m["principles"])}</div>'
                            for m in c["management"])
             s.append(
-                f'<details{" open" if n == 1 else ""}><summary><span class="v {E(c["verdict"])}">{E(c["verdict"])}</span> '
+                f'<details><summary><span class="badge b-{BADGE[_label(c)]}" style="min-width:0">{E(_label(c))}</span> '
                 f'#{n} {E(c["strategy"].replace("_", " "))} · score {c["score"]} · max profit {money(c["max_profit"])} '
                 f'· max loss {money(c["max_loss"])}{pp}</summary>'
                 f'<div class="tablewrap"><table><tr><th>Leg</th><th>Strike</th><th>Expiration</th><th>Price</th>'
                 f'<th>Fair</th><th>IV</th><th>Δ</th></tr>{stock}{legs}</table></div>'
                 f'<p class="note">Break-even(s): {E(be or "n/a")} · vol input: {E(c["volatility_source"] or "n/a")}</p>'
                 f'{finds}<p><b>Management plan</b></p>{mgmt}</details>')
-        s.append("</div>")
+        s.append("</details>")
         out.append("".join(s))
     return "".join(out)
 

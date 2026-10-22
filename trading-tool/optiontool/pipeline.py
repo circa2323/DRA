@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 from pathlib import Path
 
-from . import advisor, report
+from . import advisor, report, ticket
 from . import settings as settings_mod
 from .data import PriceHistory, load_csv
 from .knowledge import Library
@@ -236,7 +236,8 @@ def _analyze_one(cfg, snap, sym, as_of, meta, library, settings) -> TickerResult
             sym, True, spot=hist.last, benchmark=bsym, technical=tv.summary_lines(), regime=regime,
             ideas=[{"strategy": i.strategy, "rationale": i.rationale, "principles": list(i.principles)}
                    for i in found],
-            candidates=[{"score": round(s.score), "idea": s.idea.strategy,
+            candidates=sorted([{"score": round(s.score), "idea": s.idea.strategy,
+                         "label": ticket.action_label(s.decision), "ticket": ticket.build(s.decision),
                          **json.loads(report.as_json(s.decision, library)),
                          "legs": [{"action": m.leg.action, "qty": m.leg.quantity, "type": m.leg.type,
                                    "strike": m.leg.strike, "expiration": m.leg.expiration, "dte": m.dte,
@@ -244,6 +245,6 @@ def _analyze_one(cfg, snap, sym, as_of, meta, library, settings) -> TickerResult
                                   for m in s.decision.context.legs],
                          "stock_legs": [{"action": l.action, "qty": l.quantity, "price": l.price}
                                         for l in s.decision.context.trade.legs if l.type == "stock"]}
-                        for s in best])
+                        for s in best], key=lambda c: (ticket.ORDER[c["label"]], -c["score"])))
     except Exception as e:  # keep the other tickers going
         return TickerResult(sym, False, f"{type(e).__name__}: {e}\n{traceback.format_exc(limit=3)}")

@@ -49,8 +49,22 @@ python3 -m optiontool serve             # open http://127.0.0.1:8765
    * saves a dated snapshot under `data/snapshots/`;
    * runs the books' scan on each ticker.
 
-   Each ticker card shows the strategy ideas, the ranked candidate trades with
-   verdicts, every finding linked to its book page, and a management plan.
+   The page opens with **Today's summary**: one row per ticker with a single
+   label.
+
+   | Label | Meaning |
+   |---|---|
+   | **BUY** | passes every book rule |
+   | **Buy – Small Budget Logic** | passes every rule except the position-size limits that small-account mode relaxes |
+   | **Consider** | other book warnings, listed in the details |
+   | **Reject** | breaks a hard rule, or there's no setup today |
+
+   Each BUY and Small Budget row includes an **order ticket**: the exact
+   contract (buy or sell to open, quantity, expiration, strike, call or put),
+   limit price and the most to pay, cost, max loss, break-even, and the exit
+   plan (stock-price stop alert, profit target, close-by date). The ideas,
+   ranked candidates, findings with book citations and the technical reading
+   sit under **Details**.
 3. **History.** Earlier pulls stay viewable. Each pull also records an
    at-the-money IV to `data/iv_log.csv`. After about 60 trading days that log
    gives the tool its own IV history, so it can judge "extremely high or low" IV

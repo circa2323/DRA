@@ -26,6 +26,7 @@ class Finding:
     message: str
     principles: tuple[str, ...]
     check: str = ""
+    small_budget: bool = False   # a book sizing limit relaxed by small-account mode
 
 
 CHECKS: list = []
@@ -206,7 +207,9 @@ def scaling_size(ctx: Context):
     if ctx.strategy in LONG_SINGLE:
         q = ctx.long_options[0].leg.quantity
         if q < 3:
-            yield _f(WARN, f"{q} contract(s): buy at least 3 per position so you can scale out.", "OTS-025-d")
+            f = _f(WARN, f"{q} contract(s): buy at least 3 per position so you can scale out.", "OTS-025-d")
+            f.small_budget = bool(ctx.plan.get("small_account_mode"))
+            yield f
 
 
 @check("OTS-030-a", "OTS-030-b")
@@ -417,17 +420,23 @@ def position_size(ctx: Context):
     if ctx.long_options and not ctx.is_credit and buying_book:
         share = risk / buying_book
         if share >= 0.05:
-            yield _f(limit, f"Risking ${risk:,.0f} = {pct(share)} of the option-buying portfolio; each "
-                            f"position must be under 5%{tag}.", "OTS-025-a", "OTS-027")
+            f = _f(limit, f"Risking ${risk:,.0f} = {pct(share)} of the option-buying portfolio; each "
+                          f"position must be under 5%{tag}.", "OTS-025-a", "OTS-027")
+            f.small_budget = small
+            yield f
         else:
             yield _f(PASS, f"Position is {pct(share)} of the option-buying portfolio (< 5%).", "OTS-025-a")
     share = (risk + ctx.trade.capital_at_risk_elsewhere) / acct
     if ctx.long_options and not ctx.is_credit and share > 0.10:
-        yield _f(limit, f"Speculative option buying would be {pct(share)} of the portfolio; never more "
-                        f"than 5–10%{tag}.", "OTS-094-a", "OTS-084")
+        f = _f(limit, f"Speculative option buying would be {pct(share)} of the portfolio; never more "
+                      f"than 5–10%{tag}.", "OTS-094-a", "OTS-084")
+        f.small_budget = small
+        yield f
     elif ctx.long_options and not ctx.is_credit and share > 0.05:
-        yield _f(WARN, f"Speculative option buying would be {pct(share)} of the portfolio (book range 5–10%).",
-                 "OTS-094-a")
+        f = _f(WARN, f"Speculative option buying would be {pct(share)} of the portfolio (book range 5–10%).",
+               "OTS-094-a")
+        f.small_budget = small
+        yield f
 
 
 # ---------------------------------------------------------------- volatility & prediction

@@ -154,6 +154,26 @@ class Rules(unittest.TestCase):
                         plan={**self.PLAN, "small_account_mode": True, "max_trade_risk": 100}, account_value=200)
         self.assertIn("OTS-004-b", ids(over, "BLOCK"))
 
+    def test_action_labels_and_ticket(self):
+        from optiontool import ticket
+        fair = pricing.black_scholes("call", 50, 54, 85 / 365, 0.30, 0.04).price
+        price = round(fair * 0.8, 2)
+        leg = Leg("buy", "call", 1, 54, "2027-01-15", price, bid=price - 0.04, ask=price)
+        plan = {"stop": 47, "target": 57, "option_buying_portfolio": 200, "small_account_mode": True,
+                "max_trade_risk": 1000}
+        d = evaluate([leg], spot=50, hv=0.30, plan=plan, account_value=2000)
+        warns = [f for f in d.findings if f.severity == "WARN"]
+        self.assertTrue(warns and all(f.small_budget for f in warns), [f.message for f in warns])
+        self.assertEqual(ticket.action_label(d), ticket.SMALL)
+        tk = ticket.build(d)
+        self.assertEqual(tk["legs"], ["BUY TO OPEN 1 × XYZ Jan 15, 2027 $54 CALL"])
+        self.assertAlmostEqual(tk["worst_price"], price)
+        self.assertLessEqual(tk["limit_price"], price)
+        self.assertTrue(any(x.startswith("STOP") for x in tk["exits"]))
+        self.assertTrue(any(x.startswith("TIME: close by Dec 16, 2026") for x in tk["exits"]))
+        bad = evaluate([Leg("buy", "call", 3, 105, "2027-01-15", 6.0)], hv=0.20, plan=self.PLAN)
+        self.assertEqual(ticket.action_label(bad), ticket.REJECT)
+
     def test_debit_spread_return(self):
         e = "2027-01-15"
         d = evaluate([Leg("buy", "call", 1, 100, e, 5.0), Leg("sell", "call", 1, 105, e, 2.5)], plan=self.PLAN)
