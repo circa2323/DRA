@@ -264,7 +264,15 @@ def scan(symbol: str, hist: PriceHistory, chain: list[Leg], library: Library, se
             dec = engine.evaluate(ctx, library)
             results.append(Scored(idea, dec, _score(dec)))
     results.sort(key=lambda r: -r.score)
-    return tv, regime, found, results[:limit]
+    # best candidate of each idea first, so one strategy can't crowd out the others
+    picked, seen = [], set()
+    for r in results:
+        if r.idea.strategy not in seen:
+            seen.add(r.idea.strategy)
+            picked.append(r)
+    picked.sort(key=lambda r: -r.score)
+    picked += [r for r in results if r not in picked]
+    return tv, regime, found, picked[:limit]
 
 
 def _default_stop(trade: Trade, tv: TechnicalView) -> float:

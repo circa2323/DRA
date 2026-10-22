@@ -32,6 +32,67 @@ python3 -m optiontool explain OTS-024-a IAO-06-11
 python3 -m unittest discover -s tests
 ```
 
+## The web app: one click to pull data and get ideas
+
+```bash
+cd trading-tool
+cp config.example.json config.json      # once
+python3 -m optiontool serve             # open http://127.0.0.1:8765
+```
+
+1. **Settings.** Set your watchlist, benchmarks (e.g. `AAPL=XLK`), the tickers
+   you own, account value and option budget.
+2. **Pull & analyze.** This does four things:
+   * fetches two years of daily bars and the option chain for each ticker;
+   * keeps the next 4 monthly expirations 20–160 days out, with strikes within
+     ±15% of the price;
+   * saves a dated snapshot under `data/snapshots/`;
+   * runs the books' scan on each ticker.
+
+   Each ticker card shows the strategy ideas, the ranked candidate trades with
+   verdicts, every finding linked to its book page, and a management plan.
+3. **History.** Earlier pulls stay viewable. Each pull also records an
+   at-the-money IV to `data/iv_log.csv`. After about 60 trading days that log
+   gives the tool its own IV history, so it can judge "extremely high or low" IV
+   (OTS-057-b, IAO-17-05) without a paid data feed.
+
+The app shows a warning when you pull outside regular trading hours, because
+pre-market spreads trip the liquidity and fair-value checks. It listens only on
+`127.0.0.1`. `config.json`, tokens and `data/` are git-ignored.
+
+### Data source: Schwab Trader API (recommended)
+
+1. At https://developer.schwab.com, create an app with the **Market Data
+   Production** product.
+   * Set the callback URL to `https://127.0.0.1`.
+   * Approval usually takes a few days.
+2. Put the app key, secret and callback URL into **Settings**, choose *Schwab
+   Trader API*, and click **Connect Schwab**.
+3. Log in at Schwab. Your browser is then sent to `https://127.0.0.1/?code=…`,
+   which won't load; that's expected.
+4. Paste that address into the app.
+   * The token is saved to `~/.optiontool/schwab_token.json`, readable only by
+     you.
+   * It refreshes itself automatically.
+   * Schwab requires you to log in again every 7 days, and the app shows when
+     that's due.
+
+### Data source: CSV folder (no API needed)
+
+Put `<SYM>.csv` (price history) and `<SYM>_chain.csv` (option chain) files for
+every watchlist and benchmark symbol in the folder named in Settings, then
+press Pull.
+
+### Hands-off schedule
+
+`python3 -m optiontool pull` does the same as the button, from a terminal. You
+can schedule it with cron (macOS/Linux) or Task Scheduler (Windows) and then
+just open the app to read the results. For example, at 9:45 ET on weekdays:
+
+```
+45 9 * * 1-5  cd /path/to/trading-tool && python3 -m optiontool pull >> data/pull.log 2>&1
+```
+
 ## Commands
 
 * **evaluate** — takes a trade JSON (see `examples/*.json`) and returns:
@@ -48,6 +109,7 @@ python3 -m unittest discover -s tests
   strategies the books map to that condition.
 * **scan** — builds concrete candidates from an option-chain CSV for each
   strategy idea, runs every candidate through `evaluate`, and ranks them.
+* **serve / pull** — the web app and its scheduled-pull equivalent (above).
 * **principles / explain / books** — browse the library and see which
   principles the rule checks enforce.
 
@@ -117,6 +179,9 @@ optiontool/
   engine.py      runs the checks, verdict, management plan
   advisor.py     condition → strategy ideas, chain scanning and ranking
   report.py      text / JSON output
+  providers.py   Schwab Trader API + CSV-folder data sources, monthly-expiration picker
+  pipeline.py    pull → snapshot → analyze; IV log; market-hours check
+  webapp.py      local web app (stdlib http.server)
   cli.py         command line
 knowledge/       OTS.json, IAO.json, SCHEMA.md
 examples/        sample trades + synthetic data generator

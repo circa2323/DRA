@@ -1,0 +1,30 @@
+{
+  "provider": "schwab",
+  "csv_folder": "data/inbox",
+  "data_dir": "data",
+  "watchlist": [
+    "SPY",
+    "XLK",
+    "AAPL",
+    "NVDA"
+  ],
+  "benchmarks": {
+    "XLK": "SPY",
+    "AAPL": "XLK",
+    "NVDA": "XLK"
+  },
+  "holdings": [],
+  "account_value": null,
+  "option_budget": null,
+  "min_dte": 20,
+  "max_dte": 160,
+  "expiration_count": 4,
+  "strike_band": 0.15,
+  "top": 5,
+  "schwab": {
+    "app_key": "",
+    "app_secret": "",
+    "callback_url": "https://127.0.0.1",
+    "token_path": "~/.optiontool/schwab_token.json"
+  }
+}

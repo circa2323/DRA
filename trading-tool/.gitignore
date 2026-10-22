@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 books/
+# local app state: broker keys, tokens, pulled data
+config.json
+data/

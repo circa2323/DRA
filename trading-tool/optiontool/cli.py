@@ -110,6 +110,32 @@ def cmd_books(a, lib, cfg):
     return 0
 
 
+def cmd_serve(a, lib, cfg):
+    from .webapp import serve
+    serve(a.config, a.port)
+    return 0
+
+
+def cmd_pull(a, lib, cfg):
+    from . import pipeline
+    conf = pipeline.load_config(a.config)
+    snap = pipeline.latest_snapshot(conf) if a.no_fetch else pipeline.pull(conf)
+    if snap is None:
+        print("no snapshot to analyze")
+        return 1
+    res = pipeline.analyze(conf, snap, lib)
+    print(f"snapshot {snap}  ({res.market_note})")
+    for t in res.tickers:
+        if not t.ok:
+            print(f"  {t.symbol}: ERROR {t.error.splitlines()[0]}")
+            continue
+        best = t.candidates[0] if t.candidates else None
+        ideas = ", ".join(i["strategy"] for i in t.ideas)
+        top = f"top: {best['strategy']} {best['verdict']} (score {best['score']})" if best else "no candidates"
+        print(f"  {t.symbol} @ {t.spot:.2f}  regime={t.regime}  ideas: {ideas}  {top}")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="optiontool", description=__doc__)
     ap.add_argument("--knowledge", default=str(DEFAULT_DIR), help="folder of book JSON files")
@@ -160,6 +186,16 @@ def main(argv=None) -> int:
 
     bk = sub.add_parser("books", help="list loaded books and rule coverage")
     bk.set_defaults(fn=cmd_books)
+
+    sv = sub.add_parser("serve", help="run the local web app (Pull button, ideas, settings)")
+    sv.add_argument("--config", default="config.json")
+    sv.add_argument("--port", type=int, default=8765)
+    sv.set_defaults(fn=cmd_serve)
+
+    pl = sub.add_parser("pull", help="pull data for the watchlist and analyze it (for schedulers)")
+    pl.add_argument("--config", default="config.json")
+    pl.add_argument("--no-fetch", action="store_true", help="re-analyze the latest snapshot only")
+    pl.set_defaults(fn=cmd_pull)
 
     a = ap.parse_args(argv)
     lib = Library(a.knowledge)
