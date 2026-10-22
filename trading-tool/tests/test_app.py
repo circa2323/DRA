@@ -28,7 +28,7 @@ def schwab_history_json(symbol):
 def schwab_chain_json(symbol, spot=180.58):
     import csv
     calls, puts = {}, {}
-    for r in csv.DictReader((EX / "XYZ_chain.csv").open()):
+    for r in csv.DictReader((EX / "XYZ_chain.csv").open(encoding="utf-8")):
         exp = r["expiration"]
         dte = (date.fromisoformat(exp) - date(2026, 10, 22)).days
         target = calls if r["type"] == "call" else puts
@@ -86,7 +86,7 @@ class CsvFolder(unittest.TestCase):
         tmp = Path(tempfile.mkdtemp())
         shutil.copy(EX / "XYZ_chain.csv", tmp / "XYZ_chain.csv")
         shutil.copy(EX / "XYZ.csv", tmp / "XYZ.csv")
-        (tmp / "XYZ_spot.txt").write_text("$181.25\n")
+        (tmp / "XYZ_spot.txt").write_text("$181.25\n", encoding="utf-8")
         p = providers.CsvFolderProvider(tmp)
         self.assertEqual(p.chain("XYZ", date(2026, 10, 22), pipeline.DEFAULT_CONFIG).spot, 181.25)
         (tmp / "XYZ_spot.txt").unlink()
@@ -120,7 +120,7 @@ class Pipeline(unittest.TestCase):
     def test_pull_and_analyze(self):
         now = datetime(2026, 10, 22, 10, 0, tzinfo=pipeline.NY)
         snap = pipeline.pull(self.cfg, now)
-        meta = json.loads((snap / "meta.json").read_text())
+        meta = json.loads((snap / "meta.json").read_text(encoding="utf-8"))
         self.assertIn("MISSING", meta["errors"])
         self.assertTrue((Path(self.cfg["data_dir"]) / "iv_log.csv").exists())
         res = pipeline.analyze(self.cfg, snap)

@@ -56,7 +56,7 @@ def load_csv(path: str | Path, symbol: str | None = None) -> PriceHistory:
     path = Path(path)
     hist = PriceHistory(symbol or path.stem.upper())
     rows = []
-    with path.open(newline="") as fh:
+    with path.open(newline="", encoding="utf-8-sig") as fh:
         for row in csv.DictReader(fh):
             close = _pick(row, "close", "adj close", "adj_close")
             date = _pick(row, "date", "timestamp", "time")

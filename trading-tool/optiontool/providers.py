@@ -91,9 +91,9 @@ class CsvFolderProvider:
     def _spot(self, symbol: str, chain_path: Path) -> float:
         f = self.folder / f"{symbol}_spot.txt"
         if f.exists():
-            return float(f.read_text().strip().replace("$", "").replace(",", ""))
+            return float(f.read_text(encoding="utf-8").strip().replace("$", "").replace(",", ""))
         import csv as _csv
-        with chain_path.open(newline="") as fh:
+        with chain_path.open(newline="", encoding="utf-8-sig") as fh:
             for r in _csv.DictReader(fh):
                 for k, v in r.items():
                     if (k or "").strip().lower() in ("spot", "underlying", "underlying_price", "last") and v:
@@ -166,11 +166,11 @@ class SchwabAuth:
     def _load(self) -> dict:
         if not self.token_path.exists():
             return {}
-        return json.loads(self.token_path.read_text())
+        return json.loads(self.token_path.read_text(encoding="utf-8"))
 
     def _save(self, tok: dict) -> None:
         self.token_path.parent.mkdir(parents=True, exist_ok=True)
-        self.token_path.write_text(json.dumps(tok, indent=2))
+        self.token_path.write_text(json.dumps(tok, indent=2), encoding="utf-8")
         try:
             os.chmod(self.token_path, 0o600)
         except OSError:

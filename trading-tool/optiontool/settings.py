@@ -38,5 +38,5 @@ DEFAULTS = {
 def load(path: str | Path | None = None) -> dict:
     s = dict(DEFAULTS)
     if path:
-        s.update(json.loads(Path(path).read_text()))
+        s.update(json.loads(Path(path).read_text(encoding="utf-8")))
     return s

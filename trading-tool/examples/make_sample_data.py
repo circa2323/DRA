@@ -43,7 +43,7 @@ def series(seed, start, drift, vol, n=400):
 
 
 def write(name, rows):
-    with (OUT / name).open("w", newline="") as fh:
+    with (OUT / name).open("w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["Date", "Open", "High", "Low", "Close", "Volume"])
         w.writerows(rows)
@@ -52,7 +52,7 @@ def write(name, rows):
 def chain(spot, iv, name):
     rnd = random.Random(7)
     exps = ["2026-11-20", "2026-12-18", "2027-01-15", "2027-03-19"]
-    with (OUT / name).open("w", newline="") as fh:
+    with (OUT / name).open("w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["expiration", "strike", "type", "bid", "ask", "iv", "open_interest", "volume"])
         base = round(spot / 5) * 5

@@ -19,12 +19,12 @@ from .trade import Trade
 def _iv_history(path):
     if not path:
         return None
-    vals = [float(x) for x in Path(path).read_text().replace(",", "\n").split() if x.strip()]
+    vals = [float(x) for x in Path(path).read_text(encoding="utf-8").replace(",", "\n").split() if x.strip()]
     return [v / 100 if v > 3 else v for v in vals]
 
 
 def cmd_evaluate(a, lib, cfg):
-    spec = json.loads(Path(a.trade).read_text())
+    spec = json.loads(Path(a.trade).read_text(encoding="utf-8"))
     base = Path(a.trade).parent
     trade = Trade.from_dict(spec)
     hist_path = a.history or spec.get("history_csv")
@@ -197,6 +197,11 @@ def main(argv=None) -> int:
     pl.add_argument("--no-fetch", action="store_true", help="re-analyze the latest snapshot only")
     pl.set_defaults(fn=cmd_pull)
 
+    for stream in (sys.stdout, sys.stderr):   # Windows consoles/logs default to cp1252
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
     a = ap.parse_args(argv)
     lib = Library(a.knowledge)
     cfg = settings_mod.load(a.settings)

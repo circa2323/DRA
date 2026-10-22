@@ -48,7 +48,7 @@ class Library:
             self._load(path)
 
     def _load(self, path: Path) -> None:
-        data = json.loads(path.read_text())
+        data = json.loads(path.read_text(encoding="utf-8"))
         book = data["book"]
         book_id = book["id"]
         self.books[book_id] = book

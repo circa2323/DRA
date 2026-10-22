@@ -43,14 +43,14 @@ def load_config(path: str | Path) -> dict:
     cfg = json.loads(json.dumps(DEFAULT_CONFIG))
     p = Path(path)
     if p.exists():
-        user = json.loads(p.read_text())
+        user = json.loads(p.read_text(encoding="utf-8"))
         cfg.update({k: v for k, v in user.items() if k != "schwab"})
         cfg["schwab"].update(user.get("schwab", {}))
     return cfg
 
 
 def save_config(path: str | Path, cfg: dict) -> None:
-    Path(path).write_text(json.dumps(cfg, indent=2))
+    Path(path).write_text(json.dumps(cfg, indent=2), encoding="utf-8")
 
 
 def market_status(now: datetime | None = None) -> tuple[bool, str]:
@@ -115,7 +115,7 @@ def pull(cfg: dict, now: datetime | None = None) -> Path:
             ch = provider.chain(sym, as_of, cfg)
             _write_chain(snap / f"{sym}_chain.csv", ch.legs)
             _log_iv(cfg, as_of, sym, ch)
-            (snap / f"{sym}_spot.txt").write_text(str(ch.spot))
+            (snap / f"{sym}_spot.txt").write_text(str(ch.spot), encoding="utf-8")
         except ProviderError as e:
             errors[sym] = str(e)
     if getattr(provider, "stale_spot", False):
@@ -127,12 +127,12 @@ def pull(cfg: dict, now: datetime | None = None) -> Path:
         note = f"{note}; {errors_note}"
     (snap / "meta.json").write_text(json.dumps({
         "as_of": as_of.isoformat(), "pulled_at": now.isoformat(), "provider": provider.name,
-        "market_note": note, "errors": errors}, indent=2))
+        "market_note": note, "errors": errors}, indent=2), encoding="utf-8")
     return snap
 
 
 def _write_history(path: Path, h: PriceHistory) -> None:
-    with path.open("w", newline="") as fh:
+    with path.open("w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["Date", "Open", "High", "Low", "Close", "Volume"])
         for row in zip(h.dates, h.opens, h.highs, h.lows, h.closes, h.volumes):
@@ -140,7 +140,7 @@ def _write_history(path: Path, h: PriceHistory) -> None:
 
 
 def _write_chain(path: Path, legs) -> None:
-    with path.open("w", newline="") as fh:
+    with path.open("w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["expiration", "strike", "type", "bid", "ask", "iv", "open_interest", "volume"])
         for l in sorted(legs, key=lambda l: (l.expiration, l.strike, l.type)):
@@ -163,10 +163,10 @@ def _log_iv(cfg: dict, as_of: date, sym: str, ch) -> None:
     path = Path(cfg["data_dir"]).expanduser() / "iv_log.csv"
     rows = {}
     if path.exists():
-        with path.open(newline="") as fh:
+        with path.open(newline="", encoding="utf-8-sig") as fh:
             rows = {(r["date"], r["symbol"]): r["atm_iv"] for r in csv.DictReader(fh)}
     rows[(as_of.isoformat(), sym)] = f"{atm.iv:.4f}"
-    with path.open("w", newline="") as fh:
+    with path.open("w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["date", "symbol", "atm_iv"])
         for (d, s), v in sorted(rows.items()):
@@ -177,7 +177,7 @@ def iv_history(cfg: dict, sym: str, min_readings: int = 60) -> list[float] | Non
     path = Path(cfg["data_dir"]).expanduser() / "iv_log.csv"
     if not path.exists():
         return None
-    with path.open(newline="") as fh:
+    with path.open(newline="", encoding="utf-8-sig") as fh:
         vals = [float(r["atm_iv"]) for r in csv.DictReader(fh) if r["symbol"] == sym]
     return vals if len(vals) >= min_readings else None
 
@@ -192,13 +192,13 @@ def latest_snapshot(cfg: dict) -> Path | None:
 def analyze(cfg: dict, snap: Path, library: Library | None = None) -> RunResult:
     library = library or Library()
     settings = settings_mod.load(cfg.get("settings_file"))
-    meta = json.loads((snap / "meta.json").read_text())
+    meta = json.loads((snap / "meta.json").read_text(encoding="utf-8"))
     as_of = date.fromisoformat(meta["as_of"])
     out = []
     for sym in cfg["watchlist"]:
         out.append(_analyze_one(cfg, snap, sym, as_of, meta, library, settings))
     result = RunResult(snap.name, meta["as_of"], meta["provider"], meta["market_note"], out)
-    (snap / "results.json").write_text(result.to_json())
+    (snap / "results.json").write_text(result.to_json(), encoding="utf-8")
     return result
 
 
@@ -209,7 +209,7 @@ def _analyze_one(cfg, snap, sym, as_of, meta, library, settings) -> TickerResult
         hist = load_csv(snap / f"{sym}.csv", sym)
         spot_file = snap / f"{sym}_spot.txt"
         if spot_file.exists():           # live quote beats yesterday's close
-            spot = float(spot_file.read_text())
+            spot = float(spot_file.read_text(encoding="utf-8"))
             if hist.dates and hist.dates[-1] < as_of.isoformat():
                 hist.dates.append(as_of.isoformat())
                 for arr in (hist.opens, hist.highs, hist.lows, hist.closes):

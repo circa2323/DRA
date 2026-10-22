@@ -130,7 +130,7 @@ def load_chain(path: str | Path) -> list[Leg]:
     decimal (0.28), a percent number (28) or a percent string ('28%').
     """
     legs = []
-    with Path(path).open(newline="") as fh:
+    with Path(path).open(newline="", encoding="utf-8-sig") as fh:
         for raw in csv.DictReader(fh):
             r = {(k or "").strip().lower().replace(" ", "_"): v for k, v in raw.items()}
             typ = (r.get("type") or "").strip().lower()

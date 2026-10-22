@@ -84,7 +84,7 @@ class Library_(unittest.TestCase):
 
     def test_every_cited_principle_exists(self):
         """No decision may cite a principle that isn't in a loaded book."""
-        src = "".join(p.read_text() for p in (ROOT / "optiontool").glob("*.py"))
+        src = "".join(p.read_text(encoding="utf-8") for p in (ROOT / "optiontool").glob("*.py"))
         cited = set(re.findall(r'"((?:OTS|IAO)-[0-9A-Z]+(?:-[0-9a-z]+)?)"', src))
         self.assertTrue(cited)
         missing = sorted(c for c in cited if c not in LIB)
@@ -168,7 +168,7 @@ class ChainParsing(unittest.TestCase):
         text = ("Expiration,Strike,Type,Bid,Ask,IV,Open Interest,Volume\n"
                 '11/20/2026,"1,005.00",C,$2.10,2.25,28.5%,"1,234",--\n'
                 "2026-12-18,250,put,0.95,1.05,0.31,,12\n")
-        with tempfile.NamedTemporaryFile("w", suffix=".csv", delete=False) as fh:
+        with tempfile.NamedTemporaryFile("w", suffix=".csv", delete=False, encoding="utf-8") as fh:
             fh.write(text)
         a, b = advisor.load_chain(fh.name)
         self.assertEqual((a.expiration, a.strike, a.type, a.bid, a.iv, a.open_interest, a.volume),
@@ -187,7 +187,7 @@ class ChainParsing(unittest.TestCase):
 class EndToEnd(unittest.TestCase):
     def test_example_with_history(self):
         import json
-        spec = json.loads((ROOT / "examples" / "long_call.json").read_text())
+        spec = json.loads((ROOT / "examples" / "long_call.json").read_text(encoding="utf-8"))
         hist = load_csv(ROOT / "examples" / "XYZ.csv", "XYZ")
         ctx = context.build(Trade.from_dict(spec), CFG, hist, spec["plan"])
         d = engine.evaluate(ctx, LIB)

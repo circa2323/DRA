@@ -474,7 +474,7 @@ def all_principle_ids(library=None) -> set[str]:
         out.update(fn.principles)
     if library is not None:
         from pathlib import Path
-        src = "".join(f.read_text() for f in Path(__file__).parent.glob("*.py"))
+        src = "".join(f.read_text(encoding="utf-8") for f in Path(__file__).parent.glob("*.py"))
         out.update(pid for pid in library.principles if f'"{pid}"' in src)
     return out
 

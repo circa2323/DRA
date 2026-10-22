@@ -256,7 +256,7 @@ class Handler(BaseHTTPRequestHandler):
             body.append(f'<div class="card"><b>Last run failed</b><p class="err">{E(job["error"])}</p></div>')
         snap = pipeline.latest_snapshot(cfg)
         if snap and (snap / "results.json").exists():
-            body.append(render_results(json.loads((snap / "results.json").read_text())))
+            body.append(render_results(json.loads((snap / "results.json").read_text(encoding="utf-8"))))
         else:
             body.append('<div class="card">No results yet. Press <b>Pull &amp; analyze</b>.</div>')
         body.append('<p class="note">Decision aid built from the loaded books\' principles — not financial advice. '
@@ -274,7 +274,7 @@ class Handler(BaseHTTPRequestHandler):
         p = (root / name).resolve()
         if p.parent != root or not (p / "results.json").exists():
             return page("Not found", "<p>Not found.</p>")
-        return page(name, render_results(json.loads((p / "results.json").read_text())))
+        return page(name, render_results(json.loads((p / "results.json").read_text(encoding="utf-8"))))
 
     def principles_page(self, q: str) -> str:
         found = self.app.library.search(q) if q else []
