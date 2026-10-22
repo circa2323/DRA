@@ -210,6 +210,43 @@ def candidates(strategy: str, chain: list[Leg], spot: float, qty: int = 3) -> li
     return out
 
 
+def quick_pl(legs: list[Leg], spot: float) -> tuple[float, float, bool]:
+    """Exact expiration max profit / max loss of a same-expiry structure, cheaply:
+    the payoff is piecewise linear with kinks only at the strikes."""
+    t = Trade("_", spot, legs)
+    strikes = [l.strike for l in legs if l.is_option]
+    far = max([spot] + strikes) * 3
+    pts = [0.0] + strikes + [far]
+    vals = [t.payoff_at(x) for x in pts]
+    loss_unlimited = t.payoff_at(far * 2) < vals[-1] - 1e-9
+    return max(vals), min(vals), loss_unlimited
+
+
+def _feasible(legs: list[Leg], spot: float, cap: float | None, account: float | None) -> bool:
+    """Drop candidates that cannot make money, or that the account cannot hold:
+    loss above the per-trade cap, more than the account, or a short put the
+    account cannot pay for if assigned (OTS-052-a)."""
+    if any(l.type == "stock" for l in legs):
+        return True
+    if len({l.expiration for l in legs if l.is_option}) > 1:
+        return True
+    best, worst, unlimited = quick_pl(legs, spot)
+    if best <= 0:
+        return False
+    if unlimited:
+        return cap is None and account is None
+    loss = -worst
+    if cap is not None and loss > cap:
+        return False
+    if account is not None and loss > account:
+        return False
+    if account is not None:
+        for l in legs:
+            if l.type == "put" and l.action == "sell" and len(legs) == 1 and l.strike * 100 * l.quantity > account:
+                return False
+    return True
+
+
 def _prescore(legs: list[Leg], spot: float, as_of: date, vol: float | None) -> float:
     """Cheap edge estimate (model value minus price, signed) used to trim candidates."""
     from .pricing import black_scholes
@@ -254,10 +291,7 @@ def scan(symbol: str, hist: PriceHistory, chain: list[Leg], library: Library, se
     for idea in found:
         cands = candidates(idea.strategy, chain, spot, contracts)
         cap = (plan_defaults or {}).get("max_trade_risk")
-        if cap:   # drop debit trades whose cost alone exceeds the user's cap
-            cands = [c for c in cands if sum(l.sign * l.premium() * l.quantity * l.multiplier
-                                              for l in c if l.is_option) <= cap or
-                     any(l.type == "stock" for l in c)]
+        cands = [c for c in cands if _feasible(c, spot, cap, account_value)]
         if len(cands) > per_idea:
             cands.sort(key=lambda legs: -_prescore(legs, spot, as_of, tv.hv))
             cands = cands[:per_idea]
@@ -305,10 +339,12 @@ def _score(dec: engine.Decision) -> float:
     s += 10 * sum(1 for f in dec.findings if f.severity == "PASS")
     if c.prob_profit is not None:
         s += 20 * c.prob_profit
+    # value edge, clamped: a 5-cent option "worth" 0.1 cent is not 5,000% better
+    clamp = lambda x: max(-1.0, min(1.0, x))
     for m in c.long_options:
         if m.value_ratio:
-            s += 20 * (1 - m.value_ratio)
+            s += 20 * clamp(1 - m.value_ratio)
     for m in c.short_options:
         if m.value_ratio:
-            s += 20 * (m.value_ratio - 1)
+            s += 20 * clamp(m.value_ratio - 1)
     return s

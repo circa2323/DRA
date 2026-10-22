@@ -198,7 +198,12 @@ def render_summary(res: dict) -> str:
             continue
         if not t["candidates"]:
             counts[ticket.REJECT] += 1
-            why = "; ".join(i["rationale"] for i in t["ideas"]) or "no setup"
+            real = [i for i in t["ideas"] if i["strategy"] != "none"]
+            if real:
+                why = ("no trade from these ideas fits your account and per-trade cap ("
+                       + ", ".join(i["strategy"].replace("vertical_spread:", "").replace("_", " ") for i in real) + ")")
+            else:
+                why = "; ".join(i["rationale"] for i in t["ideas"]) or "no setup"
             rows.append(f'<div class="sum"><span class="badge b-REJECT">Reject</span><span class="tk">{E(t["symbol"])}</span>'
                         f'<span class="what">No trade today — {E(why)}</span></div>')
             continue

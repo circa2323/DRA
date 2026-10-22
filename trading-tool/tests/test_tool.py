@@ -217,6 +217,22 @@ class ChainParsing(unittest.TestCase):
         self.assertTrue(all(abs(l[0].strike - 100) <= 3 for l in legs))   # bought leg near the money
 
 
+class Feasibility(unittest.TestCase):
+    def test_small_account_filters(self):
+        from optiontool import advisor
+        e = "2026-12-18"
+        short_put = [Leg("sell", "put", 1, 700, e, 3.0)]
+        self.assertFalse(advisor._feasible(short_put, 760, 100, 200))          # can't pay for assignment
+        dead = [Leg("buy", "put", 1, 16, e, 1.00), Leg("sell", "put", 1, 15, e, 0.0)]
+        self.assertFalse(advisor._feasible(dead, 15.8, None, None))            # max profit 0
+        ok = [Leg("buy", "call", 1, 30, e, 0.80)]
+        self.assertTrue(advisor._feasible(ok, 29, 100, 200))
+        pricey = [Leg("buy", "call", 1, 30, e, 1.50)]
+        self.assertFalse(advisor._feasible(pricey, 29, 100, 200))              # $150 > $100 cap
+        naked_call = [Leg("sell", "call", 1, 35, e, 0.50)]
+        self.assertFalse(advisor._feasible(naked_call, 29, 100, 200))          # unlimited loss
+
+
 class EndToEnd(unittest.TestCase):
     def test_example_with_history(self):
         import json
