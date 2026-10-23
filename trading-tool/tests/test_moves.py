@@ -186,3 +186,50 @@ class TradesWeb(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ClaudePull(unittest.TestCase):
+    def test_request_status_prompt_and_auto_analyze(self):
+        from optiontool import claude_pull
+        tmp = Path(tempfile.mkdtemp())
+        inbox = tmp / "inbox"
+        inbox.mkdir()
+        shutil.copy(EX / "XYZ.csv", inbox / "XYZ.csv")
+        cfg_path = tmp / "config.json"
+        cfg = pipeline.load_config(cfg_path)
+        cfg.update({"provider": "csv", "csv_folder": str(inbox), "data_dir": str(tmp / "data"),
+                    "fetch_history": False, "watchlist": ["XYZ"], "benchmarks": {}})
+        pipeline.save_config(cfg_path, cfg)
+        req = claude_pull.build_request(cfg, datetime(2026, 10, 23, 10, 0))
+        self.assertEqual(req["tickers"][0]["expirations"], ["2026-11-20", "2026-12-18", "2027-01-15", "2027-02-19"])
+        self.assertIn(str(inbox.resolve()), claude_pull.prompt(req))
+        self.assertIn("do NOT place", claude_pull.prompt(req))
+        self.assertFalse(claude_pull.status(cfg, req)["complete"])
+
+        webapp.Handler.app = webapp.App(str(cfg_path))
+        srv = webapp.ThreadingHTTPServer(("127.0.0.1", 0), webapp.Handler)
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        base = f"http://127.0.0.1:{srv.server_address[1]}"
+        try:
+            urllib.request.urlopen(base + "/claude/prepare", data=b"")
+            home = urllib.request.urlopen(base + "/").read().decode()
+            self.assertIn("Copy instruction", home)
+            self.assertIn("Files received: 0/1", home)
+            self.assertIn('http-equiv="refresh" content="10"', home)
+            # Claude writes the files
+            shutil.copy(EX / "XYZ_chain.csv", inbox / "XYZ_chain.csv")
+            (inbox / "XYZ_spot.txt").write_text("180.58", encoding="utf-8")
+            (inbox / claude_pull.DONE).write_text("done", encoding="utf-8")
+            home = urllib.request.urlopen(base + "/").read().decode()
+            self.assertIn("analyzing now", home)
+            import time
+            for _ in range(100):
+                if not webapp.Handler.app.job["running"]:
+                    break
+                time.sleep(0.1)
+            self.assertTrue(claude_pull.load_request(cfg)["analyzed"])
+            self.assertIsNotNone(pipeline.latest_snapshot(cfg))
+            self.assertIn("Prepare a Claude pull", urllib.request.urlopen(base + "/").read().decode())
+        finally:
+            srv.shutdown()
+            srv.server_close()

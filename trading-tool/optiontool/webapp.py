@@ -17,7 +17,7 @@ from datetime import date, datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from . import __version__, pipeline, positions, screener, ticket
+from . import __version__, claude_pull, pipeline, positions, screener, ticket
 from .knowledge import Library
 from .providers import ProviderError, SchwabAuth, make_provider
 from .rules import RELAXABLE, RELAXABLE_WARN
@@ -141,7 +141,8 @@ font-size:13px;color:#fff}.b-BUY{background:var(--acc-ok)}.b-SMALL{background:#2
 
 
 def page(title: str, body: str, refresh: bool = False) -> str:
-    meta = '<meta http-equiv="refresh" content="3">' if refresh else ""
+    secs = refresh if isinstance(refresh, int) and not isinstance(refresh, bool) and refresh > 1 else 3
+    meta = f'<meta http-equiv="refresh" content="{secs}">' if refresh else ""
     return (f'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" '
             f'content="width=device-width,initial-scale=1">{meta}<title>{E(title)}</title>'
             f'<style>{CSS}</style></head><body><header><h1>Option Ideas from the Books '
@@ -387,6 +388,12 @@ class Handler(BaseHTTPRequestHandler):
                 return self.save_settings(self._form())
             if path == "/screener":
                 return self.run_screener(self._form())
+            if path == "/claude/prepare":
+                claude_pull.build_request(self.app.cfg)
+                return self._redirect("/#claude")
+            if path == "/claude/cancel":
+                claude_pull.cancel(self.app.cfg)
+                return self._redirect("/")
             if path == "/trades/add":
                 return self.add_trade(self._form())
             if path == "/trades/manual":
@@ -431,6 +438,10 @@ class Handler(BaseHTTPRequestHandler):
         if cfg.get("small_account_mode"):
             body.append('<p class="note warn">Small-account mode is on: the books\' position-size limits are '
                         f'shown as warnings, and your ${cfg.get("max_trade_risk") or 0:,.0f} per-trade cap is enforced.</p>')
+        waiting = False
+        if src == "csv":
+            panel, waiting = self.claude_panel(cfg, job)
+            body.append(panel)
         if job["running"] and job.get("kind") == "pull":
             body.append(f'<div class="card"><b>Working…</b> {E(job["step"])}</div>')
             return page("Working…", "".join(body), refresh=True)
@@ -443,7 +454,38 @@ class Handler(BaseHTTPRequestHandler):
             body.append('<div class="card">No results yet. Press <b>Pull &amp; analyze</b>.</div>')
         body.append('<p class="note">Decision aid built from the loaded books\' principles — not financial advice. '
                     'Every finding links to the page it comes from.</p>')
-        return page("Option ideas", "".join(body))
+        return page("Option ideas", "".join(body), refresh=10 if waiting else False)
+
+    def claude_panel(self, cfg: dict, job: dict) -> tuple[str, bool]:
+        """Pull through Claude in Chrome: request, copyable instruction, live file checklist, auto-analyze."""
+        req = claude_pull.load_request(cfg)
+        if not req or req.get("analyzed"):
+            last = (f' <span class="note">Last Claude pull: {E(req["created_at"].replace("T", " "))}, analyzed.</span>'
+                    if req else "")
+            return (f'<div class="card" id="claude"><b>Get today\'s data with Claude</b> '
+                    f'<span class="note">(Schwab website, until the API is approved)</span>'
+                    f'<form method="post" action="/claude/prepare" class="bar" style="margin-top:8px">'
+                    f'<button>Prepare a Claude pull</button>{last}</form></div>'), False
+        st = claude_pull.status(cfg, req)
+        if st["complete"] and not job["running"]:
+            claude_pull.mark_analyzed(cfg)
+            self.app.start(True)
+            return ('<div class="card" id="claude"><b>Claude\'s files are in — analyzing now…</b></div>', True)
+        checks = "".join(
+            f'<span class="chip" style="font-size:13px">{"✔" if r["chain"] and r["spot"] else "…"} {E(r["symbol"])}</span>'
+            for r in st["rows"])
+        text = E(claude_pull.prompt(req))
+        copy_js = ("navigator.clipboard.writeText(document.getElementById('claudeprompt').value);"
+                   "this.textContent='Copied ✔'")
+        return ('<div class="card" id="claude"><h2>Pull with Claude</h2>'
+                '<ol><li>Click <b>Copy instruction</b> and paste it into Claude in Chrome (logged in to Schwab).</li>'
+                '<li>Leave this page open. It checks the inbox every 10 seconds and analyzes automatically when '
+                'Claude is done.</li></ol>'
+                f'<p><button type="button" onclick="{E(copy_js)}">Copy instruction</button></p>'
+                f'<textarea id="claudeprompt" rows="10" readonly>{text}</textarea>'
+                f'<p class="note">Files received: {st["have"]}/{st["need"]} {checks}</p>'
+                '<form method="post" action="/claude/cancel" class="bar"><button class="sec">Cancel</button>'
+                '<span class="note">Already have the files? Press Pull &amp; analyze above.</span></form></div>'), True
 
     def history_page(self) -> str:
         root = Path(self.app.cfg["data_dir"]).expanduser() / "snapshots"

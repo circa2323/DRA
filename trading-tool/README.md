@@ -174,6 +174,24 @@ are pulled automatically. In CSV mode, keep their `_chain.csv` in the inbox.
    * Schwab requires you to log in again every 7 days, and the app shows when
      that's due.
 
+### Pull with Claude (Schwab website, until the API is approved)
+
+In CSV mode, the Ideas page has a **Prepare a Claude pull** button.
+
+1. Click it. The app writes `_PULL_REQUEST.json` into the inbox: your
+   watchlist, the open trades you're tracking, the expirations from your
+   settings, the strike range and the exact file format.
+2. Click **Copy instruction** and paste the text into Claude in Chrome while
+   you're logged in to Schwab. The instruction is read-only: it tells Claude
+   never to place or preview orders.
+3. Leave the page open. It checks the inbox every 10 seconds, ticks off each
+   ticker as its files arrive, and runs **Pull & analyze** automatically once
+   Claude writes `_PULL_DONE.txt`.
+
+`claude-skill/schwab-chain-pull/SKILL.md` contains the same procedure as a
+Claude skill. Install it in Claude, and "pull my Schwab chains" picks up the
+latest request on its own.
+
 ### Data source: CSV folder (no API needed; the default)
 
 The folder named in Settings (default `data/inbox`) holds, for each watchlist
@@ -292,6 +310,7 @@ optiontool/
   screener.py    rank many tickers on history-based book criteria
   ticket.py      action labels and order tickets
   positions.py   My trades: exit-rule checks on open positions
+  claude_pull.py Pull-with-Claude request, instruction text and inbox watcher
   webapp.py      local web app (stdlib http.server)
   cli.py         command line
 knowledge/       OTS.json, IAO.json, SCHEMA.md
