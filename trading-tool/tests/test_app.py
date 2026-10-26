@@ -73,6 +73,18 @@ class SchwabParsing(unittest.TestCase):
                                             max_dte=200)
         self.assertEqual(got, ["2026-11-20", "2027-04-15"])
 
+    def test_extract_code_variants(self):
+        ex = providers.extract_code
+        self.assertEqual(ex("https://127.0.0.1/?code=C0.abc%40&session=xyz"), "C0.abc@")
+        self.assertEqual(ex("127.0.0.1/?code=C0.abc%40&session=xyz"), "C0.abc@")
+        self.assertEqual(ex("code=C0.abc%40&session=x"), "C0.abc@")
+        self.assertEqual(ex("C0.b2F1dGgyLmJkYy5zY2h3YWIuY29t.abc123%40"), "C0.b2F1dGgyLmJkYy5zY2h3YWIuY29t.abc123@")
+        with self.assertRaises(providers.ProviderError) as e:
+            ex("https://api.schwabapi.com/v1/oauth/authorize?client_id=K&redirect_uri=x")
+        self.assertIn("Schwab didn't redirect", str(e.exception))
+        with self.assertRaises(providers.ProviderError):
+            ex("")
+
     def test_authorize_url_and_code_exchange_parsing(self):
         tmp = Path(tempfile.mkdtemp())
         auth = providers.SchwabAuth("KEY", "SECRET", "https://127.0.0.1", tmp / "tok.json")

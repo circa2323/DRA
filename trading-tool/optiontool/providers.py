@@ -142,6 +142,28 @@ def _exp_window(settings: dict) -> dict:
 SCHWAB_BASE = "https://api.schwabapi.com"
 
 
+def extract_code(pasted: str) -> str:
+    """Pull the authorization code out of whatever was pasted: the full redirect
+    URL (with or without https://), just its ?query, or the bare code."""
+    import re
+    text = pasted.strip().strip('"').strip("'")
+    if not text:
+        raise ProviderError("nothing was pasted — copy the whole address from the browser's address bar")
+    m = re.search(r"[?&#]code=([^&#\s]+)", text) or re.match(r"code=([^&#\s]+)", text)
+    if m:
+        return urllib.parse.unquote(m.group(1))
+    if re.fullmatch(r"[A-Za-z0-9._~%@+/=-]{20,}", text):
+        return urllib.parse.unquote(text)      # the code on its own
+    parsed = urllib.parse.urlparse(text if "://" in text else "https://" + text)
+    params = sorted(urllib.parse.parse_qs(parsed.query))
+    seen = f"an address on {parsed.netloc or '?'}" + (f" with {', '.join(params)}" if params else " with no ?code=")
+    hint = (" That's a Schwab page, so Schwab didn't redirect: check the app is 'Ready for use' and its callback "
+            "URL is exactly https://127.0.0.1, then log in again."
+            if "schwab" in (parsed.netloc or "") else
+            " Copy the address only after the browser lands on https://127.0.0.1/?code=… (the page itself won't load).")
+    raise ProviderError(f"No login code found — got {seen}.{hint}")
+
+
 class SchwabAuth:
     """OAuth tokens for the Schwab Trader API, kept in a local JSON file."""
 
@@ -156,10 +178,7 @@ class SchwabAuth:
 
     def finish_login(self, redirected_url: str) -> None:
         """Exchange the ``code`` in the URL Schwab redirected the browser to."""
-        qs = urllib.parse.parse_qs(urllib.parse.urlparse(redirected_url.strip()).query)
-        if "code" not in qs:
-            raise ProviderError("that URL has no ?code= — paste the full address Schwab redirected to")
-        self._token_request({"grant_type": "authorization_code", "code": qs["code"][0],
+        self._token_request({"grant_type": "authorization_code", "code": extract_code(redirected_url),
                              "redirect_uri": self.callback_url})
 
     # -- tokens --------------------------------------------------------------

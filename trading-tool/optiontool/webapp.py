@@ -790,7 +790,7 @@ overbought/oversold, breakouts and volatility, each citing its book principle. T
 <li>Schwab sends your browser to <code>{E(auth.callback_url)}</code>, which won't load — that's expected.
 Copy the full address from the address bar.</li>
 <li>Paste it here within 30 seconds (the code expires quickly):</li></ol>
-<form method="post" action="/schwab/finish"><input type="text" name="url" placeholder="https://127.0.0.1/?code=...">
+<form method="post" action="/schwab/finish"><input type="text" name="url" placeholder="https://127.0.0.1/?code=... (or just the code)">
 <p><button>Finish connecting</button></p></form>
 <p class="note">Schwab requires repeating this every 7 days.</p></div>''')
 
