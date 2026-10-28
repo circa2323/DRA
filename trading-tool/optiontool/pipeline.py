@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 from pathlib import Path
 
-from . import advisor, positions, report, ticket
+from . import advisor, portfolio, positions, report, ticket
 from . import settings as settings_mod
 from .data import PriceHistory, load_csv
 from .knowledge import Library
@@ -95,6 +95,7 @@ class RunResult:
     market_note: str
     tickers: list[TickerResult]
     positions: list[dict] = field(default_factory=list)
+    portfolio: dict | None = None
 
     def to_json(self) -> str:
         return json.dumps(self, default=lambda o: o.__dict__, indent=2)
@@ -109,7 +110,8 @@ def pull(cfg: dict, now: datetime | None = None) -> Path:
     snap = Path(cfg["data_dir"]).expanduser() / "snapshots" / now.strftime("%Y-%m-%d_%H%M")
     snap.mkdir(parents=True, exist_ok=True)
     held = positions.open_symbols(cfg)
-    symbols = list(dict.fromkeys(cfg["watchlist"] + held + [b for b in cfg["benchmarks"].values() if b]))
+    owned = portfolio.symbols(cfg)
+    symbols = list(dict.fromkeys(cfg["watchlist"] + held + owned + [b for b in cfg["benchmarks"].values() if b]))
     errors = {}
     for sym in symbols:
         try:
@@ -214,9 +216,41 @@ def analyze(cfg: dict, snap: Path, library: Library | None = None) -> RunResult:
     for sym in cfg["watchlist"]:
         out.append(_analyze_one(cfg, snap, sym, as_of, meta, library, settings))
     result = RunResult(snap.name, meta["as_of"], meta["provider"], meta["market_note"], out,
-                       check_positions(cfg, snap, as_of))
+                       check_positions(cfg, snap, as_of), review_portfolio(cfg, snap))
     (snap / "results.json").write_text(result.to_json(), encoding="utf-8")
     return result
+
+
+def review_portfolio(cfg: dict, snap: Path) -> dict | None:
+    """Book-based recommendations for the imported brokerage portfolio."""
+    from .technical import analyze as tech
+    pf = portfolio.load(cfg)
+    if not pf:
+        return None
+    prices, techs, regimes = {}, {}, {}
+    for s in pf["stocks"]:
+        sym = s["symbol"]
+        try:
+            if (snap / f"{sym}.csv").exists():
+                h = load_csv(snap / f"{sym}.csv", sym)
+                prices[sym] = h.last
+                if len(h) > 60:
+                    tv = tech(h)
+                    techs[sym] = tv
+                    for name in (f"{sym}_chain.csv", f"{sym}_poschain.csv"):
+                        if (snap / name).exists() and tv.hv:
+                            legs = [l for l in advisor.load_chain(snap / name) if l.iv]
+                            if legs:
+                                atm = min(legs, key=lambda l: abs(l.strike - h.last))
+                                regimes[sym] = "high" if atm.iv > tv.hv else "low"
+                            break
+            if (snap / f"{sym}_spot.txt").exists():
+                prices[sym] = float((snap / f"{sym}_spot.txt").read_text(encoding="utf-8"))
+        except Exception:
+            continue
+    res = portfolio.review(pf, prices, techs, regimes)
+    res["imported"] = pf.get("imported")
+    return res
 
 
 def check_positions(cfg: dict, snap: Path, as_of: date) -> list[dict]:

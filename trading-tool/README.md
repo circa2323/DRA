@@ -140,6 +140,37 @@ These are all in **Settings**:
 New strategy types: put credit spreads in uptrends with high IV, sized to the
 cap; strangles before events; and expiration-week index long shots (OTS-039-a).
 
+### My portfolio (Robinhood)
+
+Robinhood has no public API, so the **Portfolio** page imports a CSV.
+Columns: `symbol,kind,quantity,avg_price,option_type,strike,expiration,side`.
+There are two ways to get it:
+
+* **Claude in Chrome:** click **Copy instruction**, paste it into Claude while
+  you're logged in to Robinhood. Claude saves `PORTFOLIO.csv` (read-only) to
+  the inbox. Then click **Import from inbox**.
+* **By hand:** paste the CSV into the box.
+
+On import:
+
+* option positions go into **My trades**, where the exit rules check them on
+  every pull;
+* stocks with 100+ shares become covered-call / hedge candidates.
+
+After **Pull & analyze**, each stock gets one action with its reasons:
+
+| Action | When |
+|---|---|
+| **TRIM / SELL** | the trend turned down (OTS-085); a big loss plus "would you buy it today?" (OTS-086, IAO-13-03); more than 25% of the portfolio in one stock (OTS-027) |
+| **HEDGE** | a protective put or collar, chosen by IV (IAO-14-10/12) |
+| **COVERED CALL** | overbought or fading momentum, with 100+ shares (IAO-06-01, IAO-16-17) |
+| **REVIEW** | stock-replacement candidates (IAO-14-20) |
+| **HOLD** | none of the above; comes with a trailing-stop level (OTS-022-a) |
+
+Portfolio-level checks cover option exposure (OTS-094-a), put/call balance
+(OTS-034), insurance puts (OTS-037-a), diversification (OTS-035) and cash
+reserves.
+
 ### My trades
 
 Click **I placed this trade — track it** on any order ticket and enter your
@@ -311,6 +342,7 @@ optiontool/
   ticket.py      action labels and order tickets
   positions.py   My trades: exit-rule checks on open positions
   claude_pull.py Pull-with-Claude request, instruction text and inbox watcher
+  portfolio.py   brokerage portfolio import and book-based review
   webapp.py      local web app (stdlib http.server)
   cli.py         command line
 knowledge/       OTS.json, IAO.json, SCHEMA.md

@@ -233,3 +233,84 @@ class ClaudePull(unittest.TestCase):
         finally:
             srv.shutdown()
             srv.server_close()
+
+
+class Portfolio(unittest.TestCase):
+    CSV = """Symbol,Kind,Quantity,Avg Price,Option Type,Strike,Expiration,Side
+UPP,stock,120,$20.00,,,,
+DWN,stock,10,40,,,,
+UPP,option,2,0.45,call,25,12/18/2026,long
+DWN,option,1,0.30,put,30,2026-11-20,short
+CASH,cash,61.20,,,,,
+"""
+
+    def test_parse_import_review(self):
+        from optiontool import portfolio
+        from optiontool.technical import TechnicalView
+        pf = portfolio.parse(self.CSV)
+        self.assertEqual([s["symbol"] for s in pf["stocks"]], ["UPP", "DWN"])
+        self.assertEqual(pf["options"][1]["short"], True)
+        self.assertEqual(pf["options"][0]["expiration"], "2026-12-18")
+        self.assertAlmostEqual(pf["cash"], 61.2)
+        tmp = Path(tempfile.mkdtemp())
+        cfg = {**pipeline.DEFAULT_CONFIG, "data_dir": str(tmp)}
+        res = portfolio.save_import(cfg, pf)
+        self.assertEqual(res["options_added"], 2)
+        self.assertEqual(res["covered_call_eligible"], ["UPP"])
+        self.assertEqual(portfolio.save_import(cfg, pf)["options_added"], 0)   # no duplicates
+        book = positions.load(cfg)
+        self.assertEqual(book[1]["entry"], -0.30)
+        self.assertEqual(book[1]["bias"], 1)        # short put = bullish
+        up = TechnicalView("UPP", 26, primary_trend="up", trend_strength="trending")
+        up.overbought_daily = up.overbought_weekly = True
+        dn = TechnicalView("DWN", 25, primary_trend="down", trend_strength="trending")
+        rv = portfolio.review(pf, {"UPP": 26.0, "DWN": 25.0}, {"UPP": up, "DWN": dn}, {"DWN": "low"})
+        by = {s["symbol"]: s for s in rv["stocks"]}
+        self.assertEqual(by["UPP"]["action"], "TRIM / SELL")        # 92% of the portfolio in one stock
+        self.assertTrue(any(r["action"] == "COVERED CALL" for r in by["UPP"]["recommendations"]))
+        self.assertTrue(any("IAO-14-20" in r["principles"] for r in by["UPP"]["recommendations"]))  # up 30%
+        self.assertEqual(by["DWN"]["action"], "TRIM / SELL")
+        self.assertTrue(any("OTS-086" in r["principles"] for r in by["DWN"]["recommendations"]))   # down 37%
+        texts = " ".join(p["text"] for p in rv["portfolio"])
+        self.assertIn("All long calls", texts)
+        for s in rv["stocks"]:
+            for r in s["recommendations"]:
+                for pid in r["principles"]:
+                    self.assertIn(pid, LIB)
+        for p in rv["portfolio"]:
+            for pid in p["principles"]:
+                self.assertIn(pid, LIB)
+
+    def test_web_import_and_pull(self):
+        from optiontool import portfolio
+        tmp = Path(tempfile.mkdtemp())
+        inbox = tmp / "inbox"
+        inbox.mkdir()
+        shutil.copy(EX / "XYZ.csv", inbox / "XYZ.csv")
+        cfg_path = tmp / "config.json"
+        cfg = pipeline.load_config(cfg_path)
+        cfg.update({"provider": "csv", "csv_folder": str(inbox), "data_dir": str(tmp / "data"),
+                    "fetch_history": False, "watchlist": [], "benchmarks": {}})
+        pipeline.save_config(cfg_path, cfg)
+        (inbox / portfolio.FILE).write_text("symbol,kind,quantity,avg_price\nXYZ,stock,150,150\n", encoding="utf-8")
+        webapp.Handler.app = webapp.App(str(cfg_path))
+        srv = webapp.ThreadingHTTPServer(("127.0.0.1", 0), webapp.Handler)
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        base = f"http://127.0.0.1:{srv.server_address[1]}"
+        try:
+            self.assertIn("Load my Robinhood portfolio", urllib.request.urlopen(base + "/portfolio").read().decode())
+            r = urllib.request.urlopen(base + "/portfolio/import", data=b"").read().decode()
+            self.assertIn("Imported from", r)
+            self.assertIn("XYZ", pipeline.load_config(cfg_path)["holdings"])
+            snap = pipeline.pull(pipeline.load_config(cfg_path), datetime(2026, 10, 28, 11, 0, tzinfo=pipeline.NY))
+            res = pipeline.analyze(pipeline.load_config(cfg_path), snap, LIB)
+            self.assertEqual(res.portfolio["stocks"][0]["symbol"], "XYZ")
+            self.assertIsNotNone(res.portfolio["stocks"][0]["gain"])
+            page = urllib.request.urlopen(base + "/portfolio").read().decode()
+            self.assertIn("Portfolio review", page)
+            bad = urllib.request.urlopen(base + "/portfolio/import",
+                                         data=urllib.parse.urlencode({"csv": "nonsense"}).encode()).read().decode()
+            self.assertIn("Could not read", bad)
+        finally:
+            srv.shutdown()
+            srv.server_close()

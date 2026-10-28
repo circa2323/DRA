@@ -17,7 +17,7 @@ from datetime import date, datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from . import __version__, claude_pull, pipeline, positions, screener, ticket
+from . import __version__, claude_pull, pipeline, portfolio, positions, screener, ticket
 from .knowledge import Library
 from .providers import ProviderError, SchwabAuth, make_provider
 from .rules import RELAXABLE, RELAXABLE_WARN
@@ -147,7 +147,7 @@ def page(title: str, body: str, refresh: bool = False) -> str:
             f'content="width=device-width,initial-scale=1">{meta}<title>{E(title)}</title>'
             f'<style>{CSS}</style></head><body><header><h1>Option Ideas from the Books '
             f'<span class="note">v{__version__}</span></h1><nav>'
-            f'<a href="/">Ideas</a><a href="/screener">Screener</a><a href="/trades">My trades</a><a href="/history">History</a><a href="/settings">Settings</a>'
+            f'<a href="/">Ideas</a><a href="/screener">Screener</a><a href="/trades">My trades</a><a href="/portfolio">Portfolio</a><a href="/history">History</a><a href="/settings">Settings</a>'
             f'<a href="/principles">Principles</a></nav></header><main>{body}</main></body></html>')
 
 
@@ -232,6 +232,36 @@ def render_positions(items: list[dict], compact: bool = True) -> str:
     return f'<div class="card"><h2>My trades</h2>{"".join(rows)}{link}</div>'
 
 
+PBADGE = {"TRIM / SELL": "a-EXIT", "HEDGE": "b-CONSIDER", "COVERED CALL": "b-SMALL", "REVIEW": "b-AGGR",
+          "HOLD": "a-HOLD"}
+
+
+def render_portfolio(res: dict | None, full: bool = False) -> str:
+    if not res:
+        return ""
+    rows = []
+    for s in res["stocks"]:
+        if not full and s["action"] == "HOLD":
+            continue
+        gain = "" if s["gain"] is None else f' · {"+" if s["gain"] >= 0 else ""}{s["gain"]:.0%} vs cost'
+        val = "" if s["value"] is None else f' · ${s["value"]:,.0f}'
+        wt = "" if s["weight"] is None else f' ({s["weight"]:.0%})'
+        recs = s["recommendations"] if full else s["recommendations"][:1]
+        lines = "".join(f'<div class="f">{E(r["text"])} {chips(r["principles"])}</div>' for r in recs)
+        rows.append(f'<div class="sum"><span class="badge {PBADGE.get(s["action"], "a-HOLD")}">{E(s["action"])}</span>'
+                    f'<span class="what"><b>{E(s["symbol"])}</b> {s["shares"]:g} sh{E(val)}{E(wt)}{E(gain)}'
+                    f'{lines}</span></div>')
+    port = "".join(f'<div class="f warn">{E(p["text"])} {chips(p["principles"])}</div>' for p in res["portfolio"])
+    if not rows and not port:
+        return ""
+    head = (f'<p class="note">Total ≈ ${res["total"]:,.0f} · stocks ${res["stock_value"]:,.0f} · '
+            f'long options (cost) ${res["option_cost"]:,.0f} · cash ${res["cash"]:,.0f} · imported {E(res.get("imported") or "")}'
+            '. Option positions are checked under My trades.</p>') if full else ""
+    link = '' if full else '<p class="note"><a href="/portfolio">Full portfolio review →</a></p>'
+    title = "Portfolio review" if full else "Portfolio: action needed"
+    return f'<div class="card"><h2>{title}</h2>{head}{port}{"".join(rows)}{link}</div>'
+
+
 def render_summary(res: dict) -> str:
     rows, counts = [], {k: 0 for k in BADGE}
     for t in res["tickers"]:
@@ -278,7 +308,8 @@ def render_summary(res: dict) -> str:
 def render_results(res: dict) -> str:
     out = [f'<p class="note">Snapshot {E(res["snapshot"])} · as of {E(res["as_of"])} · '
            f'source: {E(res["provider"])} · pulled when: {E(res["market_note"])}</p>',
-           render_positions(res.get("positions") or []), render_summary(res), '<h3>Details</h3>']
+           render_positions(res.get("positions") or []), render_portfolio(res.get("portfolio")),
+           render_summary(res), '<h3>Details</h3>']
     for t in res["tickers"]:
         if not t["ok"]:
             out.append(f'<div class="card"><h2>{E(t["symbol"])}</h2><p class="err">{E(t["error"])}</p></div>')
@@ -369,6 +400,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(self.screener_page())
             if path == "/trades":
                 return self._send(self.trades_page())
+            if path == "/portfolio":
+                return self._send(self.portfolio_page())
             self._send(page("Not found", "<p>Not found.</p>"), 404)
         except Exception:
             self._send(page("Error", f'<pre class="err">{E(traceback.format_exc())}</pre>'), 500)
@@ -394,6 +427,8 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/claude/cancel":
                 claude_pull.cancel(self.app.cfg)
                 return self._redirect("/")
+            if path == "/portfolio/import":
+                return self.import_portfolio(self._form())
             if path == "/trades/add":
                 return self.add_trade(self._form())
             if path == "/trades/manual":
@@ -754,6 +789,68 @@ overbought/oversold, breakouts and volatility, each citing its book principle. T
                          pnl=round(pnl, 2))
         positions.save(cfg, book)
         self._redirect("/trades")
+
+    def portfolio_page(self, note: str = "") -> str:
+        cfg = self.app.cfg
+        pf = portfolio.load(cfg)
+        inbox_file = claude_pull.inbox(cfg) / portfolio.FILE
+        copy_js = ("navigator.clipboard.writeText(document.getElementById('pfprompt').value);"
+                   "this.textContent='Copied ✔'")
+        imp = (f'<div class="card"><h2>Load my Robinhood portfolio</h2>'
+               '<ol><li><b>Claude in Chrome:</b> copy this instruction into Claude while logged in to Robinhood. '
+               f'It saves <code>{E(portfolio.FILE)}</code> into your inbox (read-only).</li>'
+               '<li>Then click <b>Import from inbox</b>. Or paste the CSV yourself in the box below.</li></ol>'
+               f'<p><button type="button" onclick="{E(copy_js)}">Copy instruction</button></p>'
+               f'<textarea id="pfprompt" rows="6" readonly>{E(portfolio.claude_prompt(cfg))}</textarea>'
+               '<form method="post" action="/portfolio/import" class="bar" style="margin-top:10px">'
+               f'<button>Import from inbox</button><span class="note">'
+               f'{"found " + E(str(inbox_file)) if inbox_file.exists() else "waiting for " + E(str(inbox_file))}'
+               '</span></form>'
+               '<form method="post" action="/portfolio/import"><label>…or paste CSV '
+               f'(header: <code>{E(portfolio.COLUMNS)}</code>)</label>'
+               '<textarea name="csv" rows="5" placeholder="symbol,kind,quantity,avg_price,option_type,strike,expiration,side&#10;'
+               'HPQ,stock,10,28.50,,,,&#10;CLF,option,2,0.45,call,15,2026-12-18,long&#10;CASH,cash,61.20,,,,,"></textarea>'
+               '<p><button class="sec">Import pasted CSV</button></p></form></div>')
+        body = [f'<h2>My portfolio</h2>{note}']
+        if not pf:
+            return page("Portfolio", "".join(body) + imp)
+        snap = pipeline.latest_snapshot(cfg)
+        res = None
+        if snap and (snap / "results.json").exists():
+            res = json.loads((snap / "results.json").read_text(encoding="utf-8")).get("portfolio")
+        if not res or res.get("imported") != pf.get("imported"):
+            body.append(f'<div class="card">Imported {len(pf["stocks"])} stock(s) and {len(pf["options"])} option '
+                        'position(s). Press <b>Pull &amp; analyze</b> on the Ideas page to get recommendations '
+                        '(it fetches prices for your holdings).</div>')
+        else:
+            body.append(render_portfolio(res, full=True))
+        body.append(imp)
+        return page("Portfolio", "".join(body))
+
+    def import_portfolio(self, f: dict):
+        cfg = self.app.cfg
+        text = f.get("csv", "").strip()
+        src = "pasted CSV"
+        if not text:
+            p = claude_pull.inbox(cfg) / portfolio.FILE
+            if not p.exists():
+                return self._send(self.portfolio_page('<p class="err">No ' + E(portfolio.FILE) +
+                                                      ' in the inbox yet.</p>'))
+            text, src = p.read_text(encoding="utf-8-sig"), str(p)
+        try:
+            pf = portfolio.parse(text)
+        except Exception as e:
+            return self._send(self.portfolio_page(f'<p class="err">Could not read the portfolio: {E(str(e))}</p>'))
+        res = portfolio.save_import(cfg, pf)
+        for sym in res["covered_call_eligible"]:
+            if sym not in cfg["holdings"]:
+                cfg["holdings"].append(sym)
+        pipeline.save_config(self.app.config_path, cfg)
+        note = (f'<div class="card"><b>Imported from {E(src)}:</b> {len(pf["stocks"])} stock(s), '
+                f'{len(pf["options"])} option position(s) ({res["options_added"]} new in My trades)'
+                + (f', cash ${pf["cash"]:,.2f}' if pf.get("cash") is not None else "")
+                + '. Now press <b>Pull &amp; analyze</b> on the Ideas page for recommendations.</div>')
+        return self._send(self.portfolio_page(note))
 
     def run_screener(self, f: dict):
         num = lambda k: float(f.get(k) or screener.DEFAULTS[k])
